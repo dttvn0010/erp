@@ -1,0 +1,152 @@
+.data-table .sort-asc, .data-table .sort-desc {
+  cursor: pointer;
+  font-weight: 300;
+  font-size: 14px;
+  color: #AAA;
+  position: relative;
+  top: 0.1rem;
+}
+
+.data-table .filter {
+  cursor: pointer;
+  font-weight: 300;
+  font-size: 12px;
+  color: #AAA;
+}
+
+.data-table .filter.active, .data-table .sort-asc.active, .data-table .sort-desc.active {
+  color: orange;
+}
+
+.data-table .inline-editor a {
+  text-decoration: none;
+}
+
+.data-table .inline-editor {
+  min-width: 300px;
+  max-width: 400px;
+  padding: 5px 4px 3px 4px;
+  border: 1px solid #AAA;
+}
+
+.data-table .inline-editor input[type=text] {
+  padding: 0px 5px;
+  height: 32px;
+  border-radius: 4px;
+  outline: none;
+  border: 1px solid #AAA;
+}
+
+.data-table .radio-group {
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.data-table .inline-editor textarea {
+  padding: 0px 5px;
+  border-radius: 4px;
+  outline: none;
+  border: 1px solid #AAA;
+}
+
+.data-table .inline-editor select {
+  height: 32px;
+  border-radius: 4px;
+  outline: none;
+  border: 1px solid #AAA;
+}
+
+.data-table .select2  {
+  width: 100% !important
+}
+
+.data-table .select2-selection--multiple {
+  min-height: 32px;
+}
+
+.page-size-select {
+  height: 35px;
+  border: 1px solid #DDD;
+  border-radius: 4px;
+  outline: none;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.half-width {
+  width: 50%;
+}
+
+.one-third-width {
+  width: 33%;
+}
+
+.datepicker1 {
+  background-color: #fff;
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 5px;
+  color: #333;
+  font-size: 13px;
+}
+.datepicker1 td, .datepicker1 th{
+  text-align: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: none;
+  padding: 3px 10px;
+}
+.datepicker1 .next, .datepicker1 .prev {
+  cursor: pointer;
+}
+.datepicker1 table tr td.old, .datepicker1 table tr td.new{
+  color: #999;
+}
+
+.datepicker1 .datepicker-switch:hover,
+.datepicker1 .prev:hover,
+.datepicker1 .next:hover{
+  background: #eee;
+}
+
+.datepicker1 table tr td.day:hover,
+.datepicker1 table tr td.day.focused {
+  background: #eee;
+  cursor: pointer;
+}
+
+.datepicker1 table tr td.active.active {
+  background-color: #0044cc;
+  background-image: linear-gradient(to bottom, #08c, #0044cc);
+  background-repeat: repeat-x;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  color: #fff;
+  text-shadow: 0 -1px 0 rgb(0 0 0 / 25%);
+}
+.one-third-width {
+  width: 33%;
+}
+.half-width {
+  width: 50%;
+}
+.full-width {
+  width: 100%;
+}
+
+.datepicker1 select{
+  height: 24px;
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 3px;
+  outline: none;
+  text-align: center;
+  text-align-last:center;
+  font-size: 13px;
+  color: #333;
+} 
+
+.datepicker1 .select-label {
+  margin-right: 5px;
+}

@@ -1,0 +1,61 @@
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>ERP</title>
+    <link href="/static/assets/vendor/sb-admin/sb-admin.css" rel="stylesheet" />
+  </head>
+  
+  <style>
+    .bg-login {
+      position: relative;
+      width: 100%;
+      min-height: auto;
+      background-position: right 0px top 0px;
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      background-size: cover;
+      -o-background-size: cover;
+    }
+  
+    .login-form {
+      border: 1px solid #DDD;
+      max-width: 400px;
+      padding: 20px;
+      margin-top: 100px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  
+  </style>
+  
+  <div class="bg-login">
+    <div class="login-form">
+      <h3>Đăng nhập</h3>
+      <br>
+      <form method="POST">
+        {%csrf_token%}
+        <div class="mb-3">
+          <label class="form-label">Tên tài khoản</label>
+          <input name="username" type="text" class="form-control" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Mật khẩu</label>
+          <input name="password" type="password" class="form-control" />
+        </div>
+        <div class="mb-3">
+          <span id="error" style="color:red"></span>
+        </div>
+        <br>
+        <div class="mb-3">
+          <button type="submit" class="btn btn-primary btn-block">Đăng nhập</button>
+        </div>
+        <div class="clearfix">
+          <a href="#" class="float-end">Quên mật khẩu?</a>
+        </div>
+      </form>
+      <p class="text-center"><a href="#">Đăng ký tài khoản</a></p>
+    </div>
+  </div>

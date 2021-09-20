@@ -1,0 +1,39 @@
+<link href="styles.css" rel="stylesheet">
+<link rel="stylesheet" href="bootstrap-datepicker.standalone.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="bootstrap-datepicker.js"></script>
+
+<div class="container">
+	<div id="app">
+		<template>
+			<input v-if="show" class="datepicker form-control" data-format="dd/mm/yyyy">
+			<button @click="btnClick()">Toggle</button>
+		</template>
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+	<script>
+		var app = new Vue({
+		  el: '#app',
+		  data: {
+			show:false
+		  },
+		  methods: {
+			btnClick() {
+				this.show = !this.show;
+				window.updateDatePicker();
+			}
+		  }
+		})
+	</script>
+</div>
+
+<script>
+	function updateDatePicker() {
+		setTimeout(() => {
+			$('.datepicker').each(function() {
+				let format = $(this).attr('data-format');
+				$(this).datepicker({format});
+			});
+		}, 200);
+	};
+</script>
