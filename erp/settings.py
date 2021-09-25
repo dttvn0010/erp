@@ -42,13 +42,14 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'core',
-    'accounting',
-    'crm',
     'employee',
+    'crm',
+    'accounting',
+    'stock',
     'manufacturing',
     'purchase',
     'sales',
-    'stock'
+    'pos_sales',
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -78,6 +79,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'core.context_processors.layout_pages',
             ],
         },
     },
