@@ -90,6 +90,7 @@ class ProductionWorkflowStep(models.Model):
         return self.name
 
 class ProductionWorkflowStepDeviceUse(models.Model):
+    step = models.ForeignKey(ProductionWorkflowStep, on_delete=models.PROTECT)
     device = models.ForeignKey(DeviceTemplate, on_delete=models.PROTECT)
     duration = models.FloatField()
 
