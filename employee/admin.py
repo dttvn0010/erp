@@ -1,3 +1,20 @@
 from django.contrib import admin
+from .models import *
 
-# Register your models here.
+admin.site.register(Department)
+admin.site.register(Staff)
+admin.site.register(Team)
+admin.site.register(Task)
+admin.site.register(TaskUpdate)
+admin.site.register(CheckInMachine)
+admin.site.register(StaffCheckIn)
+admin.site.register(LeaveDayPeriod)
+admin.site.register(StaffLeaveDayQty)
+admin.site.register(IncomeTaxPolicy)
+admin.site.register(IncomeTaxLevel)
+admin.site.register(StaffSalary)
+admin.site.register(StaffWorkShift)
+admin.site.register(PaymentPeriod)
+admin.site.register(StaffPrepaid)
+admin.site.register(Payroll)
+admin.site.register(StaffPayroll)

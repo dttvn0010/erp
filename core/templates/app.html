@@ -65,47 +65,49 @@
         <div class="sb-sidenav-menu">
           <div class="nav">
             {% for module in modules %}
-              <div class="sb-sidenav-menu-heading">{{module.title}}</div>
-              {% for page in module.pages %}
-                {% if  user|has_page_permission:page %}
-                  {% if not page.children %}
-                    <a class="nav-link {% if page.module.name == module_name and page.url ==  url %} active {%endif%}" href="/{{page.url_prefix}}{{page.url}}">
-                      {% if page.icon %}
-                        <div class="sb-nav-link-icon"><i class="fas fa-{{page.icon}}"></i></div>
-                      {% endif %}
-                      {{page.title}}
-                    </a>
-                  {% else %}
-                  <a class="nav-link collapsed {% if page.url == parent_url and page.module.name == module_name %} active {% endif %}" 
-                    href="javascript:void(0)" data-bs-toggle="collapse" data-bs-target="#collapse_{{page.module}}_{{page.url}}"
-                    aria-expanded="false" aria-controls="collapse_{{page.module}}_{{page.url}}"
-                  >
-                    {% if page.icon %}
-                      <div class="sb-nav-link-icon"><i class="fas fa-{{page.icon}}"></i></div>
-                    {% endif %}
-                    {{page.title}}
-                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                  </a>
-                  <div class="collapse {% if page.url == parent_url and page.module.name == module_name %} show {% endif %}" 
-                    id="collapse_{{page.module}}_{{page.url}}" data-bs-parent="#sidenavAccordion"
-                  >
-                    <nav class="sb-sidenav-menu-nested nav">
-                      {% for child_page in page.children %}
-                        {% if user|has_page_permission:child_page %}
-                          <a class="nav-link {% if page.module.name == module_name and child_page.url == url %} active {%endif%}" 
-                            href="/{{page.url_prefix}}{{child_page.url}}">
-                            {% if child_page.icon %}
-                              <div class="sb-nav-link-icon"><i class="fas fa-{{child_page.icon}}"></i></div>
-                            {% endif %}
-                            {{child_page.title}}
-                          </a>
+              {% if user|has_module_permission:module %}
+                <div class="sb-sidenav-menu-heading">{{module.title}}</div>
+                {% for page in module.pages %}
+                  {% if  user|has_page_permission:page %}
+                    {% if not page.children %}
+                      <a class="nav-link {% if page.module.name == module_name and url|startswith_url:page.url %} active {%endif%}" href="/{{page.url_prefix}}{{page.url}}">
+                        {% if page.icon %}
+                          <div class="sb-nav-link-icon"><i class="fas fa-{{page.icon}}"></i></div>
                         {% endif %}
-                      {% endfor %}
-                    </nav>
-                  </div>
-                  {% endif %}
-                {% endif %} 
-              {% endfor %}
+                        {{page.title}}
+                      </a>
+                    {% elif user|has_any_page_permission:page.children %}
+                      <a class="nav-link collapsed {% if parent_url|startswith_url:page.url and page.module.name == module_name %} active {% endif %}" 
+                        href="javascript:void(0)" data-bs-toggle="collapse" data-bs-target="#collapse_{{page.module}}_{{page.url}}"
+                        aria-expanded="false" aria-controls="collapse_{{page.module}}_{{page.url}}"
+                      >
+                        {% if page.icon %}
+                          <div class="sb-nav-link-icon"><i class="fas fa-{{page.icon}}"></i></div>
+                        {% endif %}
+                        {{page.title}}
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                      </a>
+                      <div class="collapse {% if parent_url|startswith_url:page.url and page.module.name == module_name %} show {% endif %}" 
+                        id="collapse_{{page.module}}_{{page.url}}" data-bs-parent="#sidenavAccordion"
+                      >
+                        <nav class="sb-sidenav-menu-nested nav">
+                          {% for child_page in page.children %}
+                            {% if user|has_page_permission:child_page %}
+                              <a class="nav-link {% if page.module.name == module_name and url|startswith_url:child_page.url %} active {%endif%}" 
+                                href="/{{page.url_prefix}}{{child_page.url}}">
+                                {% if child_page.icon %}
+                                  <div class="sb-nav-link-icon"><i class="fas fa-{{child_page.icon}}"></i></div>
+                                {% endif %}
+                                {{child_page.title}}
+                              </a>
+                            {% endif %}
+                          {% endfor %}
+                        </nav>
+                      </div>
+                    {% endif %}
+                  {% endif %} 
+                {% endfor %}
+              {% endif %}
             {% endfor %}
             <br/>
           </div>

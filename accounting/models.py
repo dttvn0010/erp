@@ -26,7 +26,7 @@ class Invoice(models.Model):
     invoice_type = models.CharField(choices=InvoiceType.choices(), max_length=50)
     incoming = models.BooleanField()
     note = models.CharField(max_length=500)
-    bank_account = models.ForeignKey(BankAccount, on_delete=models.PROTECT)
+    bank_account = models.ForeignKey(BankAccount, blank=True, null=True, on_delete=models.PROTECT)
     amount_untaxed = models.IntegerField()
     amount_tax = models.IntegerField()
     amount_total = models.IntegerField()

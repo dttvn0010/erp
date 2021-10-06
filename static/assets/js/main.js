@@ -27,31 +27,63 @@ function getCookie(name) {
   return cookieValue;
 }
 
-function $_post(url, params) {
+function $_request(url, method, data) {
   var headers = {'X-CSRFToken': getCookie('csrftoken')};
 
-  var data;
-
-  if (params instanceof FormData) {
-    data = params;
+  if (data instanceof FormData) {
+    return fetch(url, { method, body: data, headers });
   } else {
-    data = new FormData();
-
-    if (params) {
-      Object.keys(params).forEach(function (key) {
-        data.append(key, params[key]);
-      });
-    }
+    headers['Content-Type'] = 'application/json';
+    return fetch(url, { method, body: JSON.stringify(data), headers });
   }
+}
 
-  return fetch(url, { method: "POST", body: data, headers });
+function $_post(url, data){
+  return $_request(url, 'POST', data);
+}
+
+function $_put(url, data){
+  return $_request(url, 'PUT', data);
+}
+
+function $_delete(url, data){
+  return $_request(url, 'DELETE', data);
+}
+function serializeForm(fmt) {
+  let formData = new FormData(fmt);
+  let data = {};
+  for(let pair of formData.entries()) {
+    data[pair[0]] = pair[1]
+  }
+  return data;
 }
 
 function formatThousand(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
-const PAGE_SIZE = 5;
+// ===== Data table
+const PAGE_SIZE = 10;
+
+function $_get(url) {
+  return fetch(url);
+}
+
+function getCookie(name) {
+  var cookieValue = null;
+  if (document.cookie && document.cookie != '') {
+    var cookies = document.cookie.split(';');
+    for (var i = 0; i < cookies.length; i++) {
+      var cookie = jQuery.trim(cookies[i]);
+      // Does this cookie string begin with the name we want?
+      if (cookie.substring(0, name.length + 1) == (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
 
 function renderTableHead(table) { //columnsDef, params, orderBy, orderDir
   return (
@@ -64,14 +96,24 @@ function renderTableHead(table) { //columnsDef, params, orderBy, orderDir
 
             <div class="float-end">
               ${col.search ?
-                `<span class="filter ${table.params[`columns[${col.data}][search]`]?'active':''}">
+                `<span id="filter-${col.data}" class="filter ${table.searchParams[col.data]?'active':''}">
                   <span data-bs-toggle="dropdown"><i class="fas fa-filter" ></i></span> 
                   <div class="dropdown-menu inline-editor p-1">
                     
                     ${col.dtype == 'text'?
                       `<div class="full-width dropdown-keep-open">
                         <label class="mb-1">Nhập giá trị để tìm:</label>
-                        <input type="text" class="full-width" value="${table.params[`columns[${col.data}][search]`]??''}"/>
+                        <input type="text" class="full-width" value="${table.searchParams[col.data]??''}"/>
+                        <button class="mt-1 btn btn-sm btn-success btn-filter btn-filter-text" data-col='${col.data}'>
+                          <i class="fas fa-check"></i>
+                        </button>
+                      </div>`: ''
+                    }
+
+                    ${col.dtype == 'number'?
+                      `<div class="full-width dropdown-keep-open">
+                        <label class="mb-1">Nhập giá trị để tìm:</label>
+                        <input type="number" class="full-width" value="${table.searchParams[col.data]??''}"/>
                         <button class="mt-1 btn btn-sm btn-success btn-filter btn-filter-text" data-col='${col.data}'>
                           <i class="fas fa-check"></i>
                         </button>
@@ -82,19 +124,19 @@ function renderTableHead(table) { //columnsDef, params, orderBy, orderDir
                       `<div class="full-width dropdown-keep-open p-2">
                         <div class="radio-group">
                           <div class="mb-2">
-                            <input type="radio" value="" ${(table.params[`columns[${col.data}][search]`]??'')==''? 'checked':''} 
+                            <input type="radio" value="" ${(table.searchParams[col.data]??'')==''? 'checked':''} 
                               name="input-filter-${col.data}">
 
                             <label>Tất cả</label>
                           </div>
                           <div class="mb-2">
-                            <input type="radio" value="1" ${(table.params[`columns[${col.data}][search]`]??'')=='1'? 'checked':''} 
+                            <input type="radio" value="1" ${(table.searchParams[col.data]??'')=='1'? 'checked':''} 
                               name="input-filter-${col.data}">
 
                             <label>Có</label>
                           </div>
                           <div class="mb-2">
-                            <input type="radio" value="0" ${(table.params[`columns[${col.data}][search]`]??'')=='0'? 'checked':''}
+                            <input type="radio" value="0" ${(table.searchParams[col.data]??'')=='0'? 'checked':''}
                               name="input-filter-${col.data}">
                             <label>Không</label>
                           </div>
@@ -107,15 +149,15 @@ function renderTableHead(table) { //columnsDef, params, orderBy, orderDir
 
                     ${col.dtype == 'date' || col.dtype == 'datetime'?
                       `<div class="full-width dropdown-keep-open">
-                        <div class="row">
-                          <div class="col-6 pe-1">
-                            <label class="mb-1">Từ ngày:</label><br>
-                            <input type="text" value="${(table.params[`columns[${col.data}][search]`]??'--').split('--')[0]}" />
+                        <div class="d-flex">
+                          <div class="half-width px-1">
+                            <label class="mb-1">Từ ngày:</label>
+                            <input class="full-width" type="text" value="${(table.searchParams[col.data]??'--').split('--')[0]}" />
                           </div>
 
-                          <div class="col-6 ps-1">
-                            <label class="mb-1">Đến ngày:</label><br>
-                            <input type="text" value="${(table.params[`columns[${col.data}][search]`]??'--').split('--')[1]}" />
+                          <div class="half-width px-1">
+                            <label class="mb-1">Đến ngày:</label>
+                            <input class="full-width" type="text" value="${(table.searchParams[col.data]??'--').split('--')[1]}" />
                           </div>
                         </div>
                         <button class="mt-1 btn btn-sm btn-success btn-filter btn-filter-date" data-col='${col.data}'>
@@ -127,15 +169,28 @@ function renderTableHead(table) { //columnsDef, params, orderBy, orderDir
                     ${col.dtype == 'category' || col.dtype == 'multiCategory'?
                       `<div class="full-width">
                         <label class="mb-1">Nhập giá trị để tìm:</label>
-                        <select ${col.asyncSearch? `async data-col=${col.data}`:''} multiple class="full-width dropdown-keep-open">
-                          ${col.display_list.map(item =>( 
-                            `<option value="${item[0]}"
-                              ${(table.params[`columns[${col.data}][search]`]??[]).includes((item[0]??'').toString())?'selected':''}
-                            >
-                              ${item[1]}
-                            </option>`)
-                          ).join('')}
-                        </select>
+                        
+                        ${!col.asyncSearch? `
+                          <select multiple class="full-width dropdown-keep-open">
+                            ${col.displayList.map(item =>( 
+                              `<option value="${item[0]}"
+                                ${(table.searchParams[col.data]??'').split(',').includes((item[0]??'').toString())?'selected':''}
+                              >
+                                ${item[1]}
+                              </option>`)
+                            ).join('')}
+                          </select>
+                        `: ''}
+
+                        ${col.asyncSearch? `
+                          <select async data-col=${col.data} multiple class="full-width dropdown-keep-open">
+                            ${(table.searchOptions[col.data]||[]).map(item =>( 
+                              `<option value="${item[0]}" selected>
+                                ${item[1]}
+                              </option>`)
+                            ).join('')}
+                          </select>
+                        `: ''}
                         
                         <button class="mt-1 btn btn-sm btn-success btn-filter btn-filter-list" data-col='${col.data}'>
                           <i class="fas fa-check"></i>
@@ -159,6 +214,10 @@ function renderTableHead(table) { //columnsDef, params, orderBy, orderDir
     `</tr>
       </thead>`
   )
+}
+
+function replaceAll(st, oldTag, newTag) {
+  return st.split(oldTag).join(newTag);
 }
 
 function renderTableBody(columnsDef, rows) {
@@ -190,7 +249,7 @@ function renderTableBody(columnsDef, rows) {
                         }
 
                         ${col.dtype == 'text' && col.editWidget == 'textarea'?
-                          `<textarea rows="5" class="full-width inline-editor-value">${row[col.data]??''}</textarea>`: ''
+                          `<textarea rows="10" class="full-width inline-editor-value">${replaceAll(row[col.data]??'', '<br>', '\n')}</textarea>`: ''
                         }
 
                         ${col.dtype == 'date' ?
@@ -201,12 +260,18 @@ function renderTableBody(columnsDef, rows) {
                           `<input type="text" class="date-time-picker full-width inline-editor-value" value="${row[col.data]??''}"/>`: ''
                         }
 
-                        ${col.dtype == 'category' ?
-                          `<select ${col.asyncSearch? `async data-col=${col.data}`:''} class="full-width inline-editor-value">
+                        ${col.dtype == 'category' && !col.asyncSearch  ?
+                          `<select class="full-width inline-editor-value">
                             ${col.blank?
                               `<option value>---------</option>`:''
                             }
-                            ${col.display_list.map(item => 
+                            ${!col.editList.map(item => item[0].toString()).includes(row[col.data + '_id'].toString()) ?
+                              `<option value="${row[col.data + '_id']}">
+                                ${row[col.data]}
+                              </option>
+                              `: ''
+                            }
+                            ${col.editList.map(item => 
                               `<option value="${item[0]}" ${item[0]==row[col.data + '_id']?'selected':''}>
                                 ${item[1]}
                               </option>`
@@ -214,11 +279,32 @@ function renderTableBody(columnsDef, rows) {
                           </select>`: ''
                         }
 
-                        ${col.dtype == 'multiCategory' ?
-                          `<select ${col.asyncSearch? `async data-col=${col.data}`:''} class="full-width inline-editor-value" multiple>
-                            ${col.display_list.map(item => 
+                        ${col.dtype == 'category' && col.asyncSearch  ?
+                          `<select async data-col=${col.data} class="full-width inline-editor-value">
+                            ${col.blank?
+                              `<option value>---------</option>`:''
+                            }
+                            <option value="${row[col.data + '_id']}">
+                              ${row[col.data]}
+                            </option>
+                          </select>`: ''
+                        }
+
+                        ${col.dtype == 'multiCategory' && !col.asyncSearch ?
+                          `<select class="full-width inline-editor-value" multiple>
+                            ${col.displayList.map(item => 
                               `<option value="${item[0]}" ${(row[col.data + '_id']??[]).includes(item[0].toString())?'selected':''}>
                                 ${item[1]}
+                              </option>`
+                            )}
+                          </select>`: ''
+                        }
+
+                        ${col.dtype == 'multiCategory' && col.asyncSearch ?
+                          `<select async data-col=${col.data} class="full-width inline-editor-value" multiple>
+                            ${(row[col.data]||[]).map.map((text, index) => 
+                              `<option value="${row[col.data + '_id'][index]}" selected>
+                                ${text}
                               </option>`
                             )}
                           </select>`: ''
@@ -248,22 +334,23 @@ function renderTableBody(columnsDef, rows) {
 }
 
 function renderPagination(page, total, pageSize) {
-  const start = (page - 1) * pageSize;
+  pageSize = new Number(pageSize);
+  let start = (page - 1) * pageSize;
   const end = Math.min(start + pageSize, total);
+  start = Math.min(1+start, total);
   let numPages = Math.ceil(total / pageSize);
 
-  
   return (
     `<div>
-        <span>Hiển thị ${start + 1}-${end} trên tổng số ${total} kết quả</span>
+        <span>Hiển thị ${start}-${end} trên tổng số ${total} kết quả</span>
         <div class="float-end d-flex">
           <div class="pe-4">
             <span>Kích thước trang:</span>
             <select class="page-size-select">
               <option ${pageSize==10?'selected':''}>10</option>
-              <option ${pageSize==2?'selected':''}>2</option>
-              <option ${pageSize==5?'selected':''}>5</option>
-              <option ${pageSize==20?'selected':''}>20</option>
+              <option ${pageSize==25?'selected':''}>25</option>
+              <option ${pageSize==50?'selected':''}>50</option>
+              <option ${pageSize==100?'selected':''}>100</option>
             </select>
           </div>
           <ul class="pagination">
@@ -353,14 +440,34 @@ function renderPagination(page, total, pageSize) {
 }
 
 async function builTableHtml(table) {
+  let thead = renderTableHead(table);
+  let loadingBody = `
+    <tbody>
+      <tr>
+        <td colspan="${table.columnsDef.length}" class="text-center">
+          <div class="spinner-border" role="status">
+            <span class="sr-only"></span>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  `;
+
+  table.$el.html(`
+    <table class="table table-bordered data-table">
+      ${thead}
+      ${loadingBody}
+    </table>
+  `);
+
   let apiUrl = table.apiUrl;
 
   if (!apiUrl.includes('?')) {
     apiUrl += '?'
   }
 
-  for (let key in table.params) {
-    apiUrl += `&${key}=${encodeURIComponent(table.params[key])}`;
+  for (let colName in table.searchParams) {
+    apiUrl += `&columns[${colName}][search]=${encodeURIComponent(table.searchParams[colName])}`;
   }
 
   let start = (table.page - 1) * table.pageSize;
@@ -376,7 +483,6 @@ async function builTableHtml(table) {
 
   console.log('apiUrl=', apiUrl);
 
-  let thead = renderTableHead(table);
   let resp = await $_get(apiUrl);
   let data = await resp.json();
   let rows = data.data || [];
@@ -384,7 +490,9 @@ async function builTableHtml(table) {
   let pagination = renderPagination(table.page, data.total, table.pageSize);
 
   let html = (
-    `<table class="table table-bordered data-table">
+    `
+      <button class="btn btn-sm float-end btn-reload"><i class="fas fa-sync" ></i></button>
+      <table class="table table-bordered data-table">
         ${thead}
         ${tbody}
       </table>
@@ -393,6 +501,10 @@ async function builTableHtml(table) {
 
   table.$el.html(html);
   table.rows = rows;
+
+  table.$el.find('.btn-reload').click(function() {
+    table.reload();
+  });
   
   table.$el.find('.btn-filter').each(function(){
     if($(this).hasClass('btn-filter-text')) {
@@ -400,7 +512,6 @@ async function builTableHtml(table) {
       
       if(colName) {
         let input = $(this).parent().children('input').first();
-
         let onClick = () => {
           let text = input.val().trim();
     
@@ -446,8 +557,16 @@ async function builTableHtml(table) {
       $(this).click(function() {
         let colName = $(this).attr('data-col');
         let select = $(this).parent().children('select').first();
-        console.log(colName, select.val());
-        table.searchBy(colName, select.val().join(','));
+        let ids = select.val();
+        let selectedOptions = [];
+
+        table.$el.find(`#filter-${colName} .select2-selection__choice__display`).each(function(){
+          selectedOptions.push([ids[selectedOptions.length], $(this).html().trim()]);
+        });
+
+        table.searchOptions[colName] = selectedOptions;
+        
+        table.searchBy(colName, ids.join(','));
       });
     }
   });
@@ -497,8 +616,10 @@ async function builTableHtml(table) {
     table.setPageSize(pageSize);
   });
 
-  table.$el.find('.date-picker').datepicker({language: 'vi', format: 'dd/mm/yyyy'});
-  table.$el.find('.date-time-picker').datepicker({language: 'vi', format: 'dd/mm/yyyy'});
+  //table.$el.find('.date-picker').datetimepicker({format: 'DD/MM/yyyy'});
+
+  //table.$el.find('.date-time-picker').datetimepicker({format: 'DD/MM/yyyy HH:mm:ss'});
+
   table.$el.find('.data-table select').each(function(){
     if($(this).attr('async')) {
       let colName = $(this).attr('data-col');
@@ -527,6 +648,10 @@ async function builTableHtml(table) {
   table.$el.find('.dropdown-keep-open, .select2-selection').click(function(e) {
     e.stopPropagation();
   });
+
+  if(table.onLoad){
+    table.onLoad(table);
+  }
 }
 
 async function getTableDef(el, apiUrl, renders, pageSize) {
@@ -542,7 +667,8 @@ async function getTableDef(el, apiUrl, renders, pageSize) {
   return {
     apiUrl: apiUrl,
     $el: $(el),
-    params: {},
+    searchParams: {},
+    searchOptions: {},
     columnsDef: columnsDef,
     orderBy: '',
     orderDir: 'asc',
@@ -551,16 +677,12 @@ async function getTableDef(el, apiUrl, renders, pageSize) {
   }
 }
 
-async function createDataTable(el, apiUrl, { renders, pageSize }) {
+async function createDataTable(el, apiUrl, { renders, pageSize, onLoad }) {
+  pageSize = pageSize || PAGE_SIZE;
   let table = await getTableDef(el, apiUrl, renders, pageSize);
+  table.onLoad = onLoad;
   table.searchBy = (colName, value) => {
-    let param;
-    if (colName == null) {
-      param = 'search';
-    } else {
-      param = `columns[${colName}][search]`;
-    }
-    table.params[param] = value;
+    table.searchParams[colName] = value;
     table.page = 1;
     builTableHtml(table);
   }
@@ -586,7 +708,8 @@ async function createDataTable(el, apiUrl, { renders, pageSize }) {
   }
 
   table.reload = () => {
-    table.params = {};
+    table.searchParams = {};
+    table.searchOptions = {};
     table.page = 1;
     table.pageSize = pageSize;
     table.orderBy = '';
@@ -610,9 +733,10 @@ async function createDataTable(el, apiUrl, { renders, pageSize }) {
   return table;
 }
 
-function getAsyncSearchConfig({url, placeholder, displayFunc, detailFunc, searchParamsFunc}) {
+function getAsyncSearchConfig({url, placeholder, initialData, displayFunc, detailFunc, searchParamsFunc}) {
   return {
     allowClear: true,
+    data: initialData,
     ajax: {
       url: url,
       dataType: 'json',
@@ -622,7 +746,7 @@ function getAsyncSearchConfig({url, placeholder, displayFunc, detailFunc, search
         ...(searchParamsFunc? searchParamsFunc() : {}),
       }),
     },
-    placeholder: placeholder || 'Nhập ít nhất một kí tự để tìm kiếm',
+    placeholder: placeholder || '',
     minimumInputLength: 1,
     templateResult: (item) => {
       if (item.loading) {
@@ -634,27 +758,48 @@ function getAsyncSearchConfig({url, placeholder, displayFunc, detailFunc, search
   };    
 }
 
+async function handleErrorResponse(resp) {
+  $(window).scrollTop(0);
+
+  try{
+    let errors = await resp.json();
+
+    for(let [key, value] of Object.entries(errors)) {
+      if(Array.isArray(value)){
+        let html = value.map(e => `<li>${e}</li>`).join('');
+        $(`.errorlist[data-for=${key}]`).html(html);
+      }else{
+        for(let [subkey, subvalue] of Object.entries(value)) {
+          let html = subvalue.map(e => `<li>${e}</li>`).join('');
+          $(`.errorlist[data-for="${key}.${subkey}"]`).html(html);
+        }
+      }
+    }
+  }catch {
+    alert('Lỗi xảy ra');
+  }
+}
+
 $(document).ready(function () {
-  $('.table-form input, .table-form textarea, .table-form select').each(function () {
-    $(this).addClass('form-control');
-  });
+  $('.table-form input, .table-form textarea, .table-form select').addClass('form-control');
+  $('.table-form input[type=checkbox], .table-form input[type=radio]').removeClass('form-control');
+  $('.select2-search__field').removeClass('form-control');
 
-  $('.table-form input[type=file]').each(function () {
-    $(this).removeClass('form-control');
-    $(this).addClass('form-control-file');
-  });
-
-  $('.table-form input[type=checkbox]').each(function () {
-    $(this).removeClass('form-control');
-  });
+  $('.table-form input[type=file]').removeClass('form-control');
+  $('.table-form input[type=file]').addClass('form-control-file');
 
   $.fn.asyncSelect = function(params) {
     let {onChange} = params;
     
     this.select2(getAsyncSearchConfig(params));
+
     if(onChange) {
       this.change(function() {
-        onChange($(this).val());
+        let data = $(this).select2('data');
+        if(data.length == 0) {
+          $(this).val(null);
+        }
+        onChange($(this), data);
       });
     }
   };

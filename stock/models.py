@@ -1,7 +1,8 @@
 from django.db import models
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from core.models import Company
 from core.constants import BaseStatus
+from .constants import InventoryStatus
 
 # Create your models here.
 class ProductCategory(models.Model):
@@ -16,12 +17,12 @@ class ProductCategory(models.Model):
     name = models.CharField(max_length=200, 
                 verbose_name=_("verbose_name.product.category.name"))
 
-    description = models.CharField(max_length=500, 
+    description = models.CharField(max_length=500, blank=True,
                 verbose_name=_("verbose_name.product.category.description"))
 
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
-    status = models.CharField(choices=BaseStatus.choices(), max_length=50)
+    status = models.CharField(choices=BaseStatus.choices(), default=BaseStatus.DRAFT.name, max_length=50)
 
     def __str__(self):
         return self.name
@@ -38,16 +39,16 @@ class Product(models.Model):
     name = models.CharField(max_length=200,
                 verbose_name=_("verbose_name.product.name"))
 
-    description = models.CharField(max_length=500,
+    description = models.CharField(max_length=500, blank=True,
                 verbose_name=_("verbose_name.product.description"))
 
     list_price = models.IntegerField(verbose_name=_("verbose_name.product.list.price"))
 
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
-    status = models.CharField(choices=BaseStatus.choices(), max_length=50)
+    status = models.CharField(choices=BaseStatus.choices(), default=BaseStatus.DRAFT.name, max_length=50)
 
-    properties = models.JSONField()
+    properties = models.JSONField(blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -71,7 +72,7 @@ class Location(models.Model):
 
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
-    status = models.CharField(choices=BaseStatus.choices(), max_length=50)
+    status = models.CharField(choices=BaseStatus.choices(), default=BaseStatus.DRAFT.name, max_length=50)
 
     def __str__(self):
         return self.name
@@ -91,11 +92,12 @@ class ProductMove(models.Model):
             on_delete=models.PROTECT,
             blank=True, null=True)
 
-    date = models.DateTimeField()
+    date = models.DateTimeField(blank=True, null=True)
 
     product_price_policy = models.ForeignKey(ProductPricePolicy, 
                             on_delete=models.PROTECT,
                             blank=True, null=True)
+
     price_unit = models.IntegerField()
     price_untaxed = models.IntegerField()
     price_total = models.IntegerField()
@@ -111,6 +113,11 @@ class ProductQuantity(models.Model):
 class Inventory(models.Model):
     location = models.ForeignKey(Location, on_delete=models.PROTECT)
     date = models.DateTimeField()
+
+    create_date = models.DateTimeField(auto_now_add=True)
+    update_date = models.DateTimeField(auto_now=True)
+    status = models.CharField(choices=InventoryStatus.choices(), 
+                default=InventoryStatus.DRAFT.name, max_length=50)
 
 class InventoryLine(models.Model):
     inventory = models.ForeignKey(Inventory, on_delete=models.PROTECT)

@@ -19,7 +19,7 @@ class User(AbstractUser):
     birth_date = models.DateTimeField(null=True, blank=True,
                 verbose_name=_("verbose_name.user.birth_date"))
 
-    phone = models.CharField(max_length=20, blank=True, unique=True,
+    phone = models.CharField(max_length=20, blank=True, 
                 verbose_name=_("verbose_name.user.phone"))
 
     address = models.CharField(
@@ -69,10 +69,18 @@ class Company(models.Model):
                             default=BaseStatus.DRAFT.name,
                             max_length=50)
 
+    def __str__(self):
+        return self.name
+
 class Partner(models.Model):
     user = models.OneToOneField(User, on_delete=models.PROTECT)
+    company = models.ForeignKey(Company, on_delete=models.PROTECT)
     code = models.CharField(max_length=30, unique=True)
     partner_type = models.CharField(choices=PartnerType.choices(),
+                            max_length=50)
+
+    status = models.CharField(choices=BaseStatus.choices(),
+                            default=BaseStatus.DRAFT.name,
                             max_length=50)
 
     def __str__(self):

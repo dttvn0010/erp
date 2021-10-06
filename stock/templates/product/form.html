@@ -1,0 +1,40 @@
+{% extends 'app.html' %}
+
+{% block body %}
+{% with base_url='/stock/product' %}
+
+<div class="content p-3">  
+  <div class="card shadow mb-4"> 
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">Thông tin sản phẩm</h6>
+    </div>
+    <div class="card-body">
+      <div class="col-9">
+        <form method="POST" novalidate="">
+          {% csrf_token %}
+          <table class="table table-form">
+            {{form}}
+          </table>
+          
+          <a class="btn btn-sm btn-secondary mr-1" href="{{ base_url }}">
+            <i class="fas fa-arrow-left text-white-50"></i> Quay lại
+          </a>
+
+          <button type="submit" class="btn btn-sm btn-primary">
+            <i class=" fas fa-save text-white-50"></i> Lưu lại
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $('#id_category').select2(getAsyncSearchConfig({
+    url: `/stock/product/search-category`,
+    displayFunc: item => item.name,
+  }));
+</script>
+
+{% endwith %}
+{% endblock %}

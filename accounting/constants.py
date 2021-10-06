@@ -9,7 +9,7 @@ class ExpenseStatus(TextEnum):
 
 class InvoiceType(TextEnum):
     PURCHASE = _('invoice.type.purchase')
-    SALE_ORDER = _('invoice.type.sale.order')
-    POS_SALE_ORDER = _('invoice.type.pos.sale.order')
+    SALE_ORDER = _('invoice.type.sales.order')
+    POS_SALE_ORDER = _('invoice.type.pos.order')
     EXPENSE = _('invoice.type.expense')
     OTHER = _('invoice.type.other')

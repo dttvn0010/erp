@@ -150,3 +150,8 @@
 .datepicker1 .select-label {
   margin-right: 5px;
 }
+
+.errorlist {
+  color: red;
+  font-size: 0.95rem;
+}

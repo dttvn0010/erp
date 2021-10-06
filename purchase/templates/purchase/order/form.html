@@ -1,0 +1,245 @@
+{% extends "app.html" %}
+
+{% block body %}
+{% with base_url='/purchase/order' %}
+
+<div class="content p-3">  
+  <div class="card shadow mb-4"> 
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">Thông tin đơn hàng</h6>
+    </div>
+    <div class="card-body">
+      <form id="fmt" method="POST" novalidate onsubmit="saveOrder(event)">
+        <input type="hidden" name="pk" value="{{form.instance.pk|default:''}}">
+        <table class="table table-form">
+          <tbody>
+            <tr>
+              <th>Nhà cung cấp*:</th>
+              <td>
+                {{form.supplier}}
+                <ul class="errorlist" data-for='supplier'></ul>
+              </td>
+            </tr>
+            <tr>
+              <th>Ghi chú:</th>
+              <td>{{form.note}}</td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <div class="row">
+          <div class="col">
+            <h5>Chi tiết các mặt hàng</h5>
+            <div class="float-end">
+              <a class="btn btn-sm btn-primary mb-2" href="javascript:addOrderLine(-1)">
+                <i class="fas fa-plus"></i> Thêm mặt hàng
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <div style="overflow-x: auto;">
+          <table class="table" style="width: 150%;">
+            <thead>
+              <tr>
+                <th></th>
+                <th style="width: 35%;">Tên mặt hàng</th>
+                <th style="width: 20%;" class="text-center">Đơn giá</th>
+                <th style="width: 20%;" class="text-center">Số lượng</th>
+                <th style="width: 20%;" class="text-center">Thành tiền</th>
+              </tr>
+            </thead>
+            <tbody id="orderLines">
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-3">
+          <a class="btn btn-sm btn-secondary mr-1" href="{{ base_url }}">
+            <i class="fas fa-arrow-left text-white-50"></i> Quay lại
+          </a>
+
+          <button type="submit" class="btn btn-sm btn-primary">
+            <i class=" fas fa-save text-white-50"></i> Lưu lại
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  let orderLines = [];
+
+  function renderOrderLine(index, orderLine) {
+    return (`
+      <tr id="row_${index}">
+        <td class="text-center">
+          <a class="me-2" href='javascript:deleteOrderLine(${index})'>
+            <i class="fas fa-trash text-danger"></i>
+          </a>
+
+          <a href='javascript:addOrderLine(${index})'>
+            <i class="fas fa-plus"></i>
+          </a>
+        </td>
+        <td>
+          <select name="order_lines[].product"
+            class='form-control select-product' 
+          >
+          </select>
+          
+          <ul class="errorlist" 
+            data-for='order_lines[${index}].product'>
+          </ul>
+        </td>
+        <td class="text-center">
+          <input type="number" min="0" step="1000" 
+            name="order_lines[].qty"
+            class="form-control text-center price-unit"
+            onchange="updatePriceUnit(${index}, value)"
+            value="${orderLine.price_unit}"/>
+          
+          <ul class="errorlist" 
+            data-for='order_lines[${index}].price_unit'>
+          </ul>
+        </td>
+        <td class="text-center">
+          <input type="number" min="1"  
+            name="order_lines[].qty"
+            class="form-control text-center"
+            onchange="updateQty(${index}, value)"
+            value="${orderLine.qty}"/>
+
+          <ul class="errorlist" 
+            data-for='order_lines[${index}].qty'>
+          </ul>
+        </td>
+        <td class="text-center">
+          <span class="sub-total">
+            ${getSubTotal(orderLine)}
+          </span>
+        </td>
+      </tr>
+    `)
+  }
+
+  function $_cell(rowIndex, selector) {
+    return $(`#row_${rowIndex}`).find(selector);
+  }
+
+  function renderOrderLines() {
+    if(orderLines.length > 0) {
+      let html = orderLines.map((orderLine, index) => 
+                    renderOrderLine(index, orderLine)).join('');
+
+      $('#orderLines').html(html);
+    
+      orderLines.forEach((orderLine, index) => {
+        let initialData;
+        if(orderLine.product) {
+          initialData = [{
+            id: orderLine.product,
+            name: orderLine.product_name,
+            price_unit: orderLine.price_unit
+          }];
+        };
+
+        $_cell(index, '.select-product').asyncSelect({
+          url: '/purchase/order/search-product',
+          displayFunc: item => item.name,
+          onChange: (el, data) => updateProduct(index, el, data),
+          initialData
+        })
+      });
+    }else{
+      $('#orderLines').html('<tr><td colspan="5">Chưa có mặt hàng nào</td></tr>');
+    }
+  }
+
+  function getPriceUnit(orderLine) {
+    if(orderLine.price_unit) {
+      return orderLine.price_unit + ' đ';
+    }
+    return '';
+  }
+
+  function getSubTotal(orderLine) {
+    if(orderLine.qty && orderLine.price_unit) {
+      return (orderLine.qty * orderLine.price_unit) + ' đ';
+    }
+    return '';
+  }
+
+  function updateProduct(index, el, data) {
+    data = data.length > 0? data[0] : {};
+    let orderLine = orderLines[index];
+    orderLine.product_name = data.name;
+    orderLine.product = data.id;
+    orderLine.price_unit = data.price_unit;
+    
+    $_cell(index, '.price-unit').val(orderLine.price_unit??'');
+    $_cell(index, '.sub-total').html(getSubTotal(orderLine));
+  }
+
+  function updateQty(index, value) {
+    let orderLine = orderLines[index];
+    orderLine.qty = value;
+    $_cell(index, '.sub-total').html(getSubTotal(orderLine));
+  }
+
+  function updatePriceUnit(index, value) {
+    let orderLine = orderLines[index];
+    orderLine.price_unit = value;
+    $_cell(index, '.sub-total').html(getSubTotal(orderLine));
+  }
+
+  function addOrderLine(index) {
+    if(index == -1) {
+      orderLines.push({qty: 1});
+    }else{
+      orderLines.splice(index+1, 0, {qty: 1});
+    }
+
+    renderOrderLines();
+  }
+
+  function deleteOrderLine(index) {
+    orderLines.splice(index, 1);
+    renderOrderLines();
+  }
+
+  async function saveOrder(e) {
+    e.preventDefault(); 
+
+    let data = {
+      ...serializeForm(document.getElementById('fmt')),
+      order_lines: orderLines,
+    };
+
+    console.log('data=', data);
+
+    $('.errorlist').empty();
+
+    let resp = await $_post('/purchase/order/save', data);
+    
+    if(resp.ok) {
+      location.href = '{{base_url}}';
+    }else{
+      handleErrorResponse(resp);
+    }
+  }
+
+  $(document).ready(function(){
+    $('#id_supplier').asyncSelect({
+      url: `/purchase/order/search-supplier`,
+      displayFunc: item => item.name,
+    });
+    
+    orderLines = JSON.parse('{{order_lines_json|safe}}');
+
+    renderOrderLines();
+    
+  });
+</script>
+{% endwith %}
+{% endblock %}

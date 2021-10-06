@@ -40,13 +40,15 @@
         <div class="mb-3">
           <label class="form-label">Tên tài khoản</label>
           <input name="username" type="text" class="form-control" />
+          {{form.username.errors}}
         </div>
         <div class="mb-3">
           <label class="form-label">Mật khẩu</label>
           <input name="password" type="password" class="form-control" />
+          {{form.password.errors}}
         </div>
         <div class="mb-3">
-          <span id="error" style="color:red"></span>
+          {{form.non_field_errors }}
         </div>
         <br>
         <div class="mb-3">
@@ -56,6 +58,7 @@
           <a href="#" class="float-end">Quên mật khẩu?</a>
         </div>
       </form>
+      
       <p class="text-center"><a href="#">Đăng ký tài khoản</a></p>
     </div>
   </div>

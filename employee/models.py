@@ -17,7 +17,7 @@ class Department(models.Model):
     company = models.ForeignKey(Company, on_delete=models.PROTECT)
     parent = models.ForeignKey('Department', blank=True, null=True, on_delete=models.SET_NULL)
     name = models.CharField(max_length=200)
-    manager = models.ForeignKey('Staff', on_delete=models.PROTECT)
+    manager = models.ForeignKey('Staff', related_name='manage_department', on_delete=models.PROTECT)
 
     status = models.CharField(choices=BaseStatus.choices(), 
                 default=BaseStatus.DRAFT.name,
@@ -53,6 +53,8 @@ class Team(models.Model):
 
 class Staff(models.Model):
     company = models.ForeignKey(Company, on_delete=models.PROTECT)
+    department = models.ForeignKey(Department, related_name='department_staffs',
+                    blank=True, null=True, on_delete=models.PROTECT)
     user = models.OneToOneField(User, on_delete=models.PROTECT)
     code = models.CharField(max_length=100)
 
@@ -63,7 +65,7 @@ class Staff(models.Model):
     leave_days_per_year = models.IntegerField()
 
     def __str__(self):
-        return self.user.fullname
+        return self.user.display
 
 class Task(models.Model):
     company = models.ForeignKey(Company, on_delete=models.PROTECT)
@@ -86,7 +88,7 @@ class TaskUpdate(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
     note = models.CharField(max_length=500, blank=True)
     status = models.CharField(choices=TaskStatus.choices(), max_length=50)
-    update_person = models.ForeignKey(Staff, on_delete=models.PROTECT)
+    update_person = models.ForeignKey(User, on_delete=models.PROTECT)
     update_date = models.DateTimeField(auto_now_add=True)
 
 class CheckInMachine(models.Model):

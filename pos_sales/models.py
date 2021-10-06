@@ -14,7 +14,12 @@ class Order(models.Model):
 
     order_lines = models.ManyToManyField(ProductMove, related_name='product_move_pos_orders')
     date_order = models.DateTimeField()
-    invoice = models.OneToOneField(Invoice, on_delete=models.CASCADE, related_name='invoice_pos_order')
+    
+    invoice = models.OneToOneField(Invoice,
+                    related_name='invoice_pos_order',
+                    blank=True, null=True,
+                    on_delete=models.CASCADE)
+
     note = models.CharField(max_length=500)
     
     create_date = models.DateTimeField(auto_now_add=True)

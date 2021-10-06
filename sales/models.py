@@ -10,7 +10,12 @@ class Order(models.Model):
     partner = models.ForeignKey(Partner, on_delete=models.PROTECT, related_name='partner_sale_orders')
     order_lines = models.ManyToManyField(ProductMove, related_name='product_move_sale_orders')
     date_order = models.DateTimeField()
-    invoice = models.OneToOneField(Invoice, on_delete=models.CASCADE, related_name='invoice_sale_orders')
+    
+    invoice = models.OneToOneField(Invoice, 
+                    related_name='invoice_sale_orders',
+                    blank=True, null=True,
+                    on_delete=models.CASCADE)
+
     note = models.CharField(max_length=500)
 
     create_date = models.DateTimeField(auto_now_add=True)

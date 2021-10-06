@@ -1,0 +1,71 @@
+{% extends "app.html" %}
+
+{% block body %}
+{% with base_url='/purchase/order' %}
+<div class="content p-3">
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">Danh sách đơn hàng</h6>
+    </div>
+    <div class="card-body">
+      {% if user|has_permission:"purchase.add_order" %}
+        <div class="mb-2">
+          <a href='{{ base_url }}/create' class="btn btn-sm btn-primary">
+            <i class="fas fa-plus text-white-50"></i> Thêm đơn hàng
+          </a>
+        </div>
+      {% endif %}
+      <div id="table-container" class="table-responsive1">
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+$(document).ready(function () {
+  createDataTable("#table-container", "{{base_url}}/search", {
+    renders: {
+      col4: function(data, row) {
+        return (`
+          <div class="dropdown">
+            <a href='javascript:void(0)' data-bs-toggle="dropdown">
+              <i class="fas fa-ellipsis-v"></i>
+            </a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="view-detail/${row.pk}">
+                Xem thông tin
+              </a>
+
+              {% if user|has_permission:"purchase.change_order" %}
+                <a class="dropdown-item" href="update/${row.pk}">
+                  Cập nhật
+                </a>
+              {% endif %}
+
+              {% if user|has_permission:"purchase.delete_order" %}
+                ${row.status_id == 'DRAFT' ?
+                  `<a class="dropdown-item" href="javascript:deleteItem(${ row.pk })">
+                    Xóa
+                  </a>` : ''
+                }
+              {% endif %}
+            </div>
+          </div>
+        `)
+      }
+    }
+  });
+});
+
+async function deleteItem(id) {
+  if (confirm("Bạn có muốn xóa đơn hàng này ?")) {
+    var resp = await $_delete(`{{base_url}}/delete/${id}`);
+    if (resp.ok) {
+      location.reload();
+    } else {
+      alert("Lỗi xảy ra");
+    }
+  }
+}
+</script>
+{% endwith %}
+{% endblock %}

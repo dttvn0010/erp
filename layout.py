@@ -2,7 +2,7 @@
 PERMISSION_ALL = lambda u : True
 PERMISSION_STAFF = lambda u : u.is_staff
 
-def has_permission(permission_name):
+def has_permission_func(permission_name):
     short_name = permission_name.split('.')[-1]
     if short_name.count('_') == 1:
         action, object = short_name.split('_')
@@ -15,7 +15,7 @@ def has_permission(permission_name):
             ]
             return has_any_permissions(permission_names)
 
-    return lambda u : u.has_perm(permission_name)
+    return lambda u : u.is_admin or u.has_perm(permission_name)
 
 def has_any_permissions(permission_names):
     return lambda u : any(u.has_perm(permission_name) for permission_name in permission_names)
@@ -70,10 +70,24 @@ class Module:
 MODULES = [
     Module('ERP Core', '', [
         Page('employee', 'Quản lý nhân viên', url='employee', children=[
-            Page('user', 'Tài khoản người dùng', permission_checker=has_permission('auth.view_user')),
-            Page('group', 'Vai trò', permission_checker=has_permission('auth.view_group')),
-            Page('department', 'Phòng ban', permission_checker=has_permission('core.view_department')),
-            Page('team', 'Nhóm làm việc', permission_checker=has_permission('core.view_team')),
+            Page('user', 'Tài khoản người dùng', permission_checker=has_permission_func('auth.view_user')),
+            Page('group', 'Vai trò', permission_checker=has_permission_func('auth.view_group')),
+            Page('department', 'Phòng ban', permission_checker=has_permission_func('core.view_department')),
+            Page('team', 'Nhóm làm việc', permission_checker=has_permission_func('core.view_team')),
+        ]),
+
+        Page('purchase', 'Quản lý mua hàng', url='purchase', children=[
+            Page('order', 'Đơn hàng', permission_checker=has_permission_func('purchase.view_order')),
+        ]),
+
+        Page('sales', 'Quản lý bán hàng', url='sales', children=[
+            Page('order', 'Đơn hàng', permission_checker=has_permission_func('sales.view_order')),
+        ]),
+
+        Page('stock', 'Quản lý kho', url='stock', children=[
+            Page('location', 'Quản lý địa điểm', permission_checker=has_permission_func('stock.view_location')),
+            Page('product-category', 'Quản lý nhóm sản phẩm', permission_checker=has_permission_func('stock.view_productcategory')),
+            Page('product', 'Quản lý sản phẩm', permission_checker=has_permission_func('stock.view_product')),
         ]),
     ])
 ]
