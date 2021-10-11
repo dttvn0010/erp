@@ -1,0 +1,75 @@
+.data-table .sort-asc, .data-table .sort-desc {
+  cursor: pointer;
+  font-weight: 300;
+  font-size: 19px;
+  color: #AAA;
+  position: relative;
+  top: 0.1rem;
+}
+
+.data-table .filter {
+  cursor: pointer;
+  font-weight: 300;
+  font-size: 12px;
+  color: #AAA;
+  display: inline;
+  margin-right: 3px;
+}
+
+.data-table .filter.active, .data-table .sort-asc.active, .data-table .sort-desc.active {
+  color: orange;
+}
+
+.data-table .inline-editor a {
+  text-decoration: none;
+}
+
+.data-table .inline-editor {
+  min-width: 300px;
+  max-width: 400px;
+  padding: 5px 4px 3px 4px;
+  border: 1px solid #AAA;
+}
+
+.data-table .inline-editor .text-filter {
+  padding: 0px 5px;
+  height: 36px;
+  border-radius: 4px;
+  outline: none;
+  border: 1px solid #AAA;
+}
+
+.data-table .radio-group {
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.data-table .inline-editor textarea {
+  padding: 0px 5px;
+  border-radius: 4px;
+  outline: none;
+  border: 1px solid #AAA;
+}
+
+.data-table .inline-editor select {
+  height: 32px;
+  border-radius: 4px;
+  outline: none;
+  border: 1px solid #AAA;
+}
+
+.data-table .select2  {
+  width: 100% !important
+}
+
+.data-table .select2-selection--multiple {
+  min-height: 32px;
+}
+
+.page-size-select {
+  height: 35px;
+  border: 1px solid #DDD;
+  border-radius: 4px;
+  outline: none;
+}

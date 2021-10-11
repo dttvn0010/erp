@@ -1,0 +1,512 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-06 16:26+0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: accounting/constants.py:5
+msgid "expense.status.draft"
+msgstr "Nháp"
+
+#: accounting/constants.py:6
+msgid "expense.status.pending"
+msgstr "Đang chờ duyệt"
+
+#: accounting/constants.py:7
+msgid "expense.status.approved"
+msgstr "Đã duyệt"
+
+#: accounting/constants.py:8
+msgid "expense.status.canceled"
+msgstr "Đã hủy"
+
+#: accounting/constants.py:11
+msgid "invoice.type.purchase"
+msgstr "Mua hàng"
+
+#: accounting/constants.py:12
+msgid "invoice.type.sales.order"
+msgstr "Bán hàng"
+
+#: accounting/constants.py:13
+msgid "invoice.type.pos.order"
+msgstr "Bán lẻ"
+
+#: accounting/constants.py:14
+msgid "invoice.type.expense"
+msgstr "Chi tiêu"
+
+#: accounting/constants.py:15
+msgid "invoice.type.other"
+msgstr "Khác"
+
+#: accounting/models.py:39
+msgid "verbose_name.category.code"
+msgstr "Mã"
+
+#: accounting/models.py:42
+msgid "verbose_name.category.name"
+msgstr "Tên"
+
+#: accounting/models.py:45
+msgid "verbose_name.category.description"
+msgstr "Mô tả"
+
+#: core/constants.py:10
+msgid "gender.male"
+msgstr "Nam"
+
+#: core/constants.py:11
+msgid "gender.female"
+msgstr "Nữ"
+
+#: core/constants.py:12
+msgid "gender.other"
+msgstr "Khác"
+
+#: core/constants.py:13
+msgid "gender.unknown"
+msgstr "Không xác định"
+
+#: core/constants.py:16
+msgid "status.draft"
+msgstr "Nháp"
+
+#: core/constants.py:17
+msgid "status.active"
+msgstr "Đang hoạt động"
+
+#: core/constants.py:18
+msgid "status.inactive"
+msgstr "Ngừng hoạt động"
+
+#: core/constants.py:21
+msgid "partner.type.customer"
+msgstr "Khách hàng"
+
+#: core/constants.py:22
+msgid "partner.type.company"
+msgstr "Công ty"
+
+#: core/constants.py:23
+msgid "partner.type.agent"
+msgstr "Đại lý"
+
+#: core/constants.py:26
+msgid "codesystem.status.draft"
+msgstr "Nháp"
+
+#: core/constants.py:27
+msgid "codesystem.status.active"
+msgstr "Đang hoạt động"
+
+#: core/constants.py:28
+msgid "codesystem.status.retired"
+msgstr "Không còn sử dụng"
+
+#: core/constants.py:31
+msgid "codesystem.datatype.int"
+msgstr "Integer"
+
+#: core/constants.py:32
+msgid "codesystem.datatype.foreign.key"
+msgstr "Foreign Key"
+
+#: core/constants.py:33
+msgid "codesystem.datatype.manytomany.field"
+msgstr "Many-To-Many Field"
+
+#: core/constants.py:34
+msgid "codesystem.datatype.boolean"
+msgstr ""
+
+#: core/constants.py:35
+msgid "codesystem.datatype.float"
+msgstr "Boolean"
+
+#: core/constants.py:36
+msgid "codesystem.datatype.date"
+msgstr "Date"
+
+#: core/constants.py:37
+msgid "codesystem.datatype.datetime"
+msgstr "Datetime"
+
+#: core/constants.py:38
+msgid "codesystem.datatype.string"
+msgstr "String"
+
+#: core/models.py:13
+msgid "verbose_name.user.display"
+msgstr "Tên"
+
+#: core/models.py:16
+msgid "verbose_name.user.gender"
+msgstr "Giới tính"
+
+#: core/models.py:20
+msgid "verbose_name.user.birth_date"
+msgstr "Ngày sinh"
+
+#: core/models.py:23
+msgid "verbose_name.user.phone"
+msgstr "Số điện thoại"
+
+#: core/models.py:27
+msgid "verbose_name.user.address"
+msgstr "Địa chỉ"
+
+#: core/models.py:31
+msgid "verbose_name.user.address.block"
+msgstr "Khu vực"
+
+#: core/models.py:35
+msgid "verbose_name.user.profile.picture"
+msgstr "Ảnh đại diện"
+
+#: core/models.py:41
+msgid "verbose_name.user.is_admin"
+msgstr "Là admin"
+
+#: core/models.py:54
+msgid "verbose_name.company.name"
+msgstr "Tên"
+
+#: core/models.py:57
+msgid "verbose_name.company.phone"
+msgstr "Số điện thoại"
+
+#: core/models.py:61
+msgid "verbose_name.company.address"
+msgstr "Địa chỉ"
+
+#: core/models.py:91
+msgid "verbose_name.model.property.model"
+msgstr "Model"
+
+#: core/models.py:94
+msgid "verbose_name.model.property.code"
+msgstr "Mã"
+
+#: core/models.py:97
+msgid "verbose_name.model.property.name"
+msgstr "Tên"
+
+#: core/models.py:100
+msgid "verbose_name.model.property.datatype"
+msgstr "Loại dữ liệu"
+
+#: core/models.py:104
+msgid "verbose_name.model.property.related.model"
+msgstr "Model liên kết"
+
+#: core/models.py:110
+msgid "verbose_name.codesystem.code"
+msgstr "Mã"
+
+#: core/models.py:113
+msgid "verbose_name.codesystem.name"
+msgstr "Tên"
+
+#: core/models.py:127
+msgid "verbose_name.code.code"
+msgstr "Mã"
+
+#: core/models.py:130
+msgid "verbose_name.code.display"
+msgstr "Tên"
+
+#: core/utils/forms.py:85
+#, python-format
+msgid "(Hidden field %(name)s) %(error)s"
+msgstr ""
+
+#: employee/constants.py:5
+msgid "task.status.new"
+msgstr "Chờ thực hiện"
+
+#: employee/constants.py:6
+msgid "task.status.in.progress"
+msgstr "Đang thực hiện"
+
+#: employee/constants.py:7
+msgid "task.status.done"
+msgstr "Đã hoàn thành"
+
+#: employee/constants.py:8
+msgid "task.status.canceled"
+msgstr "Đã hủy"
+
+#: employee/constants.py:11
+msgid "workshift.status.draft"
+msgstr "Nháp"
+
+#: employee/constants.py:12
+msgid "workshift.status.pending"
+msgstr "Đang chờ xác nhận"
+
+#: employee/constants.py:13
+msgid "workshift.status.confirmed"
+msgstr "Đã xác nhận"
+
+#: employee/constants.py:14
+msgid "workshift.status.canceled"
+msgstr "Đã hủy"
+
+#: employee/constants.py:17
+msgid "leave.day.status.draft"
+msgstr "Nháp"
+
+#: employee/constants.py:18
+msgid "leave.day.status.pending"
+msgstr "Đang chờ duyệt"
+
+#: employee/constants.py:19
+msgid "leave.day.status.approved"
+msgstr "Đã duyệt"
+
+#: employee/constants.py:20
+msgid "leave.day.status.canceled"
+msgstr "Đã hủy"
+
+#: employee/constants.py:23
+msgid "prepaid.status.draft"
+msgstr "Nháp"
+
+#: employee/constants.py:24
+msgid "prepaid.status.pending"
+msgstr "Đang chờ duyệt"
+
+#: employee/constants.py:25
+msgid "prepaid.status.approved"
+msgstr "Đã duyệt"
+
+#: employee/constants.py:26
+msgid "prepaid.status.canceled"
+msgstr "Đã hủy"
+
+#: employee/constants.py:29
+msgid "payment.status.draft"
+msgstr "Nháp"
+
+#: employee/constants.py:30
+msgid "payment.status.pending"
+msgstr "Đang chờ duyệt"
+
+#: employee/constants.py:31
+msgid "payment.status.approved"
+msgstr "Đã duyệt"
+
+#: employee/constants.py:32
+msgid "payment.status.canceled"
+msgstr "Đã hủy"
+
+#: manufacturing/constants.py:5
+msgid "workcenter.state.normal"
+msgstr "Đang hoạt động"
+
+#: manufacturing/constants.py:6
+msgid "workcenter.state.blocked"
+msgstr "Đang ngừng"
+
+#: manufacturing/constants.py:9
+msgid "production.status.draft"
+msgstr "Nháp"
+
+#: manufacturing/constants.py:10
+msgid "production.status.confirmed"
+msgstr "Đã xác nhận"
+
+#: manufacturing/constants.py:11
+msgid "production.status.planned"
+msgstr "Đã lên kế hoạch"
+
+#: manufacturing/constants.py:12
+msgid "production.status.in.progress"
+msgstr "Đang thực hiện"
+
+#: manufacturing/constants.py:13
+msgid "production.status.done"
+msgstr "Đã xong"
+
+#: manufacturing/constants.py:14
+msgid "production.status.canceled"
+msgstr "Đã hủy"
+
+#: manufacturing/constants.py:17
+msgid "production.step.status.new"
+msgstr "Chờ thực hiện"
+
+#: manufacturing/constants.py:18
+msgid "production.step.status.in.progress"
+msgstr "Đang thực hiện"
+
+#: manufacturing/constants.py:19
+msgid "production.step.status.paused"
+msgstr "Đang tạm dừng"
+
+#: manufacturing/constants.py:20
+msgid "production.step.status.done"
+msgstr "Đã xong"
+
+#: manufacturing/constants.py:21
+msgid "production.step.status.canceled"
+msgstr "Đã hủy"
+
+#: manufacturing/constants.py:24
+msgid "device.maintainance.status.new"
+msgstr "Mới tạo"
+
+#: manufacturing/constants.py:25
+msgid "device.maintainance.status.planned"
+msgstr "Đã lên kế hoạch"
+
+#: manufacturing/constants.py:26
+msgid "device.maintainance.in.progress"
+msgstr "Đang thực hiện"
+
+#: manufacturing/constants.py:27
+msgid "device.maintainance.done"
+msgstr "Đã xong"
+
+#: manufacturing/constants.py:28
+msgid "device.maintainance.canceled"
+msgstr "Đã hủy"
+
+#: pos_sales/constants.py:5 sales/constants.py:5
+msgid "sales.order.status.draft"
+msgstr "Nháp"
+
+#: pos_sales/constants.py:6 sales/constants.py:6
+msgid "sales.order.status.pending"
+msgstr "Đang chờ xác nhận"
+
+#: pos_sales/constants.py:7 sales/constants.py:9
+msgid "sales.order.status.confirmed"
+msgstr "Đã xác nhận"
+
+#: pos_sales/constants.py:8 sales/constants.py:10
+msgid "sales.order.status.canceled"
+msgstr "Đã hủy"
+
+#: pos_sales/constants.py:9 sales/constants.py:11
+msgid "sales.order.status.refunded"
+msgstr "Trả lại"
+
+#: purchase/components/order/forms.py:14 purchase/models.py:40
+msgid "verbose_name.purchase.order.note"
+msgstr "Ghi chú"
+
+#: purchase/components/order/forms.py:18 purchase/models.py:18
+msgid "verbose_name.purchase.order.supplier"
+msgstr "Nhà cung cấp"
+
+#: purchase/constants.py:5
+msgid "purchase.order.status.draft"
+msgstr "Nháp"
+
+#: purchase/constants.py:6
+msgid "purchase.order.status.requested"
+msgstr "Đã yêu cầu"
+
+#: purchase/constants.py:7
+msgid "purchase.order.status.approved"
+msgstr "Đã duyệt"
+
+#: purchase/constants.py:8
+msgid "purchase.order.status.ordered"
+msgstr "Đã đặt hàng"
+
+#: purchase/constants.py:9
+msgid "purchase.order.received"
+msgstr "Đã nhận hàng"
+
+#: purchase/constants.py:10
+msgid "purchase.order.canceled"
+msgstr "Đã hủy"
+
+#: purchase/models.py:15
+msgid "verbose_name.purchase.order.location"
+msgstr "Địa điểm"
+
+#: sales/constants.py:7
+msgid "sales.order.status.ready.for.delivery"
+msgstr "Chuẩn bị giao hàng"
+
+#: sales/constants.py:8
+msgid "sales.order.status.shipped"
+msgstr "Đã giao hàng"
+
+#: stock/components/product/forms.py:14 stock/models.py:34
+msgid "verbose_name.product.category"
+msgstr "Nhóm sản phẩm"
+
+#: stock/components/product/forms.py:18
+#: stock/components/product_category/forms.py:18 stock/models.py:21
+msgid "verbose_name.product.category.description"
+msgstr "Mô tả"
+
+#: stock/components/product_category/forms.py:14 stock/models.py:12
+msgid "verbose_name.product.category.parent"
+msgstr "Nhóm cha"
+
+#: stock/constants.py:5
+#, fuzzy
+#| msgid "payment.status.draft"
+msgid "inventory.status.draft"
+msgstr "Nháp"
+
+#: stock/constants.py:6
+#, fuzzy
+#| msgid "production.status.planned"
+msgid "inventory.status.planned"
+msgstr "Đã lên kế hoạch"
+
+#: stock/constants.py:7
+#, fuzzy
+#| msgid "task.status.done"
+msgid "inventory.status.done"
+msgstr "Đã hoàn thành"
+
+#: stock/constants.py:8
+#, fuzzy
+#| msgid "payment.status.canceled"
+msgid "inventory.status.canceled"
+msgstr "Đã hủy"
+
+#: stock/models.py:15
+msgid "verbose_name.product.category.code"
+msgstr "Mã"
+
+#: stock/models.py:18
+msgid "verbose_name.product.category.name"
+msgstr "Tên"
+
+#: stock/models.py:37
+msgid "verbose_name.product.code"
+msgstr "Mã"
+
+#: stock/models.py:40
+msgid "verbose_name.product.name"
+msgstr "Tên"
+
+#: stock/models.py:43
+msgid "verbose_name.product.description"
+msgstr "Mô tả"
+
+#: stock/models.py:45
+msgid "verbose_name.product.list.price"
+msgstr "Giá chuẩn"

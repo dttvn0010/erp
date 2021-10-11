@@ -1,0 +1,1 @@
+export let BACKEND_URL = 'http://10.8.0.2:8000';
