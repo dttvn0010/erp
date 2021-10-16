@@ -1,13 +1,15 @@
 import counterReducer from './counterReducer';
 import appReducer from './appReducer';
-import purchaseReducer from './purchase/purchaseReducer';
+import purchaseReducer from './purchase';
+import salesReducer from './sales';
 
 import {combineReducers} from 'redux';
 
 const rootReducer = combineReducers({
     app: appReducer,
     counter: counterReducer,
-    purchase: purchaseReducer
+    purchase: purchaseReducer,
+    sales: salesReducer
 });
 
 export default rootReducer;

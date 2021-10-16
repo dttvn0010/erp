@@ -5,7 +5,7 @@ class PartnerSerializer(ModelSerializer):
     class Meta:
         model = Partner
         fields = ['id', 'name', 'email', 'phone', 'address',
-                    'is_supplier', 'is_customer', 'is_agent', 'status']
+                    'is_supplier', 'is_customer', 'is_organization', 'status']
 
     status = CharField(read_only=True)
 

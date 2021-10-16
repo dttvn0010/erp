@@ -52,8 +52,8 @@ class PartnerTableView(DataTableView):
             'width': '7%'
         },
         {
-            'name': 'is_agent',
-            'title': 'Là đại lý',
+            'name': 'is_organization',
+            'title': 'Là công ty',
             'orderable': False,
             'css_class': 'text-center',
             'is_narrow': True,

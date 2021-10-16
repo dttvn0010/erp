@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Select from 'react-select';
 import AsyncSelect from 'react-select/async';
 import DatePicker from "react-datepicker";
+import moment from 'moment';
 
 import {
   getLoadOptions, 
@@ -56,8 +57,8 @@ export default function Input(props) {
       <input 
         type={type === 'number'? 'number' : 'text'}
         className={"form-control " + className ?? ""} 
-        onChange={e => onChange(e.target.value)}
-        value={value??''}
+        onChange={onChange? e => onChange(e.target.value) : onChange}
+        value={value}
         {...remainProps}
       />
     )
@@ -68,42 +69,44 @@ export default function Input(props) {
     return (
       <textarea 
         className={"form-control " + className ?? ""}
-        onChange={e => onChange(e.target.value)}
-        value={value??''}
+        onChange={onChange? e => onChange(e.target.value) : onChange}
+        value={value}
         {...remainProps}
       ></textarea>
     )
   }
 
-  if(type === 'date') {
-    const {dateFormat, ...remainProps} = otherProps;
-    return (
-      <DatePicker
-        className={"form-control " + className ?? ""}
-        onChange={onChange}
-        dateFormat={dateFormat || "dd/MM/yyyy"}
-        {...remainProps}
-      />
-    )
-  }
+  if(type === 'date' || type === 'datetime') {
+    let {
+      dateFormat,
+      timeInputLabel, 
+      value, 
+      defaultValue,
+      ...remainProps
+    } = otherProps;
 
-  if(type === 'datetime') {
-    const {dateFormat, timeInputLabel, ...remainProps} = otherProps;
+    dateFormat = dateFormat || (type ==='date'? 'dd/MM/yyyy': 'dd/MM/yyyy HH:mm');
+    const momentDateFormat = dateFormat.replace('dd', 'DD');
+    
     return (
       <DatePicker
         className={"form-control " + className ?? ""}
-        onChange={onChange}
+        value={value}
+        defaultValue={defaultValue}
+        onChange={onChange? (val) => onChange(moment(val).format(momentDateFormat)) : onChange}
         timeInputLabel={timeInputLabel || "Time:"}
-        dateFormat={dateFormat || "dd/MM/yyyy HH:mm"}
-        showTimeInput
+        dateFormat={dateFormat}
+        showTimeInput={type === 'datetime'}
         {...remainProps}
       />
     )
   }
 
   if(type === 'select') {
-    const {
+    let {
       optionsUrl, 
+      value,
+      defaultValue,
       valueField, 
       labelField,
       labelDisplayFunc,
@@ -111,8 +114,26 @@ export default function Input(props) {
       ...remainProps
     } = otherProps;
 
+    if(value){
+      value = {
+        ...value,
+        value: value[valueField??'id'],
+        label: value[labelField]
+      }
+    }
+
+    if(defaultValue){
+      defaultValue = {
+        ...defaultValue,
+        value: defaultValue[valueField??'id'],
+        label: defaultValue[labelField]
+      }
+    }
+
     return (
       <Select 
+        value={value}
+        defaultValue={defaultValue}
         options={options}
         className={className}
         onChange={onChange}
@@ -123,18 +144,38 @@ export default function Input(props) {
   }
 
   if(type === 'async-select') {
-    const {
+    let {
       optionsUrl,
       placeholder,
+      value,
+      defaultValue,
       valueField,
       labelField,
       labelDisplayFunc,
       ...remainProps
     } =  otherProps;
 
+    if(value){
+      value = {
+        ...value,
+        value: value[valueField??'id'],
+        label: value[labelField]
+      }
+    }
+
+    if(defaultValue){
+      defaultValue = {
+        ...defaultValue,
+        value: defaultValue[valueField??'id'],
+        label: defaultValue[labelField]
+      }
+    }
+
     return (
       <AsyncSelect 
         className={className}
+        value={value}
+        defaultValue={defaultValue}
         onChange={onChange}
         cacheOptions
         loadOptions={

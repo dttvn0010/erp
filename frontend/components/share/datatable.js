@@ -447,9 +447,6 @@ export default function DataTable({apiUrl, renders}) {
       pageSize: 10
     });
 
-    console.log('columnsDef=', columnsDef);
-    console.log('data=', data);
-
     updateTable({rows: data, total, loading: false});
   }, [])
   
@@ -516,8 +513,7 @@ export default function DataTable({apiUrl, renders}) {
     },
 
     async filterTableBy(colName, searchValue){
-      console.log("searchValue=", searchValue);
-
+     
       let searchActive = table.searchActive;
       searchActive[colName] = searchValue !== '';
       

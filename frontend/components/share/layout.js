@@ -19,14 +19,27 @@ const pages = [
   {
     path: '/purchase', title: 'Mua hàng',
     children: [
-      {path: '/order', title: 'Phiếu mua hàng'}
+      {path: '/voucher', title: 'Chứng từ mua hàng'},
+      {path: '/discount', title: 'Giảm giá hàng mua'},
+      {path: '/return', title: 'Trả lại hàng mua'}
     ] 
   },
   {
     path: '/sales', title: 'Bán hàng',
     children: [
-      {path: '/order', title: 'Phiếu bán hàng'}
+      {path: '/voucher', title: 'Chứng từ bán hàng'},
+      {path: '/discount', title: 'Giảm giá hàng bán'},
+      {path: '/return', title: 'Trả lại hàng bán'}
     ] 
+  },
+  {
+    path: '/bank', title: 'Ngân hàng',
+  },
+  {
+    path: '/cash', title: 'Quỹ',
+  },
+  {
+    path: '/manufacturing', title: 'Sản xuất',
   },
   {
     path: '/stock', title: 'Kho',

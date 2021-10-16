@@ -89,7 +89,7 @@ class Partner(models.Model):
 
     is_customer = models.BooleanField(default=False)
     
-    is_agent = models.BooleanField(default=False)
+    is_organization = models.BooleanField(default=False)
 
     status = models.CharField(choices=BaseStatus.choices(),
                             default=BaseStatus.DRAFT.name,

@@ -40,8 +40,8 @@ const formMeta = {
       type: 'checkbox',
     },
     {
-      name: 'is_agent',
-      label: 'Là đại lý',
+      name: 'is_organization',
+      label: 'Là công ty',
       type: 'checkbox',
     }
   ],

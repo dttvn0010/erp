@@ -216,8 +216,6 @@
       order_lines: orderLines,
     };
 
-    console.log('data=', data);
-
     $('.errorlist').empty();
 
     let resp = await $_post('/purchase/order/save', data);
