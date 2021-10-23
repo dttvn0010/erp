@@ -4,6 +4,90 @@ import { useRouter } from 'next/router'
 import {Dropdown} from 'react-bootstrap'
 import { useSliceSelector, useSliceStore } from 'utils/helper'
 
+const modules= [
+  {
+    name: 'Nghiệp vụ',
+    pages: [
+      {
+        path: '/purchase', title: 'Mua hàng',
+        children: [
+          {path: '/voucher', title: 'Chứng từ mua hàng'},
+          {path: '/discount', title: 'Giảm giá hàng mua'},
+          {path: '/return', title: 'Trả lại hàng mua'}
+        ] 
+      },
+      {
+        path: '/sales', title: 'Bán hàng',
+        children: [
+          {path: '/voucher', title: 'Chứng từ bán hàng'},
+          {path: '/discount', title: 'Giảm giá hàng bán'},
+          {path: '/return', title: 'Trả lại hàng bán'}
+        ] 
+      },
+      {
+        path: '/bank', title: 'Ngân hàng',
+      },
+      {
+        path: '/cash', title: 'Quỹ',
+      },
+      {
+        path: '/manufacturing', title: 'Sản xuất',
+      },
+      {
+        path: '/stock', title: 'Kho',
+      },
+    ]
+  },
+  {
+    name: 'Hệ thống',
+    pages: [
+      {
+        path: '/employee', title: 'Tài khoản', 
+        children: [
+          {path: '/user', title: 'Tài khoản người dùng'},
+          {path: '/role', title: 'Vai trò'},
+          //{path: '/department', title: 'Phòng ban'},
+          //{path: '/team', title: 'Nhóm làm việc'},
+        ]
+      }
+    ]
+  },
+  {
+    name: 'Danh mục',
+    pages: [
+      {
+        title: 'Đối tượng',
+        path: '/data/entity',
+        children: [
+          {path: '/partner', title: 'Khác hàng/nhà cung cấp'},
+          {path: '/department', title: 'Phòng/ban'},
+          {path: '/employee', title: 'Nhân viên'},
+        ]
+      },
+      {
+        title: 'Vật tư hàng hoá',
+        path: '/data/goods',
+        children: [
+          {path: '/stock', title: 'Kho'},
+          {path: '/category', title: 'Nhóm hàng hoá/dịch vụ'},
+          {path: '/product', title: 'Hàng hoá/dịch vụ'},
+        ]
+      },
+      {
+        title: 'Kế toán',
+        path: '/data/accounting',
+        children: [
+          {path: '/expense-type', title: 'Loại chi phí'},
+          {path: '/income-type', title: 'Loại thu tiền'},
+          {path: '/account', title: 'Tài khoản kế toán'},
+          {path: '/bank', title: 'Ngân hàng'},
+          {path: '/bank-account', title: 'Tài khoản ngân hàng'},
+        ]
+      }
+    ]
+  }
+]
+
 const pages = [
   {path: '/', title: 'Trang chủ'},
   /*
@@ -16,34 +100,7 @@ const pages = [
       {path: '/team', title: 'Nhóm làm việc'},
     ]
   },*/
-  {
-    path: '/purchase', title: 'Mua hàng',
-    children: [
-      {path: '/voucher', title: 'Chứng từ mua hàng'},
-      {path: '/discount', title: 'Giảm giá hàng mua'},
-      {path: '/return', title: 'Trả lại hàng mua'}
-    ] 
-  },
-  {
-    path: '/sales', title: 'Bán hàng',
-    children: [
-      {path: '/voucher', title: 'Chứng từ bán hàng'},
-      {path: '/discount', title: 'Giảm giá hàng bán'},
-      {path: '/return', title: 'Trả lại hàng bán'}
-    ] 
-  },
-  {
-    path: '/bank', title: 'Ngân hàng',
-  },
-  {
-    path: '/cash', title: 'Quỹ',
-  },
-  {
-    path: '/manufacturing', title: 'Sản xuất',
-  },
-  {
-    path: '/stock', title: 'Kho',
-  },
+  
   {
     path: '/data', title: 'Danh mục',
     children: [
@@ -139,9 +196,15 @@ function MenuDropDown({page}) {
 export default function Layout({ children }) {
   const [toggled, setToggled] = useState(false);
   const store = useSliceStore('app');
-  
+  const router = useRouter();
+
+  const logOut = () => {
+    localStorage.removeItem('token');
+    router.push('/login');
+  }
+
   return (
-    <body 
+    <div 
       className={"sb-nav-fixed " + (toggled?"sb-sidenav-toggled" : "")}
     > 
       <nav className="sb-topnav navbar navbar-expand navbar-dark bg-dark">
@@ -168,7 +231,7 @@ export default function Layout({ children }) {
             </Dropdown.Toggle>
 
             <Dropdown.Menu>
-              <Dropdown.Item href="#/">Logout</Dropdown.Item>
+              <Dropdown.Item onClick={logOut} href="#/">Đăng xuất</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         </ul>
@@ -179,23 +242,27 @@ export default function Layout({ children }) {
           <nav className="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
             <div className="sb-sidenav-menu">
               <div className="nav">
-                {pages.map((page, index) => 
-                  <>
-                    {page.children && <MenuDropDown page={page}/>}
-                    {!page.children &&
-                      <Link 
-                        href={page.path} 
-                        key={index}
-                      >
-                        <a  
-                          className={useNavLinkClass(page.path)}
-                          onClick={() => store.setState({selectedPage: page.path})}
+                {modules.map((module, i) =>
+                  <div key={i}>
+                    <div className="sb-sidenav-menu-heading">{module.name}</div>    
+                    {module.pages.map((page, j) => 
+                    <div key={j}>
+                      {page.children && <MenuDropDown page={page}/>}
+                      {!page.children &&
+                        <Link 
+                          href={page.path} 
                         >
-                          {page.title}
-                        </a>
-                      </Link>
-                    }
-                  </>
+                          <a  
+                            className={useNavLinkClass(page.path)}
+                            onClick={() => store.setState({selectedPage: page.path})}
+                          >
+                            {page.title}
+                          </a>
+                        </Link>
+                      }
+                    </div>
+                  )}
+                  </div>
                 )}
               </div>
             </div>
@@ -217,6 +284,6 @@ export default function Layout({ children }) {
           </footer>
         </div>
       </div>
-    </body>
+    </div>
   )
 }

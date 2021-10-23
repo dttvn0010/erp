@@ -11,6 +11,7 @@ import {
   getOptions, 
   IconButton, 
   IconLink,
+  serializeForm,
   Spiner
 } from 'utils/helper';
 
@@ -30,6 +31,7 @@ export function createForm(formMeta, update, id, readOnly){
           if(field.type === 'select') {
             getOptions({
               url: field.options.url,
+              params: field.options.extraParams,
               labelField: field.options.labelField,
               valueField: field.options.valueField ?? 'id'
             }).then(options => setOptions(options));
@@ -38,16 +40,16 @@ export function createForm(formMeta, update, id, readOnly){
 
 
         if(readOnly) {
-          if(field.type !== 'textarea') {
+          if (field.type === 'select' || field.type === 'async-select') {
             return (
               <input 
                 readOnly={true}
                 className="form-control" 
-                value={itemVar[field.name]} 
+                value={itemVar[field.displayField]} 
                 {...field.attrs}
               />
-            )
-          }else{
+            );
+          }else if(field.type === 'text-area'){
             return (
               <textarea 
                 readOnly={true}
@@ -55,7 +57,16 @@ export function createForm(formMeta, update, id, readOnly){
                 value={itemVar[field.name]} 
                 {...field.attrs}
               ></textarea>
-            )
+            );
+          }else{
+            return (
+              <input 
+                readOnly={true}
+                className="form-control" 
+                value={itemVar[field.name]} 
+                {...field.attrs}
+              />
+            );
           }
         }
 
@@ -80,6 +91,24 @@ export function createForm(formMeta, update, id, readOnly){
               defaultValue={itemVar[field.name]} 
               {...field.attrs}
             />
+          )
+        }
+
+        if(field.type === 'file') {
+          return (
+            <>
+              <input 
+                name={field.name} 
+                type='file'
+                className="form-control-file" 
+                {...field.attrs}
+              />
+              {itemVar[field.name] && (
+                <a target="_blank" href={itemVar[field.name]}>
+                  File hiện tại
+                </a>
+              )}
+            </>
           )
         }
 
@@ -137,6 +166,15 @@ export function createForm(formMeta, update, id, readOnly){
         }
 
         if(field.type === 'async-select') {
+          let getParams = null;
+          
+          if(field.options.getExtraParams) {
+            getParams = () => {
+              const data = serializeForm(document.getElementById(formMeta.formId));
+              return field.options.getExtraParams(id, data);
+            }
+          }
+
           return (
             <AsyncSelect 
               key={itemVar.id}
@@ -145,6 +183,8 @@ export function createForm(formMeta, update, id, readOnly){
               loadOptions={
                 getLoadOptions({
                   url: field.options.url,
+                  params: field.options.extraParams,
+                  getParams: getParams,
                   labelField: field.options.labelField, 
                   valueField: field.options.valueField ?? 'id'
                 })
@@ -202,6 +242,7 @@ export function createForm(formMeta, update, id, readOnly){
           if(onSaveSuccess) onSaveSuccess(result.data);
         }catch(err){
           setErrors(err?.response?.data || {});
+          console.log(err?.response?.data);
           alert('Đã có lỗi xảy ra');
         }
       }
@@ -209,7 +250,7 @@ export function createForm(formMeta, update, id, readOnly){
       const loading = (update || readOnly) && !itemVar.id;
 
       return ( 
-        <form id={formMeta.formId} onSubmit={saveItem}>
+        <form id={formMeta.formId} onSubmit={saveItem} encType="multipart/form-data">
           <table className="table">
             <tbody>
               {loading &&

@@ -4,10 +4,11 @@ from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.viewsets import ModelViewSet
+from employee.models import Employee
 
 from core.views_api import AsyncSearchView, DataTableView
 from core.models import Partner
-from employee.models import Staff
+from employee.models import Employee
 from stock.models import Product
 from purchase.models import Order
 
@@ -56,7 +57,7 @@ class VoucherTableView(DataTableView):
     ]
 
     def get_queryset(self, user):
-        return Order.objects.filter(company=user.staff.company)
+        return Order.objects.filter(company=user.employee.company)
 
 class ProductAsyncSearchView(AsyncSearchView):
     fields = ['name', 'price_unit']
@@ -65,7 +66,7 @@ class ProductAsyncSearchView(AsyncSearchView):
         return item.list_price
 
     def get_queryset(self, term, request):
-        company = request.user.staff.company
+        company = request.user.employee.company
 
         return Product.objects.filter(
             company=company,
@@ -77,22 +78,22 @@ class SuppilerAsyncSearchView(AsyncSearchView):
     fields = ['name']
 
     def get_queryset(self, term, request):
-        company = request.user.staff.company
+        company = request.user.employee.company
         return Partner.objects.filter(
             company=company,
             user__display__icontains=term,
             status=BaseStatus.ACTIVE.name
         )
 
-class StaffAsyncSearchView(AsyncSearchView):
+class EmployeeAsyncSearchView(AsyncSearchView):
     fields = ['name']
 
     def get_name(self, item):
         return item.user.display
 
     def get_queryset(self, term, request):
-        company = request.user.staff.company
-        return Staff.objects.filter(
+        company = request.user.employee.company
+        return Employee.objects.filter(
             company=company,
             user__display__icontains=term,
             user__is_active=True
@@ -100,12 +101,12 @@ class StaffAsyncSearchView(AsyncSearchView):
 
 @api_view(['GET'])
 def get_order_detail(request, pk):
-    order = get_object_or_404(Order, pk=pk, company=request.user.staff.company)
+    order = get_object_or_404(Order, pk=pk, company=request.user.employee.company)
     data = OrderSerializer(order).data
     
-    data['order_lines'] = [
-        OrderLineSerializer(item).data
-        for item in order.order_lines.all()
+    data['order_items'] = [
+        OrderItemSerializer(item).data
+        for item in order.order_items.all()
     ]
 
     return Response(data)
@@ -117,38 +118,38 @@ def validate_save_order(instance, data):
     if not serializer.is_valid():
         errors = serializer.errors
 
-    order_lines = data.get('order_lines', [])
+    order_items = data.get('order_items', [])
     
-    for i, order_line in enumerate(order_lines):
-        item_serializer = OrderLineSerializer(data=order_line)
+    for i, order_item in enumerate(order_items):
+        item_serializer = OrderItemSerializer(data=order_item)
 
         if not item_serializer.is_valid():
-            errors[f'order_lines[{i}]'] = item_serializer.errors
+            errors[f'order_items[{i}]'] = item_serializer.errors
     
     return errors
 
-def get_order_lines(items_data):
-    order_lines = []
+def get_order_items(items_data):
+    order_items = []
 
     for item_data in items_data:
         qty = int(item_data['qty'])
         price_unit = int(item_data['price_unit'])
 
-        order_line = ProductMove()
-        order_line.product = Product.objects.get(pk=item_data['product'])
-        order_line.qty = qty
-        order_line.price_unit = price_unit
-        order_line.price_tax = 0
-        order_line.discount = 0
-        order_line.price_untaxed = order_line.price_total = qty * price_unit
-        order_line.incomming = True
-        order_lines.append(order_line)
+        order_item = ProductMove()
+        order_item.product = Product.objects.get(pk=item_data['product'])
+        order_item.qty = qty
+        order_item.price_unit = price_unit
+        order_item.price_tax = 0
+        order_item.discount = 0
+        order_item.price_untaxed = order_item.price_total = qty * price_unit
+        order_item.incomming = True
+        order_items.append(order_item)
 
-    return order_lines
+    return order_items
 
 @api_view(['POST'])
 def save_order(request):
-    company =  request.user.staff.company
+    company =  request.user.employee.company
     data = request.data
     pk = data.get('id')
     instance = Order.objects.get(pk=pk) if pk else None
@@ -160,7 +161,7 @@ def save_order(request):
 
     if pk :
         order = get_object_or_404(Order, pk=pk, company=company)
-        order.order_lines.clear()
+        order.order_items.clear()
     else:
         order = Order()
 
@@ -170,17 +171,17 @@ def save_order(request):
     order.note = data.get('note', '')
     order.save()
     
-    order_lines = get_order_lines(data.get('order_lines', []))
+    order_items = get_order_items(data.get('order_items', []))
 
-    for order_line in order_lines:
-        order_line.save()
-        order.order_lines.add(order_line)
+    for order_item in order_items:
+        order_item.save()
+        order.order_items.add(order_item)
 
     return Response({'success': True})
 
 @api_view(['DELETE'])
 def delete_order(request, pk):
-    order = get_object_or_404(Order, pk=pk, company=request.user.staff.company)
+    order = get_object_or_404(Order, pk=pk, company=request.user.employee.company)
     order.delete()
     return Response({'success': True})
 
@@ -188,7 +189,7 @@ def delete_order(request, pk):
 def change_order_status(request, pk):
     order = get_object_or_404(Order, 
         pk=pk,
-        company= request.user.staff.company
+        company= request.user.employee.company
     )
     
     if order.status != BaseStatus.ACTIVE.name:

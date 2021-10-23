@@ -19,7 +19,7 @@ class ProductViewSet(ModelViewSet):
 def change_product_status(request, pk):
     product = get_object_or_404(Product, 
         pk=pk,
-        company= request.user.staff.company
+        company= request.user.employee.company
     )
     
     if product.status != BaseStatus.ACTIVE.name:

@@ -4,11 +4,11 @@ from core.models import Partner
 class PartnerSerializer(ModelSerializer):
     class Meta:
         model = Partner
-        fields = ['id', 'name', 'email', 'phone', 'address',
+        fields = ['id', 'code', 'name', 'email', 'phone', 'address',
                     'is_supplier', 'is_customer', 'is_organization', 'status']
 
     status = CharField(read_only=True)
 
     def create(self, validated_data):
-        validated_data['company'] = self.context['user'].staff.company
+        validated_data['company'] = self.context['user'].employee.company
         return super().create(validated_data)

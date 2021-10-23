@@ -1,7 +1,8 @@
 from django.shortcuts import render
+from employee.models import Employee
 from core.views_api import AsyncSearchView
 from core.models import Partner
-from employee.models import Staff
+from employee.models import Employee
 from stock.models import Product
 
 from core.constants import BaseStatus
@@ -17,7 +18,7 @@ class ProductAsyncSearchView(AsyncSearchView):
         return item.list_price
 
     def get_queryset(self, term, request):
-        company = request.user.staff.company
+        company = request.user.employee.company
 
         return Product.objects.filter(
             company=company,
@@ -29,7 +30,7 @@ class CustomerAsyncSearchView(AsyncSearchView):
     fields = ['name']
 
     def get_queryset(self, term, request):
-        company = request.user.staff.company
+        company = request.user.employee.company
         return Partner.objects.filter(
             company=company,
             is_customer=True,
@@ -37,15 +38,15 @@ class CustomerAsyncSearchView(AsyncSearchView):
             status=BaseStatus.ACTIVE.name
         )
 
-class StaffAsyncSearchView(AsyncSearchView):
+class EmployeeAsyncSearchView(AsyncSearchView):
     fields = ['name']
 
     def get_name(self, item):
         return item.user.display
 
     def get_queryset(self, term, request):
-        company = request.user.staff.company
-        return Staff.objects.filter(
+        company = request.user.employee.company
+        return Employee.objects.filter(
             company=company,
             user__display__icontains=term,
             user__is_active=True

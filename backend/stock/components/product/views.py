@@ -5,7 +5,7 @@ from django.utils.translation import gettext as _
 
 from core.views_api import DataTableView, AsyncSearchView
 from core.constants import BaseStatus
-from core.views import has_permission, has_permission_func
+from core.views import has_permission_func
 from .forms import *
 
 class ProductTableView(DataTableView):
@@ -41,18 +41,15 @@ class ProductTableView(DataTableView):
         },
     ]
 
-    def user_can_edit(self, user):
-        return has_permission(user, 'stock.change_product')
-
     def get_queryset(self, user):
-        return Product.objects.filter(company=user.staff.company)
+        return Product.objects.filter(company=user.employee.company)
 
 # Create your views here.
 def list_product(request):
     return render(request, 'product/list.html')
 
 def edit_product(request, instance=None):
-    company = request.user.staff.company
+    company = request.user.employee.company
     form = ProductForm(company=company, instance=instance)
     
     if request.method == 'POST':
@@ -86,7 +83,7 @@ class ProductCategoryAsyncSearchView(AsyncSearchView):
 
     def get_queryset(self, term, request):
         return ProductCategory.objects.filter(
-            company=request.user.staff.company,
+            company=request.user.employee.company,
             name__icontains=term,
             status=BaseStatus.ACTIVE.name
         )

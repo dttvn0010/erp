@@ -70,14 +70,24 @@ export function useSliceStore(namespace) {
   return new SliceStore(namespace, store);
 }
 
-export async function getOptions({url, labelField, labelDiplayFunc, valueField}) {
-  let result = await axios.get(url);
+function appendUrlParams(url, params) {
+  if(!url.includes('?')) url += '?';
+  for(let [key,value] of Object.entries(params)) {
+    if(value){
+      url += `&${key}=${encodeURIComponent(value)}`;
+    }
+  }
+  return url;
+}
+
+export async function getOptions({url, params, labelField, labelDiplayFunc, valueField}) {
+  let result = await axios.get(appendUrlParams(url, params));
   let options = [{
     label: '---------',
     value: ''
   }];
 
-  (result?.data?.results??[]).forEach(item => options.push({
+  (result?.data??[]).forEach(item => options.push({
     ...item,
     label: labelDiplayFunc? labelDiplayFunc(item) : item[labelField], 
     value: item[valueField]
@@ -89,19 +99,13 @@ export async function getOptions({url, labelField, labelDiplayFunc, valueField})
 export function getLoadOptions({url, params, getParams, labelField, labelDiplayFunc, valueField}) {
   return (term, callback) => {
     params = params || {};
+    
     if(getParams) {
       params = {...params, ...getParams()};
     }
-    if(!url.includes('?')) {
-      url += `?`
-    }
-    for(let [key, value] of Object.entries(params)) {
-      if(value){
-        url += `&${key}=${value}`;
-      }
-    }
-    axios.get(`${url}&term=${term}`).then(result => {
-      let options = result.data.results.map(item => ({
+    
+    axios.get(appendUrlParams(url, {...params, term})).then(result => {
+      let options = (result.data??[]).map(item => ({
         ...item,
         label: (labelDiplayFunc? labelDiplayFunc(item): item[labelField]), 
         value: item[valueField]

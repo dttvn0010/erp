@@ -7,9 +7,21 @@ class ExpenseStatus(TextEnum):
     APPROVED = _('expense.status.approved')
     CANCELED = _('expense.status.canceled')
 
-class InvoiceType(TextEnum):
-    PURCHASE = _('invoice.type.purchase')
-    SALE_ORDER = _('invoice.type.sales.order')
-    POS_SALE_ORDER = _('invoice.type.pos.order')
-    EXPENSE = _('invoice.type.expense')
-    OTHER = _('invoice.type.other')
+class BusinessType(TextEnum):
+    PURCHASE = _('business.type.purchase')
+    PURCHASE_RETURN = _('business.type.purchase.return')
+    PURCHASE_DISCOUNT = _('business.type.purchase.discount')
+    SALES = _('business.type.sales')
+    SALES_RETURN = _('business.type.sales.return')
+    SALES_DISCOUNT = _('business.type.sales.discount')
+    POS = _('business.type.pos')
+    POS_RETURN = _('business.type.pos.return')
+    POS_DISCOUNT = _('business.type.pos.discount')
+    EXPENSE = _('business.type.expense')
+    INCOME = _('business.type.income')
+    OTHER = _('business.type.other')
+
+class BankAccountType(TextEnum):
+    INTERNAL = _('bank.account.type.internal')
+    PARTNER = _('bank.account.type.partner')
+    EMPLOYEE = _('bank.account.type.employee')

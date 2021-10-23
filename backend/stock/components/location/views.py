@@ -52,13 +52,13 @@ class LocationTableView(DataTableView):
     ]
 
     def get_queryset(self, user):
-        return Location.objects.filter(company=user.staff.company)
+        return Location.objects.filter(company=user.employee.company)
 
 @api_view(['POST'])
 def change_location_status(request, pk):
     location = get_object_or_404(Location, 
         pk=pk,
-        company= request.user.staff.company
+        company= request.user.employee.company
     )
     
     if location.status != BaseStatus.ACTIVE.name:

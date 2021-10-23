@@ -78,13 +78,13 @@ class PartnerTableView(DataTableView):
     ]
 
     def get_queryset(self, user):
-        return Partner.objects.filter(company=user.staff.company)
+        return Partner.objects.filter(company=user.employee.company)
 
 @api_view(['POST'])
 def change_partner_status(request, pk):
     partner = get_object_or_404(Partner, 
         pk=pk,
-        company= request.user.staff.company
+        company= request.user.employee.company
     )
     
     if partner.status != BaseStatus.ACTIVE.name:

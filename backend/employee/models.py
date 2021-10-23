@@ -17,7 +17,12 @@ class Department(models.Model):
     company = models.ForeignKey(Company, on_delete=models.PROTECT)
     parent = models.ForeignKey('Department', blank=True, null=True, on_delete=models.SET_NULL)
     name = models.CharField(max_length=200)
-    manager = models.ForeignKey('Staff', related_name='manage_department', on_delete=models.PROTECT)
+    
+    manager = models.ForeignKey('Employee', 
+        blank=True, null=True,
+        related_name='manage_department', 
+        on_delete=models.PROTECT
+    )
 
     status = models.CharField(choices=BaseStatus.choices(), 
                 default=BaseStatus.DRAFT.name,
@@ -38,8 +43,8 @@ class Team(models.Model):
                     blank=True, null=True, on_delete=models.PROTECT)
 
     name = models.CharField(max_length=200)
-    leader = models.ForeignKey('Staff', related_name='lead_teams', on_delete=models.PROTECT)
-    members = models.ManyToManyField('Staff', related_name='member_teams')
+    leader = models.ForeignKey('Employee', related_name='lead_teams', on_delete=models.PROTECT)
+    members = models.ManyToManyField('Employee', related_name='member_teams')
 
     status = models.CharField(choices=BaseStatus.choices(), 
                     default=BaseStatus.DRAFT.name,
@@ -51,15 +56,27 @@ class Team(models.Model):
     def __str__(self):
         return self.name
 
-class Staff(models.Model):
+class Employee(models.Model):
     company = models.ForeignKey(Company, on_delete=models.PROTECT)
-    department = models.ForeignKey(Department, related_name='department_staffs',
-                    blank=True, null=True, on_delete=models.PROTECT)
-    user = models.OneToOneField(User, on_delete=models.PROTECT)
-    code = models.CharField(max_length=100)
+    
+    department = models.ForeignKey(Department, 
+        related_name='department_employees',
+        blank=True, null=True, 
+        on_delete=models.PROTECT
+    )
 
-    direct_manager = models.ForeignKey('Staff', on_delete=models.PROTECT,
-            blank=True, null=True)
+    user = models.OneToOneField(User, on_delete=models.PROTECT)
+    code = models.CharField(max_length=100, unique=True)
+
+    bank_acount = models.ForeignKey('accounting.BankAccount', 
+        blank=True, null=True,
+        on_delete=models.PROTECT
+    )
+
+    direct_manager = models.ForeignKey('Employee', 
+        blank=True, null=True,
+        on_delete=models.PROTECT,
+    )
 
     no_financial_dependents = models.IntegerField()
     leave_days_per_year = models.IntegerField()
@@ -69,11 +86,16 @@ class Staff(models.Model):
 
 class Task(models.Model):
     company = models.ForeignKey(Company, on_delete=models.PROTECT)
-    assignee = models.ForeignKey(Staff, related_name='assigned_tasks', 
-            on_delete=models.PROTECT)
+    
+    assignee = models.ForeignKey(Employee, 
+        related_name='assigned_tasks', 
+        on_delete=models.PROTECT
+    )
 
-    assigner = models.ForeignKey(Staff, related_name='created_tasks', 
-            on_delete=models.PROTECT)
+    assigner = models.ForeignKey(Employee, 
+        related_name='created_tasks', 
+        on_delete=models.PROTECT
+    )
 
     name = models.CharField(max_length=200)
     deadline = models.DateTimeField(blank=True, null=True)
@@ -107,9 +129,9 @@ class CheckInMachine(models.Model):
     def __str__(self):
         return self.ip
 
-class StaffCheckIn(models.Model):
+class EmployeeCheckIn(models.Model):
     machine = models.ForeignKey(CheckInMachine, on_delete=models.PROTECT)
-    staff = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     date = models.DateTimeField()
 
 class LeaveDayPeriod(models.Model):
@@ -124,13 +146,14 @@ class LeaveDayPeriod(models.Model):
                     default=BaseStatus.DRAFT.name,
                     max_length=50)
 
-class StaffLeaveDayQty(models.Model):
+class EmployeeLeaveDayQuota(models.Model):
     period = models.ForeignKey(LeaveDayPeriod, on_delete=models.PROTECT)
-    staff = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    original_qty = models.IntegerField()
     remain_qty = models.IntegerField()
 
-class StaffLeaveDay(models.Model):
-    staff = models.ForeignKey(Staff, on_delete=models.CASCADE)
+class EmployeeLeaveDay(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     date = models.DateTimeField()
     from_time = models.TimeField()
     to_time = models.TimeField()
@@ -159,8 +182,8 @@ class IncomeTaxLevel(models.Model):
     max_amount = models.IntegerField()
     pctg_tax = models.FloatField()
 
-class StaffSalary(models.Model):
-    staff = models.OneToOneField(Staff, on_delete=models.PROTECT)
+class EmployeeSalary(models.Model):
+    employee = models.OneToOneField(Employee, on_delete=models.PROTECT)
     gross_salary = models.IntegerField(blank=True, null=True)
     hour_salary = models.IntegerField(blank=True, null=True)
 
@@ -171,8 +194,8 @@ class StaffSalary(models.Model):
     update_date = models.DateTimeField(auto_now=True)
     status = models.CharField(choices=BaseStatus.choices(), max_length=50)
 
-class StaffWorkShift(models.Model):
-    staff = models.OneToOneField(Staff, on_delete=models.PROTECT)
+class EmployeeWorkShift(models.Model):
+    employee = models.OneToOneField(Employee, on_delete=models.PROTECT)
     date = models.DateField()
     start_hour = models.TimeField()
     end_hour = models.TimeField()
@@ -187,14 +210,19 @@ class PaymentPeriod(models.Model):
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
 
-class StaffPrepaid(models.Model):
-    staff = models.OneToOneField(Staff, on_delete=models.PROTECT)
+class EmployeePrepaid(models.Model):
+    employee = models.OneToOneField(Employee, on_delete=models.PROTECT)
     period = models.ForeignKey(PaymentPeriod, on_delete=models.PROTECT)
     amount = models.IntegerField()
 
     create_date = models.DateTimeField(auto_now_add=True)
     approve_date = models.DateTimeField(null=True)
     update_date = models.DateTimeField(auto_now=True)
+
+    ledger = models.OneToOneField('accounting.Ledger', 
+        related_name='ledger_employee_prepaid',
+        on_delete=models.CASCADE
+    )
 
     status = models.CharField(choices=PrepaidStatus.choices(), 
                         default=PrepaidStatus.DRAFT.name,
@@ -209,12 +237,17 @@ class Payroll(models.Model):
     approve_date = models.DateTimeField(null=True)
     update_date = models.DateTimeField(auto_now=True)
 
+    ledger = models.OneToOneField('accounting.Ledger', 
+        related_name='ledger_payroll',
+        on_delete=models.CASCADE
+    )
+
     status = models.CharField(choices=PayrollStatus.choices(), 
                     default=PayrollStatus.DRAFT.name,
                     max_length=50)
 
-class StaffPayroll(models.Model):
-    staff = models.OneToOneField(Staff, on_delete=models.PROTECT)
+class EmployeePayment(models.Model):
+    employee = models.OneToOneField(Employee, on_delete=models.PROTECT)
     payroll = models.ForeignKey(Payroll, on_delete=models.PROTECT)
 
     amount_gross = models.IntegerField()
@@ -222,3 +255,8 @@ class StaffPayroll(models.Model):
     amount_tax = models.IntegerField()
     amount_prepaid = models.IntegerField()
     amount_net = models.IntegerField()
+
+    ledger_item = models.OneToOneField('accounting.LedgerItem',
+        related_name='ledger_employee_payment',
+        on_delete=models.PROTECT
+    )

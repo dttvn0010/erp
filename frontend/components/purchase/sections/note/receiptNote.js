@@ -82,7 +82,7 @@ export default function ReceiptNote({readOnly}) {
                   readOnly={readOnly}
                   value={data.purchase_person}
                   onChange={val => updateData({purchase_person: val})}
-                  optionsUrl="/purchase/search-staff"
+                  optionsUrl="/purchase/search-employee"
                   labelField="name"
                 />
               </td>

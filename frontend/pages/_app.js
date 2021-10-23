@@ -17,6 +17,16 @@ axios.interceptors.request.use(request => {
   return request;
 });
 
+axios.interceptors.response.use(response => {
+  return response
+}, err => {
+  if(err?.response?.status === 403) {
+    localStorage.removeItem('token');
+    location.href = '/login';
+  }
+  return Promise.reject(err);
+});
+
 function MyApp({ Component, pageProps }) {
   const getLayout = Component.getLayout || ((page) => page);
   return (

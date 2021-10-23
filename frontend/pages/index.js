@@ -1,4 +1,4 @@
-import {  useEffect, useState } from 'react';
+import {  useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import DatePicker from "react-datepicker";
@@ -13,12 +13,9 @@ export default function Index() {
   const dispatch = useDispatch();
   const count = useSelector(state => state.counter.value);
   const [startDate, setStartDate] = useState(new Date());  
-  useEffect(()=> {
-    localStorage.setItem('token', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjM0NDY5MTAwLCJqdGkiOiI4MTMwNWVmNGNkZWI0ZjQxYmRhNjNkOWNmYmFjYmUwMyIsInVzZXJfaWQiOjN9.KkiWZQcBsxwH8pZ6R1LzszYTkpZbrTvdltsrGoWeK6c');
-  },[]);
   const saveForm = (e) => {
     e.preventDefault();
-    const data = new FormData(document.getElementById("fmt"));
+    //const data = new FormData(document.getElementById("fmt"));
     
   }
   

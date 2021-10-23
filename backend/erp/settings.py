@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'manufacturing',
     'purchase',
     'sales',
-    'pos_sales',
+    'pos',
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -94,7 +94,7 @@ WSGI_APPLICATION = 'erp.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'erp',
+        'NAME': 'erp2',
         'USER': 'admin',
         'PASSWORD': 'abc@123',
         'HOST': '103.124.93.114',

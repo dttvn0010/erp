@@ -31,7 +31,7 @@
           <div class="col">
             <h5>Chi tiết các mặt hàng</h5>
             <div class="float-end">
-              <a class="btn btn-sm btn-primary mb-2" href="javascript:addOrderLine(-1)">
+              <a class="btn btn-sm btn-primary mb-2" href="javascript:addOrderItem(-1)">
                 <i class="fas fa-plus"></i> Thêm mặt hàng
               </a>
             </div>
@@ -49,7 +49,7 @@
                 <th style="width: 20%;" class="text-center">Thành tiền</th>
               </tr>
             </thead>
-            <tbody id="orderLines">
+            <tbody id="orderItems">
             </tbody>
           </table>
         </div>
@@ -68,55 +68,55 @@
   </div>
 </div>
 <script>
-  let orderLines = [];
+  let orderItems = [];
 
-  function renderOrderLine(index, orderLine) {
+  function renderorderItem(index, orderItem) {
     return (`
       <tr id="row_${index}">
         <td class="text-center">
-          <a class="me-2" href='javascript:deleteOrderLine(${index})'>
+          <a class="me-2" href='javascript:deleteorderItem(${index})'>
             <i class="fas fa-trash text-danger"></i>
           </a>
 
-          <a href='javascript:addOrderLine(${index})'>
+          <a href='javascript:addorderItem(${index})'>
             <i class="fas fa-plus"></i>
           </a>
         </td>
         <td>
-          <select name="order_lines[].product"
+          <select name="order_items[].product"
             class='form-control select-product' 
           >
           </select>
           
           <ul class="errorlist" 
-            data-for='order_lines[${index}].product'>
+            data-for='order_items[${index}].product'>
           </ul>
         </td>
         <td class="text-center">
           <input type="number" min="0" step="1000" 
-            name="order_lines[].qty"
+            name="order_items[].qty"
             class="form-control text-center price-unit"
             onchange="updatePriceUnit(${index}, value)"
-            value="${orderLine.price_unit}"/>
+            value="${orderItem.price_unit}"/>
           
           <ul class="errorlist" 
-            data-for='order_lines[${index}].price_unit'>
+            data-for='order_items[${index}].price_unit'>
           </ul>
         </td>
         <td class="text-center">
           <input type="number" min="1"  
-            name="order_lines[].qty"
+            name="order_items[].qty"
             class="form-control text-center"
             onchange="updateQty(${index}, value)"
-            value="${orderLine.qty}"/>
+            value="${orderItem.qty}"/>
 
           <ul class="errorlist" 
-            data-for='order_lines[${index}].qty'>
+            data-for='order_items[${index}].qty'>
           </ul>
         </td>
         <td class="text-center">
           <span class="sub-total">
-            ${getSubTotal(orderLine)}
+            ${getSubTotal(orderItem)}
           </span>
         </td>
       </tr>
@@ -127,20 +127,20 @@
     return $(`#row_${rowIndex}`).find(selector);
   }
 
-  function renderOrderLines() {
-    if(orderLines.length > 0) {
-      let html = orderLines.map((orderLine, index) => 
-                    renderOrderLine(index, orderLine)).join('');
+  function renderorderItems() {
+    if(orderItems.length > 0) {
+      let html = orderItems.map((orderItem, index) => 
+                    renderorderItem(index, orderItem)).join('');
 
-      $('#orderLines').html(html);
+      $('#orderItems').html(html);
     
-      orderLines.forEach((orderLine, index) => {
+      orderItems.forEach((orderItem, index) => {
         let initialData;
-        if(orderLine.product) {
+        if(orderItem.product) {
           initialData = [{
-            id: orderLine.product,
-            name: orderLine.product_name,
-            price_unit: orderLine.price_unit
+            id: orderItem.product,
+            name: orderItem.product_name,
+            price_unit: orderItem.price_unit
           }];
         };
 
@@ -152,60 +152,60 @@
         })
       });
     }else{
-      $('#orderLines').html('<tr><td colspan="5">Chưa có mặt hàng nào</td></tr>');
+      $('#orderItems').html('<tr><td colspan="5">Chưa có mặt hàng nào</td></tr>');
     }
   }
 
-  function getPriceUnit(orderLine) {
-    if(orderLine.price_unit) {
-      return orderLine.price_unit + ' đ';
+  function getPriceUnit(orderItem) {
+    if(orderItem.price_unit) {
+      return orderItem.price_unit + ' đ';
     }
     return '';
   }
 
-  function getSubTotal(orderLine) {
-    if(orderLine.qty && orderLine.price_unit) {
-      return (orderLine.qty * orderLine.price_unit) + ' đ';
+  function getSubTotal(orderItem) {
+    if(orderItem.qty && orderItem.price_unit) {
+      return (orderItem.qty * orderItem.price_unit) + ' đ';
     }
     return '';
   }
 
   function updateProduct(index, el, data) {
     data = data.length > 0? data[0] : {};
-    let orderLine = orderLines[index];
-    orderLine.product_name = data.name;
-    orderLine.product = data.id;
-    orderLine.price_unit = data.price_unit;
+    let orderItem = orderItems[index];
+    orderItem.product_name = data.name;
+    orderItem.product = data.id;
+    orderItem.price_unit = data.price_unit;
     
-    $_cell(index, '.price-unit').val(orderLine.price_unit??'');
-    $_cell(index, '.sub-total').html(getSubTotal(orderLine));
+    $_cell(index, '.price-unit').val(orderItem.price_unit??'');
+    $_cell(index, '.sub-total').html(getSubTotal(orderItem));
   }
 
   function updateQty(index, value) {
-    let orderLine = orderLines[index];
-    orderLine.qty = value;
-    $_cell(index, '.sub-total').html(getSubTotal(orderLine));
+    let orderItem = orderItems[index];
+    orderItem.qty = value;
+    $_cell(index, '.sub-total').html(getSubTotal(orderItem));
   }
 
   function updatePriceUnit(index, value) {
-    let orderLine = orderLines[index];
-    orderLine.price_unit = value;
-    $_cell(index, '.sub-total').html(getSubTotal(orderLine));
+    let orderItem = orderItems[index];
+    orderItem.price_unit = value;
+    $_cell(index, '.sub-total').html(getSubTotal(orderItem));
   }
 
-  function addOrderLine(index) {
+  function addorderItem(index) {
     if(index == -1) {
-      orderLines.push({qty: 1});
+      orderItems.push({qty: 1});
     }else{
-      orderLines.splice(index+1, 0, {qty: 1});
+      orderItems.splice(index+1, 0, {qty: 1});
     }
 
-    renderOrderLines();
+    renderorderItems();
   }
 
-  function deleteOrderLine(index) {
-    orderLines.splice(index, 1);
-    renderOrderLines();
+  function deleteorderItem(index) {
+    orderItems.splice(index, 1);
+    renderorderItems();
   }
 
   async function saveOrder(e) {
@@ -213,7 +213,7 @@
 
     let data = {
       ...serializeForm(document.getElementById('fmt')),
-      order_lines: orderLines,
+      order_items: orderItems,
     };
 
     $('.errorlist').empty();
@@ -233,9 +233,9 @@
       displayFunc: item => item.name,
     });
     
-    orderLines = JSON.parse('{{order_lines_json|safe}}');
+    orderItems = JSON.parse('{{order_items_json|safe}}');
 
-    renderOrderLines();
+    renderorderItems();
     
   });
 </script>

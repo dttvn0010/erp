@@ -386,23 +386,23 @@ msgstr "Đã xong"
 msgid "device.maintainance.canceled"
 msgstr "Đã hủy"
 
-#: pos_sales/constants.py:5 sales/constants.py:5
+#: sales/constants.py:5
 msgid "sales.order.status.draft"
 msgstr "Nháp"
 
-#: pos_sales/constants.py:6 sales/constants.py:6
+#: sales/constants.py:6
 msgid "sales.order.status.pending"
 msgstr "Đang chờ xác nhận"
 
-#: pos_sales/constants.py:7 sales/constants.py:9
+#: sales/constants.py:9
 msgid "sales.order.status.confirmed"
 msgstr "Đã xác nhận"
 
-#: pos_sales/constants.py:8 sales/constants.py:10
+#: sales/constants.py:10
 msgid "sales.order.status.canceled"
 msgstr "Đã hủy"
 
-#: pos_sales/constants.py:9 sales/constants.py:11
+#: sales/constants.py:11
 msgid "sales.order.status.refunded"
 msgstr "Trả lại"
 

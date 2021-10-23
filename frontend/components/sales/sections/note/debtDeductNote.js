@@ -61,7 +61,7 @@ export default function DebtNote({readOnly}) {
                   readOnly={readOnly}
                   value={data.sale_person}
                   onChange={val => updateData({sale_person: val})}
-                  optionsUrl="/sales/search-staff"
+                  optionsUrl="/sales/search-employee"
                   labelField="name"
                 />
               </td>

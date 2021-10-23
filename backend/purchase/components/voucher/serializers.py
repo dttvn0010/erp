@@ -10,7 +10,7 @@ class OrderSerializer(ModelSerializer):
     
     supplier_name = CharField(read_only=True, source='supplier.name')
 
-class OrderLineSerializer(ModelSerializer):
+class OrderItemSerializer(ModelSerializer):
     class Meta:
         model = ProductMove
         fields = ['product', 'price_unit', 'qty', 'product_name']

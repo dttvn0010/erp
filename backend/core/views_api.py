@@ -29,7 +29,7 @@ class AsyncSearchView(APIView):
             {'id': item.pk if hasattr(item, 'pk') else None, **self.serialize_item(item)} 
             for item in query_set
         ]
-        return Response({'results': results})
+        return Response(results)
 
 class DataTableView(APIView):
     model = None
@@ -90,49 +90,57 @@ class DataTableView(APIView):
         return obj
     
     def serialize_field(self, obj, col_name, context):
+        result = {}
+        value_id, value = None, None
+        col = self.get_col(col_name)
+        
+        if col is None:
+            return {}
+
         if hasattr(self, f'get_{col_name}'):
             method = getattr(self, f'get_{col_name}')
-            return {col_name : method(obj, context)}
+            value = method(obj, context)
+        else:
+            field = self.get_field(col)
+            field_class = field.__class__.__name__ if field is not None else ''
+            source = col.get('source', col.get('name')) 
+            value = self.getattr_ex(obj, source)
 
-        result = {}
-        col = self.get_col(col_name)
-        if col is None:
-            return None
+            if field_class in ['ImageField', 'FileField'] and value is not None:
+                value = context['server_url'] + value.url[1:]
+            
+            if field_class in ['DateField', 'DateTimeField']:
+                value = formatDate(value, fmt=col.get('format', '%d/%m/%Y'))
+            
+            elif field_class == 'ForeignKey':
+                value_id = value.pk if value is not None else None
+                value = self.getattr_ex(value, col.get('display_field')) if value is not None else ''
 
-        field = self.get_field(col)
-        field_class = field.__class__.__name__ if field is not None else ''
-        source = col.get('source', col.get('name')) 
-        obj = self.getattr_ex(obj, source)
-        
-        if obj is None:
-            return {}
-        
-        if field_class in ['DateField', 'DateTimeField']:
-            obj = formatDate(obj, fmt=col.get('format', '%d/%m/%Y'))
-        
-        elif field_class == 'ForeignKey':
-            result[f'{col_name}_id'] = obj.pk if obj is not None else ''
-            obj = self.getattr_ex(obj, col.get('display_field')) if obj is not None else ''
-
-        elif field_class == 'ManyToManyField':
-            result[f'{col_name}_id'] = [str(item.pk) for item in obj.all()]
-            obj = [self.getattr_ex(item, col.get('display_field')) for item in obj.all()]
+            elif field_class == 'ManyToManyField':
+                if value is not None:
+                    value_id = [str(item.pk) for item in value.all()]
+                    value = [self.getattr_ex(item, col.get('display_field')) for item in value.all()]
 
         if col.get('display_list'):
-            result[f'{col_name}_id'] = obj
-            obj = next((x for x in col.get('display_list') if x[0] == obj), ('', ''))[1]
+            value_id = value
+            value = next((x for x in col.get('display_list') if x[0] == value), ('', ''))[1]
             
-        if isinstance(obj, str):
-            obj = obj.replace('\r\n', '<br>').replace('\n', '<br>')
+        if isinstance(value, str):
+            value = value.replace('\r\n', '<br>').replace('\n', '<br>')
 
-        result[col_name] = obj
+        if value is not None:
+            result[col_name] = value
 
+        if value_id is not None:
+            result[f'{col_name}_id'] = value_id
+        
         return result
 
     def serialize_object(self, obj, context):
         col_names = [col.get('name') for col in self.columns_def + self.hidden_columns
                         if col.get('name') is not None]
         result = {}
+        
         for col_name  in col_names:
             result.update(self.serialize_field(obj, col_name, context))
 
@@ -236,10 +244,10 @@ class DataTableView(APIView):
                         raise Exception('No company_field in search_options for column:' + col["name"])
 
                     if status_field == 'status' and 'status' not in related_model_fields:
-                        raise Exception('No status_field in search_options for column:' + col["name"])
+                        status_field = None #raise Exception('No status_field in search_options for column:' + col["name"])
 
                     if not async_search:
-                        items = field.related_model.objects.filter(**{company_field: request.user.staff.company})
+                        items = field.related_model.objects.filter(**{company_field: request.user.employee.company})
             
                         if status_field:
                             items = items.filter(**{status_field + '__in': statuses})
@@ -288,7 +296,7 @@ class DataTableView(APIView):
             extra_filters = search_options.get('extra_filters')
 
             search_key = (display_field + '.icontains').replace('.', '__')
-            items = field.related_model.objects.filter(**{company_field: request.user.staff.company,
+            items = field.related_model.objects.filter(**{company_field: request.user.employee.company,
                                  search_key: term})
             
             if status_field:
@@ -408,6 +416,7 @@ class DataTableView(APIView):
 
         total = items.count()
         context = self.get_context(request.user)
+        context['server_url'] = request.build_absolute_uri('/')
         data = self.serialize_list(items[start:start+length], context)
 
         return Response({

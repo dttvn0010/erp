@@ -85,11 +85,16 @@ class Partner(models.Model):
 
     address = models.CharField(max_length=300, blank=True)
 
+    tax_number = models.CharField(max_length=100, blank=True)
+
     is_supplier = models.BooleanField(default=False)
 
     is_customer = models.BooleanField(default=False)
     
     is_organization = models.BooleanField(default=False)
+
+    bank_acount = models.ForeignKey('accounting.BankAccount', blank=True, null=True,
+                    on_delete=models.PROTECT)
 
     status = models.CharField(choices=BaseStatus.choices(),
                             default=BaseStatus.DRAFT.name,

@@ -11,7 +11,7 @@ class ProductBom(models.Model):
     update_date = models.DateTimeField(auto_now=True)
     status = models.CharField(choices=BaseStatus.choices(), max_length=50)
 
-class ProductBomLine(models.Model):
+class ProductBomItem(models.Model):
     bom = models.ForeignKey(ProductBom, on_delete=models.PROTECT)
     component = models.ForeignKey(Product, on_delete=models.PROTECT)
     qty = models.IntegerField()

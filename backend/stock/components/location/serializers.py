@@ -9,5 +9,5 @@ class LocationSerializer(ModelSerializer):
     status = CharField(read_only=True)
 
     def create(self, validated_data):
-        validated_data['company'] = self.context['user'].staff.company
+        validated_data['company'] = self.context['user'].employee.company
         return super().create(validated_data)

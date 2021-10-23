@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 from core.models import Company
 from core.constants import BaseStatus
 from .constants import InventoryStatus
@@ -7,18 +6,16 @@ from .constants import InventoryStatus
 # Create your models here.
 class ProductCategory(models.Model):
     company = models.ForeignKey(Company, on_delete=models.PROTECT)
-    parent = models.ForeignKey('ProductCategory', blank=True, null=True, 
-                on_delete=models.SET_NULL, 
-                verbose_name=_("verbose_name.product.category.parent"))
+    parent = models.ForeignKey('ProductCategory', 
+        blank=True, null=True, 
+        on_delete=models.SET_NULL
+    )
 
-    code = models.CharField(max_length=100, unique=True,
-                verbose_name=_("verbose_name.product.category.code"))
+    code = models.CharField(max_length=100, unique=True)
 
-    name = models.CharField(max_length=200, 
-                verbose_name=_("verbose_name.product.category.name"))
+    name = models.CharField(max_length=200)
 
-    description = models.CharField(max_length=500, blank=True,
-                verbose_name=_("verbose_name.product.category.description"))
+    description = models.CharField(max_length=500, blank=True)
 
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
@@ -30,19 +27,15 @@ class ProductCategory(models.Model):
 class Product(models.Model):
     company = models.ForeignKey(Company, on_delete=models.PROTECT)
 
-    category = models.ForeignKey(ProductCategory, on_delete=models.PROTECT,
-                verbose_name=_("verbose_name.product.category"))
+    category = models.ForeignKey(ProductCategory, on_delete=models.PROTECT)
 
-    code = models.CharField(max_length=100, unique=True,
-                verbose_name=_("verbose_name.product.code"))
+    code = models.CharField(max_length=100, unique=True)
 
-    name = models.CharField(max_length=200,
-                verbose_name=_("verbose_name.product.name"))
+    name = models.CharField(max_length=200)
 
-    description = models.CharField(max_length=500, blank=True,
-                verbose_name=_("verbose_name.product.description"))
+    description = models.CharField(max_length=500, blank=True)
 
-    list_price = models.IntegerField(verbose_name=_("verbose_name.product.list.price"))
+    list_price = models.IntegerField()
 
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
@@ -80,7 +73,9 @@ class Location(models.Model):
 class ProductMove(models.Model):
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
     qty = models.IntegerField()
-    incomming = models.BooleanField()
+    
+    inward = models.BooleanField()
+    internal = models.BooleanField(default=False)
 
     location = models.ForeignKey(Location, 
             related_name='outgoing_stock_moves', 
@@ -94,20 +89,55 @@ class ProductMove(models.Model):
 
     date = models.DateTimeField(blank=True, null=True)
 
-    product_price_policy = models.ForeignKey(ProductPricePolicy, 
-                            on_delete=models.PROTECT,
-                            blank=True, null=True)
+class Import(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.PROTECT)
+    note = models.CharField(max_length=200)
+    date = models.DateTimeField()
 
-    price_unit = models.IntegerField()
-    price_untaxed = models.IntegerField()
-    price_total = models.IntegerField()
-    price_tax = models.IntegerField()
-    discount = models.IntegerField()
+class ImportItem(models.Model):
+    _import = models.ForeignKey(Import, on_delete=models.CASCADE)
+
+    product_move = models.OneToOneField(ProductMove,
+        related_name='product_move_import_item',
+        on_delete=models.CASCADE
+    )
+
+class Export(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.PROTECT)
+    note = models.CharField(max_length=200)
+    date = models.DateTimeField()
+
+class ExportItem(models.Model):
+    export = models.ForeignKey(Import, on_delete=models.CASCADE)
+
+    product_move = models.OneToOneField(ProductMove,
+        related_name='product_move_export_item',
+        on_delete=models.CASCADE
+    )
+
+class Exchange(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.PROTECT)
+    note = models.CharField(max_length=200)
+    date = models.DateTimeField()
+
+class ExchangeItem(models.Model):
+    exchange = models.ForeignKey(Exchange, on_delete=models.CASCADE)
+
+    product_move = models.OneToOneField(ProductMove,
+        related_name='product_move_exchange_item',
+        on_delete=models.CASCADE
+    )
 
 class ProductQuantity(models.Model):
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
     location = models.ForeignKey(Location, on_delete=models.PROTECT)
     qty = models.IntegerField()
+    
+    ref_product_move = models.ForeignKey(ProductMove, 
+        blank=True, null=True,
+        on_delete=models.PROTECT
+    )
+
     create_date = models.DateTimeField()
 
 class Inventory(models.Model):
@@ -119,7 +149,7 @@ class Inventory(models.Model):
     status = models.CharField(choices=InventoryStatus.choices(), 
                 default=InventoryStatus.DRAFT.name, max_length=50)
 
-class InventoryLine(models.Model):
+class InventoryItem(models.Model):
     inventory = models.ForeignKey(Inventory, on_delete=models.PROTECT)
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
     qty = models.IntegerField()
