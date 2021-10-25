@@ -1,3 +1,6 @@
+from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 from rest_framework.viewsets import ModelViewSet
 from core.views_api import DataTableView
 from .serializers import *
@@ -13,7 +16,7 @@ class AccountViewSet(ModelViewSet):
 
 class AccountTableView(DataTableView):
     model = Account
-    order_by = '-update_date'
+    order_by = 'code'
     columns_def = [
         {
             'name': 'code',
@@ -33,6 +36,7 @@ class AccountTableView(DataTableView):
         {
             'name': 'balance',
             'title': 'Số dư',
+            'search': False,
             'width': '25%'
         },
         {
@@ -46,3 +50,10 @@ class AccountTableView(DataTableView):
 
     def get_queryset(self, user):
         return Account.objects.filter(company=user.employee.company)
+
+@api_view(['PATCH'])
+def update_account_balance(request, pk):
+    account = get_object_or_404(Account, pk=pk)
+    account.balance = request.data.get('balance')
+    account.save()
+    return Response({'success': True})

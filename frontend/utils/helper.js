@@ -6,7 +6,7 @@ import Layout from 'components/share/layout';
 
 function stateEqual(state1, state2) {
   for(let key in state1) {
-    if(state1[key] != state2[key]) {
+    if(state1[key] !== state2[key]) {
       return false;
     }
   }

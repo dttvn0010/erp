@@ -144,7 +144,7 @@ class DataTableView(APIView):
         for col_name  in col_names:
             result.update(self.serialize_field(obj, col_name, context))
 
-        result['pk'] = obj.pk
+        result['id'] = result['pk'] = obj.pk
         return result
 
     def serialize_list(self, lst, context):

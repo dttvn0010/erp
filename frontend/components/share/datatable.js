@@ -333,7 +333,9 @@ function Pagination({page, total, pageSize, dispatch}) {
           </select>
         </div>
         <ul className="pagination">
-          <li className="page-item" onClick={() => dispatch.setPage(1)}>
+          <li className={"page-item " + ((page === 1)? "disabled": "")} 
+            onClick={() => {if(page > 1) dispatch.setPage(1)}}
+          >
             <a className="page-link" href="#/">
               &laquo;
             </a>
@@ -407,7 +409,9 @@ function Pagination({page, total, pageSize, dispatch}) {
             </li>
           }
 
-          <li className="page-item" onClick={() => dispatch.setPage(numPages)}>
+          <li className={"page-item " + ((page === numPages)? "disabled": "")} 
+            onClick={() => {if(page < numPages) dispatch.setPage(numPages)}}
+          >
             <a className="page-link" href="#/">
               &raquo;
             </a>

@@ -38,6 +38,7 @@ const modules= [
       },
     ]
   },
+  /*
   {
     name: 'Hệ thống',
     pages: [
@@ -51,7 +52,7 @@ const modules= [
         ]
       }
     ]
-  },
+  },*/
   {
     name: 'Danh mục',
     pages: [

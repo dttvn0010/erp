@@ -1,24 +1,82 @@
-import { useRouter } from 'next/router';
+import axios from 'axios';
+import { Modal, Button } from 'react-bootstrap';
 import { EllipsisDropDown } from 'components/share/ellipsis_dropdown';
 import Card from 'components/share/card';
 import DataTable from 'components/share/datatable';
+import { useSliceSelector, useSliceStore } from 'utils/helper';
+import { NAME_SPACE } from 'redux/reducers/accounting/account/indexReducer';
 
 import { 
   getDefaultLayOut,
-  IconLink
 } from 'utils/helper';
+import Input from 'components/share/input';
+
+function BalanceModal() {
+  const [accountNumber,   balance,   showBalanceModal] = useSliceSelector(NAME_SPACE, 
+        ['accountNumber', 'balance', 'showBalanceModal']);
+  
+  const store = useSliceStore(NAME_SPACE);
+  const handleClose = () => store.setState({showBalanceModal: false});
+  
+  const handleSave = () => {
+    const {accountId, balance, dispatch} = store.getState();
+    
+    axios.patch(`/accounting/account/update-balance/${accountId}`, {balance}).then(_ => {
+      store.setState({showBalanceModal: false});
+      if(dispatch) dispatch.refresh();
+
+    }).catch(_ => {
+      alert('Lỗi xảy ra khi cập nhật số dư');
+    })
+  }
+  
+  return (
+    <Modal show={showBalanceModal} onHide={handleClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>Số dư tài khoản {accountNumber}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <form id="fmt">
+          <Input 
+            type="number"
+            value={balance}
+            onChange={val => store.setState({balance:val})}
+          />
+        </form>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={handleClose}>
+          Đóng lại
+        </Button>
+        <Button variant="primary" onClick={handleSave}>
+          Lưu lại
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  )
+}
 
 export default function Index() {
-  const router = useRouter();
+  
   const itemName = 'tài khoản kế toán';
   const baseUrl = '/accounting/account';
   
+  const store = useSliceStore(NAME_SPACE);
+
   let renders = {
     col4: (_, row, dispatch) => {
       let items = [
         {
-          title: 'Xem thông tin',
-          onClick: () => router.push(`./department/view/${row.pk}`)
+          title: 'Nhập số dư',
+          onClick: () => {
+            store.setState({
+              dispatch: dispatch,
+              accountId: row.id,
+              accountNumber: row.code,
+              showBalanceModal: true,
+              balance: row.balance
+            })
+          }
         },
       ];
 
@@ -31,17 +89,20 @@ export default function Index() {
   }
 
   return (
-    <Card
-    title={`Danh sách ${itemName}`}
-      body={
-        <>
-          <DataTable 
-            renders={renders}
-            apiUrl={`${baseUrl}/search`}
-          />
-        </>
-      }
-    />
+    <>
+      <Card
+      title={`Danh sách ${itemName}`}
+        body={
+          <>
+            <DataTable 
+              renders={renders}
+              apiUrl={`${baseUrl}/search`}
+            />
+          </>
+        }
+      />
+      <BalanceModal/>
+    </>
   )
 }
 

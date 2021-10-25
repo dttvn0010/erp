@@ -16,6 +16,9 @@ class Account(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
 
+    def __str__(self) -> str:
+        return self.name
+
 class AccountBalanceHistory(models.Model):
     account = models.ForeignKey(Account, on_delete=models.PROTECT) 
     balance = models.IntegerField()

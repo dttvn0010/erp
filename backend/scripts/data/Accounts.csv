@@ -1,0 +1,138 @@
+"AccountID","AccountNumber","AccountName","AccountNameEnglish","ParentID"
+"50B157DA-AB79-4B3D-8547-B6DBDE8007E6","111",Tiền mặt,Cash in hand,
+"1AC41676-F5AE-428B-9944-7A6D42CFBCCB","1111",Tiền Việt Nam,Vietnam dong,"50B157DA-AB79-4B3D-8547-B6DBDE8007E6"
+"40DA9697-4ECB-41C8-8A2B-E51473D7CCF8","1112",Ngoại tệ,Foreign currency,"50B157DA-AB79-4B3D-8547-B6DBDE8007E6"
+"7CB47DB4-2913-491C-B2CE-0C3F47E1AA9A","112",Tiền gửi Ngân hàng,Cash in bank,
+"0C650A91-0D66-4A95-BFDD-861008523997","1121",Tiền Việt Nam,Vietnam dong,"7CB47DB4-2913-491C-B2CE-0C3F47E1AA9A"
+"52B1181C-F4EB-451A-88E2-4E631ECF3E16","1122",Ngoại tệ,Foreign currency,"7CB47DB4-2913-491C-B2CE-0C3F47E1AA9A"
+"0A9C8DA6-E781-4B1F-B7B2-5884C7E3F4F4","121",Chứng khoán kinh doanh,Securities trading,
+"3CC09EA4-641E-41F6-993B-01D9991E2BBB","128",Đầu tư nắm giữ đến ngày đáo hạn,Other short - term investment,
+"61BA87BE-B8D8-426B-84AE-D806A161A57C","1281",Tiền gửi có kỳ hạn,Term deposits,"3CC09EA4-641E-41F6-993B-01D9991E2BBB"
+DD417ADA-3831-46DD-A73A-8CF5A8F6A1FF,"1288",Các khoản đầu tư khác nắm giữ đến ngày đáo hạn,Other short - term investment,"3CC09EA4-641E-41F6-993B-01D9991E2BBB"
+A63CDF70-E5C3-4963-A6AE-32FB3FE02C9F,"131",Phải thu của khách hàng,Accounts receivable - trade,
+B5F6EDDA-EF16-48B0-BA05-89964E9A06EC,"133",Thuế GTGT được khấu trừ,VAT deducted,
+"54385462-0664-4CB0-8249-F19E5A2F6D14","1331","Thuế GTGT được khấu trừ của hàng hóa, dịch vụ","VAT deduction of goods, services",B5F6EDDA-EF16-48B0-BA05-89964E9A06EC
+B1958BFE-2517-4B50-A61A-A07DCEC9C5FF,"1332",Thuế GTGT được khấu trừ của TSCĐ,VAT deduction of fixed assets,B5F6EDDA-EF16-48B0-BA05-89964E9A06EC
+"7252CCCF-A217-4183-AC83-C35C9633BFEC","136",Phải thu nội bộ,Intercompany receivable,
+D84EDB60-E157-433D-B766-F61E66E5E03D,"1361",Vốn kinh doanh ở đơn vị trực thuộc,Investment in equity of subsidiaries,"7252CCCF-A217-4183-AC83-C35C9633BFEC"
+"51D8F767-B281-42DB-9D41-CCFD6AFFB2AE","1368",Phải thu nội bộ khác,Other receivable from subsidiaries,"7252CCCF-A217-4183-AC83-C35C9633BFEC"
+"1B3141BF-D9ED-4233-8F43-064B228391BC","138",Phải thu khác,Other receivable,
+"1BF4D201-1D3C-4955-936D-AD52B7BD472E","1381",Tài sản thiếu chờ xử lý,Shortage of assets awaiting resolution,"1B3141BF-D9ED-4233-8F43-064B228391BC"
+"690E0234-91ED-4831-ADCE-8C979D937E20","1386","Cầm cố, thế chấp, ký quỹ, ký cược","Deposits, mortgages and collateral","1B3141BF-D9ED-4233-8F43-064B228391BC"
+CD2EE988-EF3E-4D15-AFF7-FBEB8CC9F2DE,"1388",Phải thu khác,Other receivable,"1B3141BF-D9ED-4233-8F43-064B228391BC"
+D70E0FC5-FDA5-4FF6-8C29-8A82EAF44FDC,"141",Tạm ứng,Advances,
+"872562C9-AA4C-452C-85FF-34B0BC98E671","151",Hàng mua đang đi đường,Goods in transit,
+"053721C5-A9D8-4765-B1EF-4335CBBDC6EF","152","Nguyên liệu, vật liệu",Raw materials,
+BD562753-4B70-4F7A-955C-B74BE6E4F1E2,"153","Công cụ, dụng cụ",Tools and supplies,
+"82CF4742-80C4-44D8-9470-47D781584B00","154","Chi phí sản xuất, kinh doanh dở dang",Work in progress,
+FF8F73FD-CBA3-4E77-B0AA-196A96B57F9F,"155",Thành phẩm,Finished goods,
+"5AA60593-9474-4178-B9FE-450A7A662E52","156",Hàng hóa,Merchandise inventory,
+"028E3D6F-ECF9-4205-8D5E-F83B58ED5421","157",Hàng gửi đi bán,Goods on consignment,
+"74C8AC7B-8535-448A-9B9D-D7BC208105A6","211",Tài sản cố định,Fixed assets,
+"9C0BA693-FD05-4EA3-AC6D-A0CA5FE48914","2111",TSCĐ hữu hình,Tangible fixed assets,"74C8AC7B-8535-448A-9B9D-D7BC208105A6"
+"2AD6CC46-E0EB-4165-BC2C-722B85B9A2A4","21111","Nhà cửa, vật kiến trúc",Houses and architectural,"9C0BA693-FD05-4EA3-AC6D-A0CA5FE48914"
+DC638AC1-D798-415F-88CA-E45AFF4646C7,"21112",Máy móc thiết bị,Equipment & machines,"9C0BA693-FD05-4EA3-AC6D-A0CA5FE48914"
+"31BB455B-6E64-464A-9769-9E264974916B","21113",Phương tiện vận tải truyền dẫn,"Means of transport, conveyance equipment","9C0BA693-FD05-4EA3-AC6D-A0CA5FE48914"
+"5FFE56FA-50F5-46FD-95A9-1D0ECD373D55","21114",Thiết bị dụng cụ quản lý,Managerial equipment and instruments,"9C0BA693-FD05-4EA3-AC6D-A0CA5FE48914"
+"22FDEA3D-79DB-4F56-929D-CEE9307B96DD","21115","Cây lâu năm, súc vật làm việc và cho sản phẩm","Long term trees, working & killed animals","9C0BA693-FD05-4EA3-AC6D-A0CA5FE48914"
+C6A62EA0-496D-4DF5-BB96-78836864C3ED,"21116","Các TSCĐ là kết cấu hạ tầng, có giá trị lớn do Nhà nước ĐTXD từ NSNN giao cho các tổ chức kinh tế quản lý, khai thác, sử dụng","Fixed assets are high value infrastructure funded from State Budget, transferred to business entities to manage, exploit, use","9C0BA693-FD05-4EA3-AC6D-A0CA5FE48914"
+"46087E26-4E4F-40B4-9DB9-EEBE174EF62F","21118",TSCĐ khác,Other tangible fixed assets,"9C0BA693-FD05-4EA3-AC6D-A0CA5FE48914"
+CA087261-6BF5-4350-81D4-A588133ECDD7,"2112",TSCĐ thuê tài chính,Financial leasing fixed assets,"74C8AC7B-8535-448A-9B9D-D7BC208105A6"
+"486533F1-7685-49C6-B77E-8E88F40B3A89","2113",TSCĐ vô hình,Intangible fixed assets,"74C8AC7B-8535-448A-9B9D-D7BC208105A6"
+"7134D337-7206-4425-B7E9-0A99F141DD38","21131",Quyền sử dụng đất,Land using right,"486533F1-7685-49C6-B77E-8E88F40B3A89"
+"947D72B6-B800-4328-95D8-48C21F16330C","21132",Quyền phát hành,Distribution rights,"486533F1-7685-49C6-B77E-8E88F40B3A89"
+"1E46D505-4F51-4F11-B7D2-7536FD0EE7B2","21133","Bản quyền, bằng sáng chế","Copyright, patents","486533F1-7685-49C6-B77E-8E88F40B3A89"
+EF747C05-45C3-4303-A7E8-8F7E0C165E1D,"21134",Nhãn hiệu hàng hóa,Trademark,"486533F1-7685-49C6-B77E-8E88F40B3A89"
+"13DB0DA6-88BC-4552-93CE-A21410565761","21135",Phần mềm máy vi tính,Software,"486533F1-7685-49C6-B77E-8E88F40B3A89"
+C9CBD651-0F86-418A-A906-4F0CD2C643DF,"21136",Giấy phép và giấy chuyển nhượng quyền,License and right concession permits,"486533F1-7685-49C6-B77E-8E88F40B3A89"
+"0F4753AD-517A-4B6A-B787-8434444CB78B","21138",TSCĐ vô hình khác,Other intangible fixed assets,"486533F1-7685-49C6-B77E-8E88F40B3A89"
+"9E556740-E1B7-4084-BD10-D6CB996D954E","214",Hao mòn TSCĐ,Depreciation of fixed assets,
+FE244DCA-37F7-4668-BCEC-EB69B4D71FA4,"2141",Hao mòn TSCĐ hữu hình,Tangible fixed assets depreciation,"9E556740-E1B7-4084-BD10-D6CB996D954E"
+"39FA71B5-781B-4BB2-8E13-8202881E8AFA","2142",Hao mòn TSCĐ thuê tài chính,Financial leasing fixed assets depreciation,"9E556740-E1B7-4084-BD10-D6CB996D954E"
+BCC296DB-E60E-4F72-9837-C7A6CF88FA05,"2143",Hao mòn TSCĐ vô hình,Intangible fixed assets depreciation,"9E556740-E1B7-4084-BD10-D6CB996D954E"
+"5A9434DC-AC38-41F0-97BA-4327ABDD01A4","2147",Hao mòn bất động sản đầu tư,Investment real estate depreciation,"9E556740-E1B7-4084-BD10-D6CB996D954E"
+"4879FC66-6DD1-47C4-89B6-1AEB0532D008","217",Bất động sản đầu tư,Investment real estate,
+BDB21B03-CB8B-4210-9AD9-690533C2E33D,"228",Đầu tư góp vốn vào đơn vị khác,Stocks,
+"31FCFF1C-7678-4F08-A008-8503BCC6E14B","2281","Đầu tư vào công ty liên doanh, liên kết",Joint venture capital contribution,BDB21B03-CB8B-4210-9AD9-690533C2E33D
+"234829C4-AB52-4891-A8F2-70B1EE15DC28","2288",Đầu tư khác,Other long term investments,BDB21B03-CB8B-4210-9AD9-690533C2E33D
+B1E53A44-E53A-4A5F-98AC-93326B52DF31,"229",Dự phòng tổn thất tài sản,Provision for decline in long term investments,
+"30081F70-E801-4EAC-86D0-75F8EE19BD88","2291",Dự phòng giảm giá chứng khoán kinh doanh,Provision for the diminution in value of short-term investments,B1E53A44-E53A-4A5F-98AC-93326B52DF31
+"25E28E54-5713-4E2E-A66B-08F2369B1EC4","2292",Dự phòng tổn thất đầu tư vào đơn vị khác,Provision for decline in long term investments,B1E53A44-E53A-4A5F-98AC-93326B52DF31
+BD769DFA-E891-4393-B2B0-B575D9560819,"2293",Dự phòng phải thu khó đòi,Provision for bad debts,B1E53A44-E53A-4A5F-98AC-93326B52DF31
+"27F63295-1363-485A-A7AC-1B2696B282FF","2294",Dự phòng giảm giá hàng tồn kho,Provision for decline in inventory,B1E53A44-E53A-4A5F-98AC-93326B52DF31
+C245C1C2-2E47-4520-A7CD-391FE4154D48,"241",Xây dựng cơ bản dở dang,Construction in process,
+D1635A30-A98B-4C4B-AEC3-33B4724D7609,"2411",Mua sắm TSCĐ,Fixed assets purchases,C245C1C2-2E47-4520-A7CD-391FE4154D48
+"0B39AE6B-7A14-43BF-A128-102B89E65B1D","2412",Xây dựng cơ bản,Construction in process,C245C1C2-2E47-4520-A7CD-391FE4154D48
+C367DB14-1704-4B27-87DD-5597D6ABF1E6,"2413",Sửa chữa lớn TSCĐ,Major repair of fixed assets,C245C1C2-2E47-4520-A7CD-391FE4154D48
+CC751812-81DB-418E-92AF-5419688655E1,"242",Chi phí trả trước,Long-term prepaid expenses,
+A67C0896-F167-440E-AFDD-F741F1840822,"331",Phải trả cho người bán,Payable to seller,
+B780F0DF-E640-4442-AF1C-BB3075A8C4C6,"333",Thuế và các khoản phải nộp Nhà nước,Taxes and payable to state budget,
+"1E2B4566-0DC6-4458-A306-16D565D6C000","3331",Thuế giá trị gia tăng phải nộp,Value Added Tax,B780F0DF-E640-4442-AF1C-BB3075A8C4C6
+C26DEBB5-5D1C-4337-B7D9-A95A606D1855,"33311",Thuế GTGT đầu ra,VAT output,"1E2B4566-0DC6-4458-A306-16D565D6C000"
+"196F06A7-555E-4712-AAA8-7CB2EF050422","33312",Thuế GTGT hàng nhập khẩu,VAT for imported goods,"1E2B4566-0DC6-4458-A306-16D565D6C000"
+"4C15D3F0-3037-40CB-8520-4B2690D8DAD2","3332",Thuế tiêu thụ đặc biệt,Special consumption tax,B780F0DF-E640-4442-AF1C-BB3075A8C4C6
+D4243F37-17C4-4CF8-90EA-EFAFD3C44CB8,"3333","Thuế xuất, nhập khẩu",Import & export duties,B780F0DF-E640-4442-AF1C-BB3075A8C4C6
+"5300CFA7-7A13-4A97-8F92-82CF2DD95A5E","3334",Thuế thu nhập doanh nghiệp,Profit tax,B780F0DF-E640-4442-AF1C-BB3075A8C4C6
+"2B53EBB5-8F8E-4574-A682-BF6B9DCCB752","3335",Thuế thu nhập cá nhân,Personal income tax,B780F0DF-E640-4442-AF1C-BB3075A8C4C6
+C3A5942D-511E-4D0C-B586-06330BCE90EF,"3336",Thuế tài nguyên,Natural resource tax,B780F0DF-E640-4442-AF1C-BB3075A8C4C6
+"22C8546A-89B6-4B23-B4AB-E06A52EC7FFB","3337","Thuế nhà đất, tiền thuê đất","Land & housing tax, land rental charges",B780F0DF-E640-4442-AF1C-BB3075A8C4C6
+BF4DA5D7-2231-49C8-BF09-910E11C97F61,"3338",Thuế bảo vệ môi trường và các loại thuế khác,Invironmental protection tax and other taxes,B780F0DF-E640-4442-AF1C-BB3075A8C4C6
+D27B09AA-54F4-4DE2-8277-4D3E4DA4B501,"33381",Thuế bảo vệ môi trường,Invironmental protection tax,BF4DA5D7-2231-49C8-BF09-910E11C97F61
+"6F62E62F-367B-4F57-9966-48B83E84C8BA","33382",Các loại thuế khác,Other taxes,BF4DA5D7-2231-49C8-BF09-910E11C97F61
+A9A4D641-9A9F-4E07-9A4F-19006A029CE9,"3339","Phí, lệ phí và các khoản phải nộp khác",Fee & charge & other payables,B780F0DF-E640-4442-AF1C-BB3075A8C4C6
+B163B668-4CA0-4A28-A22A-A6009668FC17,"334",Phải trả người lao động,Payable to employees,
+DA93CAC1-07B1-4033-8556-1BC8C1A93342,"335",Chi phí phải trả,Accruals,
+"4BF43911-4148-4D75-BC18-5F7F8DC64408","336",Phải trả nội bộ,Internal payable,
+"076DDF11-AFBE-4D22-A968-3B2F08D71EA1","3361",Phải trả nội bộ về vốn kinh doanh,Internal payable on capital,"4BF43911-4148-4D75-BC18-5F7F8DC64408"
+"2A34073C-8C6E-45C5-8F31-F1632692AD3A","3368",Phải trả nội bộ khác,Other internal payable,"4BF43911-4148-4D75-BC18-5F7F8DC64408"
+"9B5B718F-0598-46F3-9E2E-B36BC1CC034D","338","Phải trả, phải nộp khác",Other payable,
+"231F313B-A7ED-4C01-9A6C-6EA429EAC1B0","3381",Tài sản thừa chờ giải quyết,Surplus assets awaiting for resolution,"9B5B718F-0598-46F3-9E2E-B36BC1CC034D"
+"771DDB31-CB2A-44D9-B75E-FAB2AEDBBE1F","3382",Kinh phí công đoàn,Trade Union fees,"9B5B718F-0598-46F3-9E2E-B36BC1CC034D"
+"35FFE133-0CF1-4220-8804-8F038B89D7F5","3383",Bảo hiểm xã hội,Social insurance,"9B5B718F-0598-46F3-9E2E-B36BC1CC034D"
+"3117C7BD-D9B8-420D-869C-CE35B28F8F0E","3384",Bảo hiểm y tế,Health insurance,"9B5B718F-0598-46F3-9E2E-B36BC1CC034D"
+E278D381-011E-4DE7-B463-BBF4E0B9C2F5,"3385",Bảo hiểm thất nghiệp,Unemployment insurance,"9B5B718F-0598-46F3-9E2E-B36BC1CC034D"
+"24CA8F9E-6D17-44D7-8028-5E2FD9F5EAC6","3386","Nhận ký quỹ, ký cược",Short-term deposits received,"9B5B718F-0598-46F3-9E2E-B36BC1CC034D"
+D569BB88-8082-4F9B-B5B0-983C115FD0A6,"3387",Doanh thu chưa thực hiện,Unrealized turnover,"9B5B718F-0598-46F3-9E2E-B36BC1CC034D"
+DA637C3A-9109-456B-9A37-BFFD2575795C,"3388","Phải trả, phải nộp khác",Other payable,"9B5B718F-0598-46F3-9E2E-B36BC1CC034D"
+"3855365E-9BAD-4902-83BE-570C1DF72253","341",Vay và nợ thuê tài chính,Long-term borrowing and liabilities,
+"0705A0A2-5DBB-4836-920A-56AB9DC26D8B","3411",Các khoản đi vay,Long-term borrowing,"3855365E-9BAD-4902-83BE-570C1DF72253"
+"723D6D13-1702-4E0D-9424-A6BADFC5DB19","3412",Nợ thuê tài chính,Long-term liabilites,"3855365E-9BAD-4902-83BE-570C1DF72253"
+A0EF31E9-5D25-4E06-ADBE-BB851BA158D7,"352",Dự phòng phải trả,Provisions for payables,
+E1ABFA68-0D25-477E-ABC9-0CBB4C11D0AD,"3521",Dự phòng bảo hành sản phẩm hàng hóa,Product warranty provision,A0EF31E9-5D25-4E06-ADBE-BB851BA158D7
+"09A872D6-EAF0-4309-AA96-91B4BD84A573","3522",Dự phòng bảo hành công trình xây dựng,Construction warranty provision,A0EF31E9-5D25-4E06-ADBE-BB851BA158D7
+B41803B8-9096-4664-B72B-5E9E5BC02BFE,"3524",Dự phòng phải trả khác,Other payables provision,A0EF31E9-5D25-4E06-ADBE-BB851BA158D7
+"839FF78E-97AF-401F-B8D0-8F5654BCF380","353","Quỹ khen thưởng, phúc lợi",Bonus & welfare funds,
+E849189B-F5FD-4260-ABEC-909D8E51AE6A,"3531",Quỹ khen thưởng,Bonus fund,"839FF78E-97AF-401F-B8D0-8F5654BCF380"
+C8D78AA0-8518-4888-8E36-FC116FCBE2CF,"3532",Quỹ phúc lợi,Welfare fund,"839FF78E-97AF-401F-B8D0-8F5654BCF380"
+"7AE72FE6-7E2C-49FF-B2D6-71A9B77380B8","3533",Quỹ phúc lợi đã hình thành TSCĐ,Welfare fund used to acquire fixed assets,"839FF78E-97AF-401F-B8D0-8F5654BCF380"
+"7F7DB1CB-93EF-4388-A82C-D19EAC4D7BA9","3534",Quỹ thưởng ban quản lý điều hành công ty,Reward fund for management and operating company,"839FF78E-97AF-401F-B8D0-8F5654BCF380"
+"0892A5E1-F0FC-441B-94B7-EAD4027E0857","356",Quỹ phát triển khoa học và công nghệ,Development of science and technology fund,
+B9E4A7BC-1BDE-4E53-8446-0926004C74E9,"3561",Quỹ phát triển khoa học và công nghệ,Development of science and technology fund,"0892A5E1-F0FC-441B-94B7-EAD4027E0857"
+BEEEFFA6-0C17-4F0D-BBF4-396B5D4AA119,"3562",Quỹ phát triển khoa học và công nghệ đã hình thành TSCĐ,Development of science and technology fund used to fixed assets,"0892A5E1-F0FC-441B-94B7-EAD4027E0857"
+CD68CD44-9D59-495D-B25E-E21B0398A645,"411",Vốn đầu tư của chủ sở hữu,Working capital,
+"272B2AE1-2BAE-449F-8B70-BF208BC8709D","4111",Vốn góp của chủ sở hữu,Contributed legal capital,CD68CD44-9D59-495D-B25E-E21B0398A645
+"2D3E1E1F-BB09-4D71-8A13-A0459401AED6","4112",Thặng dư vốn cổ phần,Share premium,CD68CD44-9D59-495D-B25E-E21B0398A645
+"7E10C35A-C666-43BA-B764-1A107507017A","4118",Vốn khác,Other capital,CD68CD44-9D59-495D-B25E-E21B0398A645
+"9EC748D7-C731-485D-A85F-6D1C18C2CB44","413",Chênh lệch tỷ giá hối đoái,Foreign exchange differences,
+"37692106-B37D-46FF-919A-22C8B565D027","418",Các quỹ thuộc vốn chủ sở hữu,Other funds,
+F36FD013-FFB3-4B09-AFFD-F62328AEEB02,"419",Cổ phiếu quỹ,Treasury stock,
+"993CD4C2-C45B-4C19-9B6D-3CD976EE5000","421",Lợi nhuận sau thuế chưa phân phối,Undistributed earnings,
+"0C05AB9A-9E3C-4F18-B121-76C505ACA77A","4211",Lợi nhuận sau thuế chưa phân phối năm trước,Previous year undistributed earnings,"993CD4C2-C45B-4C19-9B6D-3CD976EE5000"
+"17C49D26-B2DF-41BA-8E80-139CEE2F60C4","4212",Lợi nhuận sau thuế chưa phân phối năm nay,This year undistributed earnings,"993CD4C2-C45B-4C19-9B6D-3CD976EE5000"
+F6D792EE-54E4-44EF-B56A-6578BAE92FC8,"511",Doanh thu bán hàng và cung cấp dịch vụ,Sales,
+"24B0CD62-FA47-49A5-8F4E-D6E106444805","5111",Doanh thu bán hàng hóa,Goods sale,F6D792EE-54E4-44EF-B56A-6578BAE92FC8
+EB264106-A0DD-4FFA-BD5F-719C658487F8,"5112",Doanh thu bán thành phẩm,Finished product sale,F6D792EE-54E4-44EF-B56A-6578BAE92FC8
+"4562D751-1266-49ED-B81C-A8798357432E","5113",Doanh thu cung cấp dịch vụ,Turnover from service provision,F6D792EE-54E4-44EF-B56A-6578BAE92FC8
+"36D4A628-3CC7-48CB-992C-98A197AE0374","5118",Doanh thu khác,Other sales,F6D792EE-54E4-44EF-B56A-6578BAE92FC8
+D2A7C4B4-16FF-437D-8727-CBCDBB202FCA,"515",Doanh thu hoạt động tài chính,Turnover from financial operations,
+"81171F67-A610-4EFB-8165-BE0DA14563BD","611",Mua hàng,Purchase,
+BE501F8A-DA4F-4E0B-BA43-A21A82F44404,"631",Giá thành sản xuất,Production cost,
+"5BF7D2FD-7CE1-408E-B70A-7018B8D23166","632",Giá vốn hàng bán,Cost of goods sold,
+"712E2415-C6AB-43DD-81D9-A123510202CA","635",Chi phí tài chính,Financial activities expenses,
+"8A17553D-DDE5-49FD-9D19-9CA08F606FCA","642",Chi phí quản lý kinh doanh,Business management expenses,
+"96F1897D-E08F-49B9-AE81-646258BAA845","6421",Chi phí bán hàng,Selling expenses,"8A17553D-DDE5-49FD-9D19-9CA08F606FCA"
+"5991FB60-4BB0-404E-AFE4-70A1EEE77679","6422",Chi phí quản lý doanh nghiệp,General & administration expenses,"8A17553D-DDE5-49FD-9D19-9CA08F606FCA"
+"1814F5F0-1A6B-47BD-8583-2BEA13F97798","711",Thu nhập khác,Other income,
+"2E62D36A-D8ED-45C2-820F-ACE312B12F67","811",Chi phí khác,Other expenses,
+"594EEF86-D7B9-434A-BD42-9BD73E034719","821",Chi phí thuế thu nhập doanh nghiệp,Business Income tax charge,
+"8955A166-0CC6-4FE8-950D-780851A63E62","911",Xác định kết quả kinh doanh,Evaluation of business results,
