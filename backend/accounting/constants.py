@@ -19,6 +19,7 @@ class BusinessType(TextEnum):
     POS_DISCOUNT = _('business.type.pos.discount')
     EXPENSE = _('business.type.expense')
     INCOME = _('business.type.income')
+    INTERNAL_TRANSFER = _('business.type.internal.transfer')
     OTHER = _('business.type.other')
 
 class BankAccountType(TextEnum):

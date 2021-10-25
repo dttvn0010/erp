@@ -204,23 +204,48 @@ function TableHead({table, dispatch}) {
       <tr>
         {table.columnsDef.map((col, i) => 
           <th key={i} style={{width: col.width}} className={col.cssClass}>
-            {col.title}
-            <div className={!col.isNarrow? "float-end": ""}>
-              {col.search &&
-                <FilterButton 
-                  col={col} 
-                  table={table} 
-                  dispatch={dispatch}
-                />
-              }
-              {col.orderable &&(
-                <OrderButton 
-                  colName={col.data} 
-                  table={table} 
-                  dispatch={dispatch}
-                />
-              )}
-            </div>
+            {!col.isNarrow &&
+              <div className="d-flex flex-row">
+                <div style={{flex:1}}>{col.title}</div>
+                <div>
+                  {col.search &&
+                    <FilterButton 
+                      col={col} 
+                      table={table} 
+                      dispatch={dispatch}
+                    />
+                  }
+                  {col.orderable &&(
+                    <OrderButton 
+                      colName={col.data} 
+                      table={table} 
+                      dispatch={dispatch}
+                    />
+                  )}
+                </div>
+              </div>
+            }
+            {col.isNarrow&&
+              <div>
+                <div>{col.title}</div>
+                <div>
+                  {col.search &&
+                    <FilterButton 
+                      col={col} 
+                      table={table} 
+                      dispatch={dispatch}
+                    />
+                  }
+                  {col.orderable &&(
+                    <OrderButton 
+                      colName={col.data} 
+                      table={table} 
+                      dispatch={dispatch}
+                    />
+                  )}
+                </div>
+              </div>
+            }
           </th>
         )}
       </tr>

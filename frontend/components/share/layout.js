@@ -25,10 +25,12 @@ const modules= [
         ] 
       },
       {
-        path: '/bank', title: 'Ngân hàng',
-      },
-      {
-        path: '/cash', title: 'Quỹ',
+        path: '/accounting', title: 'Thu chi',
+        children: [
+          {path: '/expense', title: 'Chi phí'},
+          {path: '/income', title: 'Tiền thu'},
+          {path: '/internal-transfer', title: 'Chuyển tiền nội bộ'},
+        ]
       },
       {
         path: '/manufacturing', title: 'Sản xuất',

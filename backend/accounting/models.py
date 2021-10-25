@@ -98,9 +98,10 @@ class Ledger(models.Model):
     company = models.ForeignKey(Company, on_delete=models.PROTECT)
     business_type = models.CharField(choices=BusinessType.choices(), max_length=50)
 
-    inward = models.BooleanField()
+    inward = models.BooleanField(null=True)
     internal = models.BooleanField(default=False)
-    
+    cash = models.BooleanField(default=True)
+
     from_bank_account = models.ForeignKey(BankAccount, 
         related_name='ledger_from_bank_accounts',
         blank=True, null=True, 
@@ -116,8 +117,8 @@ class Ledger(models.Model):
     memo = models.CharField(max_length=200, blank=True)
     amount = models.IntegerField()
 
-    ref_pk = models.BigIntegerField()
-    ref_class = models.CharField(max_length=200)
+    ref_pk = models.BigIntegerField(null=True)
+    ref_class = models.CharField(blank=True, max_length=200)
     date = models.DateTimeField()
 
 class LedgerItem(models.Model):
@@ -148,6 +149,9 @@ class InternalTransfer(models.Model):
     )
 
     date = models.DateTimeField(auto_now_add=True)
+    create_date = models.DateTimeField(auto_now_add=True)
+    update_date = models.DateTimeField(auto_now=True)    
+    status = models.CharField(choices=BaseStatus.choices(), default=BaseStatus.DRAFT.name, max_length=50)
 
 class InternalTransferItem(models.Model):
     transfer = models.ForeignKey(InternalTransfer, on_delete=models.PROTECT)
@@ -159,7 +163,7 @@ class InternalTransferItem(models.Model):
 
 class Expense(models.Model):
     company = models.ForeignKey(Company, on_delete=models.PROTECT)
-    
+
     ledger = models.OneToOneField(Ledger, 
         related_name='ledger_expense',
         on_delete=models.CASCADE
@@ -178,7 +182,8 @@ class Expense(models.Model):
 
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)    
-    status = models.CharField(choices=ExpenseStatus.choices(), max_length=50)
+    status = models.CharField(choices=ExpenseStatus.choices(), 
+            default=ExpenseStatus.DRAFT.name, max_length=50)
 
 class ExpenseItem(models.Model):
     expense = models.ForeignKey(Expense, on_delete=models.CASCADE)
@@ -195,13 +200,17 @@ class ExpenseItem(models.Model):
 
 class Income(models.Model):
     company = models.ForeignKey(Company, on_delete=models.PROTECT)
-    
+
     ledger = models.OneToOneField(Ledger, 
         related_name='ledger_income',
         on_delete=models.CASCADE
     )
 
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField()
+
+    create_date = models.DateTimeField(auto_now_add=True)
+    update_date = models.DateTimeField(auto_now=True)    
+    status = models.CharField(choices=BaseStatus.choices(), default=BaseStatus.DRAFT.name, max_length=50)
 
 class IncomeItem(models.Model):
     income = models.ForeignKey(Income, on_delete=models.CASCADE)
