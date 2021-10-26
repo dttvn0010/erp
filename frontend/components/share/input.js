@@ -11,187 +11,201 @@ import {
 
 
 export default function Input(props) {
-  const {type, readOnly, className, onChange, ...otherProps} = props;
+  let {
+    type, 
+    value,
+    readOnly, 
+    className, 
+    onChange, 
+    placeholder,
+    valueField,
+    labelField, 
+    optionsUrl,
+    params,
+    getParams,
+    optionDisplayFunc,
+    resultDisplayFunc,
+    dateFormat,
+    timeInputLabel,
+    ...otherProps
+  } = props;
+
   const [options, setOptions] = useState([]);
 
   useEffect(() => {
     if(type === 'select') {
-      getOptions({
-        optionsUrl: props.optionsUrl,
-        labelField: props.labelField,
-        labelDisplayFunc: props.labelDisplayFunc,
-        valueField: props.valueField ?? 'id'
-      }).then(options => setOptions(options));
+      if(optionsUrl){
+        getOptions({
+          url: optionsUrl ?? '',
+          labelField: labelField ?? 'name',
+          valueField: valueField ?? 'id',
+          params,
+          getParams,
+        }).then(options => setOptions(options));
+      }
     }
   }, []);
 
   if(readOnly) {
-    let value = props.value || props.defaultValue;
     if(type === 'select' || type === 'async-select') {
-      value = value.label;
+      if(resultDisplayFunc) {
+        value = resultDisplayFunc(value);
+      }else if(optionDisplayFunc){
+        value = props.optionDisplayFunc(value);
+      }else{
+        value = (value||{})[labelField] ?? (value?.label);
+      }
     }
 
-    if(type !== 'textarea') {
-      return (
-        <input 
-          readOnly={true}
-          className={"form-control " + className ?? ""} 
-          value={value}
-        />
-      )
-    }else{
+    if(type === 'textarea') {
       return (
         <textarea 
           readOnly={true}
           className={"form-control " + className ?? ""} 
-          value={value}
-          rows={props.rows}
+          value={value??''}
+          {...otherProps}
         ></textarea>
+      )
+    }else if(type === 'checkbox') {
+      return (
+        <input 
+          type="checkbox"
+          checked={value ?? false} 
+          {...otherProps}
+        />
+      );
+    }else{
+      return (
+        <input 
+          readOnly={true}
+          className={"form-control " + className ?? ""} 
+          value={value??''}
+          {...otherProps}
+        />
       )
     }
   }
 
   if(type === 'input' || type === 'number') {
-    const {value, ...remainProps} = otherProps;
     return (
       <input 
         type={type === 'number'? 'number' : 'text'}
         className={"form-control " + className ?? ""} 
         onChange={onChange? e => onChange(e.target.value) : onChange}
-        value={value}
-        {...remainProps}
+        value={value??''}
+        placeholder={placeholder??''}
+        {...otherProps}
       />
     )
   }
 
+  if(type === 'checkbox') {
+    return (
+      <input 
+        type="checkbox"
+        checked={value ?? false} 
+        onChange={onChange? e => onChange(e.target.checked): onChange}
+        {...otherProps}
+      />
+    );
+  }
+
   if(type === 'textarea') {
-    const {value, ...remainProps} = otherProps;
     return (
       <textarea 
         className={"form-control " + className ?? ""}
         onChange={onChange? e => onChange(e.target.value) : onChange}
-        value={value}
-        {...remainProps}
+        value={value??''}
+        placeholder={placeholder??''}
+        {...otherProps}
       ></textarea>
     )
   }
 
   if(type === 'date' || type === 'datetime') {
-    let {
-      dateFormat,
-      timeInputLabel, 
-      value, 
-      defaultValue,
-      ...remainProps
-    } = otherProps;
-
     dateFormat = dateFormat || (type ==='date'? 'dd/MM/yyyy': 'dd/MM/yyyy HH:mm');
     const momentDateFormat = dateFormat.replace('dd', 'DD');
     
     return (
       <DatePicker
         className={"form-control " + className ?? ""}
-        value={value}
-        defaultValue={defaultValue}
+        value={value??''}
         onChange={onChange? (val) => onChange(moment(val).format(momentDateFormat)) : onChange}
         timeInputLabel={timeInputLabel || "Time:"}
         dateFormat={dateFormat}
         showTimeInput={type === 'datetime'}
-        {...remainProps}
+        {...otherProps}
       />
     )
   }
 
   if(type === 'select') {
-    let {
-      optionsUrl, 
-      value,
-      defaultValue,
-      valueField, 
-      labelField,
-      labelDisplayFunc,
-      placeholder,
-      ...remainProps
-    } = otherProps;
-
-    if(value){
-      value = {
-        ...value,
-        value: value[valueField??'id'],
-        label: value[labelField]
-      }
+    value = {
+      ...value,
+      value: (value||{})[valueField??'id'],
+      label: (value||{})[labelField??'name']
     }
-
-    if(defaultValue){
-      defaultValue = {
-        ...defaultValue,
-        value: defaultValue[valueField??'id'],
-        label: defaultValue[labelField]
-      }
-    }
-
+    
     return (
       <Select 
         value={value}
-        defaultValue={defaultValue}
-        options={options}
+        options={optionsUrl? options : props.options}
+        formatOptionLabel={(item, {context}) => {
+          if(item.isDisabled) return item.label;
+          const label = (optionDisplayFunc)? optionDisplayFunc(item) : item[labelField??'name'];
+          if(context === 'value') {
+            return (resultDisplayFunc)? resultDisplayFunc(item) : label;
+          }else if(context === 'menu') {
+            return label;
+          }
+        }}
         className={className}
         onChange={onChange}
+        isClearable={true}
         placeholder={placeholder??''}
-        {...remainProps}
+        noOptionsMessage={() => 'Không tìm thấy kết quả nào'}
+        {...otherProps}
       />
     )
   }
 
   if(type === 'async-select') {
-    let {
-      optionsUrl,
-      placeholder,
-      value,
-      defaultValue,
-      valueField,
-      labelField,
-      labelDisplayFunc,
-      ...remainProps
-    } =  otherProps;
-
-    if(value){
-      value = {
-        ...value,
-        value: value[valueField??'id'],
-        label: value[labelField]
-      }
+    value = {
+      ...value,
+      value: (value||{})[valueField??'id'],
+      label: (value||{})[labelField??'name']
     }
-
-    if(defaultValue){
-      defaultValue = {
-        ...defaultValue,
-        value: defaultValue[valueField??'id'],
-        label: defaultValue[labelField]
-      }
-    }
-
+    
     return (
       <AsyncSelect 
         className={className}
-        value={value}
-        defaultValue={defaultValue}
+        value={value??null}
         onChange={onChange}
         cacheOptions
         loadOptions={
           getLoadOptions({
-            url: optionsUrl,
-            labelField: labelField, 
-            labelDisplayFunc: labelDisplayFunc,
-            valueField: valueField ?? 'id'
+            url: optionsUrl ?? '',
+            labelField: labelField ?? 'name', 
+            valueField: valueField ?? 'id',
+            params,
+            getParams,
           })
         }
+        formatOptionLabel={(item, {context}) => {
+          if(item.isDisabled) return item.label;
+          const label = (optionDisplayFunc)? optionDisplayFunc(item) : item[labelField??'name'];
+          if(context === 'value') {
+            return (resultDisplayFunc)? resultDisplayFunc(item) : label;
+          }else if(context === 'menu') {
+            return label;
+          }
+        }}
         defaultOptions
         isClearable={true}
         placeholder={placeholder??''}
         noOptionsMessage={() => 'Không tìm thấy kết quả nào'}
         loadingMessage={() => 'Đang tìm kiếm...'} 
-        {...remainProps}
+        {...otherProps}
       />
     )
   }

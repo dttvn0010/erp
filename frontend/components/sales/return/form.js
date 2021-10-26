@@ -9,8 +9,8 @@ import PaymentNote from '../sections/note/paymentNote';
 import InStockNote from '../sections/note/inStockNote';
 import Invoice from '../sections/note/invoice';
 
-import GoodItems from '../sections/item_list/goodsItems';
-import TaxItems from '../sections/item_list/taxItems';
+import GoodItems from '../sections/itemList/goodsItems';
+import TaxItems from '../sections/itemList/taxItems';
 
 import { 
   IconLink, 

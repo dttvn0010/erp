@@ -1,4 +1,4 @@
-import {  useState } from 'react';
+import {  useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import DatePicker from "react-datepicker";
@@ -8,11 +8,45 @@ import Layout from '../components/share/layout'
 import DataTable from '../components/share/datatable';
 
 import {incrementCounter} from '../redux/actions/counterActions';
+import { copyArray } from 'utils/helper';
+import { createForm } from 'components/share/form';
+
+const formMeta= {
+  fields: [
+    {
+      name: 'bank',
+      label: 'Ngân hàng',
+      type: 'select',
+      attrs: {
+        optionsUrl: '/accounting/bank-account/search-bank',
+        labelField: 'name'
+      }
+    },
+    {
+      name: 'bank_account',
+      keys: ['bank'],
+      label: 'Tài khoản ngân hàng',
+      type: 'select',
+      attrs: {
+        optionsUrl: '/accounting/search-bank-account',
+        getParams: (id, data) => ({bank_id: data?.bank}),
+        labelField: 'name'
+      }
+    }
+  ]
+}
 
 export default function Index() {
   const dispatch = useDispatch();
   const count = useSelector(state => state.counter.value);
   const [startDate, setStartDate] = useState(new Date());  
+
+  const [form, setForm] = useState(null);
+
+  useEffect(() => {
+    setForm(createForm(formMeta));
+  }, []);
+
   const saveForm = (e) => {
     e.preventDefault();
     //const data = new FormData(document.getElementById("fmt"));
@@ -26,6 +60,28 @@ export default function Index() {
   ];
 
   const [drink, setDrink] = useState("");
+
+  const [items, setItems] = useState([{}]);
+
+  const addItem = (index) => {
+    const items1 = copyArray(items) || [];
+    console.log('items==', items1);
+    if(index == -1) {
+      items1.push({});
+    }else{
+      items1.splice(index+1, 0, {});
+    }
+
+    console.log('index=', index, 'items=', items1);
+
+    setItems(items1);
+  }
+
+  const updateItem = (index, itemData) => {
+    const items1 = copyArray(items) || [];
+    items1[index] = {...items1[index], ...itemData};
+    setItems(items1);
+  }
 
   /*
   const customers = [
@@ -100,6 +156,7 @@ export default function Index() {
   return (
     <div className="container mt-3">
       <h2>Home</h2>
+      {form && <form.All headerWidth={"30%"}/>}
       <div>Counter: {count}</div>
       
       <button 
@@ -109,6 +166,12 @@ export default function Index() {
         Click
       </button>
       
+      {items.map((item, index) =>
+        <div>
+          <button className="btn btn-sm btn-primary" onClick={() => addItem(index)}>Add</button>
+          <input name={`inp_${index}`} defaultValue={index}/>
+        </div>
+      )}
       <DataTable apiUrl={"/stock/product-category/search"}/>
 
       <form onSubmit={saveForm} id="fmt">

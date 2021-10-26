@@ -1,6 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
-from core.views_api import DataTableView
+from core.views_api import DataTableView, AsyncSearchView
 from core.constants import BaseStatus
+from accounting.models import IncomeType
 from .serializers import *
 
 class IncomeViewSet(ModelViewSet):
@@ -66,3 +67,12 @@ class IncomeTableView(DataTableView):
 
     def get_queryset(self, user):
         return Income.objects.filter(company=user.employee.company)
+
+class IncomeTypeAsyncSearchView(AsyncSearchView):
+    fields = ['name']
+    
+    def get_queryset(self, term, request):
+        return IncomeType.objects.filter(
+            company=request.user.employee.company,
+            name__icontains=term
+        )

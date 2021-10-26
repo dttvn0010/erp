@@ -19,6 +19,16 @@ class DepartmentViewSet(ModelViewSet):
         context['user'] = self.request.user
         return context
 
+    def destroy(self, request, *args, **kwargs):
+        pk = kwargs['pk']
+        department = get_object_or_404(Department, pk=pk)
+        
+        for empl in Employee.objects.filter(department=department):
+            empl.department = None
+            empl.save()
+
+        return super().destroy(request, *args, **kwargs)
+        
 class DepartmentTableView(DataTableView):
     model = Department
     order_by = '-update_date'

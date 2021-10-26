@@ -10,11 +10,10 @@ const formMeta = {
   fields: [
     {
       name: 'department',
-      displayField: 'department_name',
       label: 'Phòng/ban làm việc',
       type: 'async-select',
-      options: {
-        url: '/employee/search-department',
+      attrs: {
+        optionsUrl: '/employee/search-department',
         labelField: 'name'
       }
     },
@@ -44,8 +43,8 @@ const formMeta = {
     },
   ],
   detailUrl: '/employee/crud/[$id$]',
-  createUrl: '/employee/create',
-  updateUrl: '/employee/update/[$id$]/'
+  createUrl: '/employee/crud/',
+  updateUrl: '/employee/crud/[$id$]/'
 };
 
 export default function StockForm({id, update, readOnly}) {

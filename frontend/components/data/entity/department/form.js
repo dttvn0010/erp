@@ -15,22 +15,20 @@ const formMeta = {
     },
     {
       name: 'parent',
-      displayField: 'parent_name',
       label: 'Trực thuộc',
       type: 'async-select',
-      options: {
-        url: '/employee/department/search-parent',
-        getExtraParams : (id, _) => ({instanceId: id}),
-        labelField: 'name'
+      attrs: {
+        optionsUrl: '/employee/department/search-parent',
+        labelField: 'name',
+        getParams : (id, _) => ({instanceId: id}),
       }
     },
     {
       name: 'manager',
-      displayField: 'manager_name',
       label: 'Người quản lý',
       type: 'async-select',
-      options: {
-        url: '/employee/department/search-employee',
+      attrs: {
+        optionsUrl: '/employee/department/search-employee',
         labelField: 'name'
       }
     },

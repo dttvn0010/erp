@@ -1,6 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
-from core.views_api import DataTableView
+from core.views_api import DataTableView, AsyncSearchView
 from core.constants import BaseStatus
+from accounting.models import ExpenseType
 from .serializers import *
 
 class ExpenseViewSet(ModelViewSet):
@@ -67,3 +68,13 @@ class ExpenseTableView(DataTableView):
 
     def get_queryset(self, user):
         return Expense.objects.filter(company=user.employee.company)
+
+
+class ExpenseTypeAsyncSearchView(AsyncSearchView):
+    fields = ['name']
+
+    def get_queryset(self, term, request):
+        return ExpenseType.objects.filter(
+            company=request.user.employee.company,
+            name__icontains=term
+        )

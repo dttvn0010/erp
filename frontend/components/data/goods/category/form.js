@@ -13,14 +13,14 @@ const formMeta = {
   fields: [
     {
       name: 'parent',
-      displayField: 'parent_name',
       label: 'Nhóm cha',
       type: 'async-select',
-      options: {
-        url: '/stock/product-category/search-parent',
-        getExtraParams : (id, _) => ({instanceId: id}),
-        labelField: 'name'
-      }
+
+      attrs: {
+        optionsUrl: '/stock/product-category/search-parent',
+        labelField: 'name',
+        getParams: (id,_) => ({instanceId: id})
+      },
     },
     {
       name: 'code',

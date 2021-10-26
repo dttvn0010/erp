@@ -26,7 +26,7 @@ class ExpenseSerializer(ModelSerializer):
     amount = CharField(source='ledger.amount')
 
     def create(self, validated_data):
-        print('validated_data=', validated_data)
+        
         company = self.context['user'].employee.company
         date = datetime.now()
 

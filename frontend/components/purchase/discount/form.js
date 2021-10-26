@@ -8,7 +8,7 @@ import ReceiptNote from '../sections/note/receiptNote';
 import DebtDeductNote from '../sections/note/debtDeductNote';
 import Invoice from '../sections/note/invoice';
 
-import GoodItems from '../sections/item_list/goodsItems';
+import GoodItems from '../sections/itemList/goodsItems';
 
 import { 
   IconLink, 

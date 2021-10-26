@@ -78,8 +78,8 @@ class Employee(models.Model):
         on_delete=models.PROTECT,
     )
 
-    no_financial_dependents = models.IntegerField()
-    leave_days_per_year = models.IntegerField()
+    no_financial_dependents = models.IntegerField(default=0)
+    leave_days_per_year = models.IntegerField(default=0)
 
     def __str__(self):
         return self.user.display

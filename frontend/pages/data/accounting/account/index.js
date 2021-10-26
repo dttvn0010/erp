@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { Modal, Button } from 'react-bootstrap';
-import { EllipsisDropDown } from 'components/share/ellipsis_dropdown';
+import { EllipsisDropDown } from 'components/share/ellipsisDropdown';
 import Card from 'components/share/card';
 import DataTable from 'components/share/datatable';
 import { useSliceSelector, useSliceStore } from 'utils/helper';
-import { NAME_SPACE } from 'redux/reducers/accounting/account/indexReducer';
+import { NAME_SPACE } from 'redux/reducers/data/accounting/account/indexReducer';
 
 import { 
   getDefaultLayOut,

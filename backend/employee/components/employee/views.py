@@ -1,4 +1,5 @@
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.response import Response
 from core.views_api import DataTableView, AsyncSearchView
 from core.constants import BaseStatus
 from employee.models import Department
@@ -12,6 +13,15 @@ class EmployeeViewSet(ModelViewSet):
         context = super().get_serializer_context()
         context['user'] = self.request.user
         return context
+
+    def destroy(self, request, *args, **kwargs):
+        pk = kwargs['pk']
+        user = User.objects.get(employee__id=pk)
+        empl = Employee.objects.get(pk=pk)
+        empl.delete()
+        user.delete()
+
+        return Response(status=200)
 
 class EmployeeTableView(DataTableView):
     model = Employee

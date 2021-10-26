@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { EllipsisDropDown } from 'components/share/ellipsis_dropdown';
+import { EllipsisDropDown } from 'components/share/ellipsisDropdown';
 import Card from 'components/share/card';
 import DataTable from 'components/share/datatable';
 
@@ -33,7 +33,7 @@ export default function Index() {
         }
       ];
 
-      if(row.status_id === 'DRAFT') {
+      if(row.status_id === 'DRAFT' || true) {
         items.push({
           title: 'Xóa',
           onClick: () => deleteItem(dispatch, row)

@@ -4,6 +4,7 @@ from .views import *
 
 urlpatterns = [
     path('search', IncomeTableView.as_view()),
+    path('search-income-type', IncomeTypeAsyncSearchView.as_view()),
 ]
 
 router = DefaultRouter()

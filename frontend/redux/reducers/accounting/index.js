@@ -1,8 +1,12 @@
+import expenseReducer from './expenseReducer';
+import incomeReducer from './incomeReducer';
+import internalTransferReducer from './internalTransferReducer';
 import {combineReducers} from 'redux';
-import accountReducer from './account_reducer';
 
 const reducer = combineReducers({
-    account: accountReducer,
+    expense: expenseReducer,
+    income: incomeReducer,
+    internalTransfer: internalTransferReducer
 });
 
 export default reducer;

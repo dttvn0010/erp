@@ -29,7 +29,7 @@ const modules= [
         children: [
           {path: '/expense', title: 'Chi phí'},
           {path: '/income', title: 'Tiền thu'},
-          {path: '/internal-transfer', title: 'Chuyển tiền nội bộ'},
+          {path: '/internalTransfer', title: 'Chuyển tiền nội bộ'},
         ]
       },
       {
@@ -80,11 +80,11 @@ const modules= [
         title: 'Kế toán',
         path: '/data/accounting',
         children: [
-          {path: '/expense-type', title: 'Loại chi phí'},
-          {path: '/income-type', title: 'Loại thu tiền'},
+          {path: '/expenseType', title: 'Loại chi phí'},
+          {path: '/incomeType', title: 'Loại thu tiền'},
           {path: '/account', title: 'Tài khoản kế toán'},
           {path: '/bank', title: 'Ngân hàng'},
-          {path: '/bank-account', title: 'Tài khoản ngân hàng'},
+          {path: '/bankAccount', title: 'Tài khoản ngân hàng'},
         ]
       }
     ]

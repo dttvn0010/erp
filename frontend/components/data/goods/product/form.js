@@ -10,11 +10,10 @@ const formMeta = {
   fields: [
     {
       name: 'category',
-      displayField: 'category_name',
       label: 'Nhóm',
       type: 'async-select',
-      options: {
-        url: '/stock/product/search-category',
+      attrs:{
+        optionsUrl: '/stock/product/search-category',
         labelField: 'name'
       }
     },

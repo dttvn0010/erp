@@ -1,15 +1,28 @@
-from django.db.models import manager
-from rest_framework.serializers import ModelSerializer, CharField
+from rest_framework.serializers import ModelSerializer, CharField, SerializerMethodField
 from employee.models import Department
 
 class DepartmentSerializer(ModelSerializer):
     class Meta:
         model = Department
-        fields = ['id', 'name', 'parent', 'parent_name', 'manager', 'manager_name', 'status']
+        fields = ['id', 'name', 'parent', 'parent_obj', 'manager', 'manager_obj', 'status']
 
     status = CharField(read_only=True)
-    parent_name = CharField(read_only=True, source='parent.name')
-    manager_name = CharField(read_only=True, source='manager.user.display')
+    parent_obj = SerializerMethodField()
+    manager_obj = SerializerMethodField()
+
+    def get_parent_obj(self, obj):
+        if obj and obj.parent:
+            return {
+                'id': obj.parent.id,
+                'name': obj.parent.name
+            }
+
+    def get_manager_obj(self, obj):
+        if obj and obj.manager:
+            return {
+                'id': obj.manager.id,
+                'name': obj.manager.user.display
+            }
 
     def create(self, validated_data):
         validated_data['company'] = self.context['user'].employee.company
@@ -31,3 +44,4 @@ class DepartmentSerializer(ModelSerializer):
             manager.save()
         
         return instance
+

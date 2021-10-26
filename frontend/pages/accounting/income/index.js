@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { EllipsisDropDown } from 'components/share/ellipsis_dropdown';
+import { EllipsisDropDown } from 'components/share/ellipsisDropdown';
 import Card from 'components/share/card';
 import DataTable from 'components/share/datatable';
 
