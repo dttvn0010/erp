@@ -19,12 +19,12 @@ class ExpenseItemSerializer(ModelSerializer):
         fields = ['expense', 'type', 'type_obj', 'credit_account', 'credit_account_obj', 'note', 'amount']
 
     expense = PrimaryKeyRelatedField(required=False, 
-                    queryset=Expense.objects.all()
-                )
+        queryset=Expense.objects.all()
+    )
     
     credit_account = PrimaryKeyRelatedField(source='ledger_item.credit_account', 
-                    queryset=Account.objects.all()
-                )
+        queryset=Account.objects.all()
+    )
 
     amount = IntegerField(source='ledger_item.amount')
     note = CharField(required=False, source='ledger_item.note')
