@@ -10,7 +10,16 @@ from rest_framework.serializers import (
     SerializerMethodField
 )
 
-from accounting.models import Expense, ExpenseItem, Account, BankAccount, Ledger, LedgerItem
+from accounting.models import (
+    Expense, 
+    ExpenseItem, 
+    ExpenseType, 
+    Account, 
+    BankAccount, 
+    Ledger, 
+    LedgerItem
+)
+
 from accounting.constants import BusinessType, ExpenseStatus
 
 class ExpenseItemSerializer(ModelSerializer):
@@ -28,6 +37,7 @@ class ExpenseItemSerializer(ModelSerializer):
 
     amount = IntegerField(source='ledger_item.amount')
     note = CharField(required=False, source='ledger_item.note')
+    type = PrimaryKeyRelatedField(queryset=ExpenseType.objects.all())
     type_obj = SerializerMethodField()
     credit_account_obj = SerializerMethodField()
 
@@ -73,7 +83,7 @@ class ExpenseSerializer(ModelSerializer):
 
     to_bank_account_obj = SerializerMethodField()
 
-    note = CharField(source='ledger.memo', required=False)
+    note = CharField(source='ledger.memo')
     amount = CharField(source='ledger.amount', required=False)
     cash = BooleanField(source='ledger.cash', required=False)
     items = ExpenseItemSerializer(many=True, required=False)
