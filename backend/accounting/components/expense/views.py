@@ -1,8 +1,12 @@
+from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 from rest_framework.viewsets import ModelViewSet
 from core.views_api import DataTableView, AsyncSearchView
 from core.constants import BaseStatus
 from accounting.models import ExpenseType
 from .serializers import *
+
 
 class ExpenseViewSet(ModelViewSet):
     serializer_class = ExpenseSerializer
@@ -78,3 +82,26 @@ class ExpenseTypeAsyncSearchView(AsyncSearchView):
             company=request.user.employee.company,
             name__icontains=term
         )
+
+@api_view(['GET'])
+def get_expense_detail(request, pk):
+    expense = get_object_or_404(Expense, pk=pk)
+    data = ExpenseSerializer(expense).data
+    #items = ExpenseItem.objects.filter(expense=expense)
+    #data['items'] = ExpenseItemSerializer(items, many=True).data
+    return Response(data)
+
+@api_view(['POST'])
+def add_expense_item(request, pk):
+    data = request.data
+    serializer = ExpenseItemSerializer(data={**data, 'expense': pk})
+    if serializer.is_valid():
+        serializer.save()
+        return Response({'success': True})
+    else:
+        return Response(serializer.errors, status=400)
+
+
+@api_view(['POST'])
+def save_expense(request, pk):
+    ...

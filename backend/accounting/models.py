@@ -121,24 +121,29 @@ class Ledger(models.Model):
     ref_class = models.CharField(blank=True, max_length=200)
     date = models.DateTimeField()
 
+    def __str__(self) -> str:
+        return self.memo
+
 class LedgerItem(models.Model):
     ledger = models.ForeignKey(Ledger, on_delete=models.CASCADE)
     
     debit_account = models.ForeignKey(Account, 
         related_name='ledger_debit_accounts',
+        blank=True, null=True,
         on_delete=models.PROTECT
     )
 
     credit_account = models.ForeignKey(Account, 
         related_name='ledger_credit_accounts',
+        blank=True, null=True,
         on_delete=models.PROTECT
     )
     
     note = models.CharField(max_length=200, blank=True)
     amount = models.IntegerField()
     
-    ref_pk = models.BigIntegerField()
-    ref_class = models.CharField(max_length=200)
+    ref_pk = models.BigIntegerField(blank=True, null=True)
+    ref_class = models.CharField(max_length=200, blank=True)
 
 class InternalTransfer(models.Model):
     company = models.ForeignKey(Company, on_delete=models.PROTECT)
@@ -152,6 +157,9 @@ class InternalTransfer(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)    
     status = models.CharField(choices=BaseStatus.choices(), default=BaseStatus.DRAFT.name, max_length=50)
+
+    def __str__(self) -> str:
+        return self.ledger.memo
 
 class InternalTransferItem(models.Model):
     transfer = models.ForeignKey(InternalTransfer, on_delete=models.PROTECT)
@@ -185,8 +193,11 @@ class Expense(models.Model):
     status = models.CharField(choices=ExpenseStatus.choices(), 
             default=ExpenseStatus.DRAFT.name, max_length=50)
 
+    def __str__(self) -> str:
+        return self.ledger.memo
+
 class ExpenseItem(models.Model):
-    expense = models.ForeignKey(Expense, on_delete=models.CASCADE)
+    expense = models.ForeignKey(Expense, related_name='items', on_delete=models.CASCADE)
 
     type = models.ForeignKey(ExpenseType, 
         blank=True, null=True, 
@@ -211,6 +222,9 @@ class Income(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)    
     status = models.CharField(choices=BaseStatus.choices(), default=BaseStatus.DRAFT.name, max_length=50)
+
+    def __str__(self) -> str:
+        return self.ledger.memo
 
 class IncomeItem(models.Model):
     income = models.ForeignKey(Income, on_delete=models.CASCADE)

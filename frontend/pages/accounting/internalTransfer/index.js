@@ -25,11 +25,11 @@ export default function Index() {
       let items = [
         {
           title: 'Xem thông tin',
-          onClick: () => router.push(`./internal-transfer/view/${row.pk}`)
+          onClick: () => router.push(`./internalTransfer/view/${row.pk}`)
         },
         {
           title: 'Cập nhật',
-          onClick: () => router.push(`./internal-transfer/update/${row.pk}`)
+          onClick: () => router.push(`./internalTransfer/update/${row.pk}`)
         }
       ];
 
@@ -55,7 +55,7 @@ export default function Index() {
         <>
           <div className="mb-2">
             <IconLink
-              href="./internal-transfer/create"
+              href="./internalTransfer/create"
               icon="plus"
               title={`Thêm ${itemName}`}
             />

@@ -1,4 +1,4 @@
-export const NAME_SPACE = 'accounting/internal_transfer/form';
+export const NAME_SPACE = 'accounting/internalTransfer/form';
 
 export const ACTIONS = {
   SET_STATE: 'setState'
