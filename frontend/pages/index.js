@@ -156,6 +156,7 @@ export default function Index() {
   return (
     <div className="container mt-3">
       <h2>Home</h2>
+      <input type="radio" checked={true}/>
       {form && <form.All headerWidth={"30%"}/>}
       <div>Counter: {count}</div>
       

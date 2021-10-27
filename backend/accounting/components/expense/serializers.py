@@ -74,8 +74,8 @@ class ExpenseSerializer(ModelSerializer):
     to_bank_account_obj = SerializerMethodField()
 
     note = CharField(source='ledger.memo', required=False)
-    amount = CharField(source='ledger.amount')
-    cash = BooleanField(source='ledger.cash')
+    amount = CharField(source='ledger.amount', required=False)
+    cash = BooleanField(source='ledger.cash', required=False)
     items = ExpenseItemSerializer(many=True, required=False)
 
     def get_from_bank_account_obj(self, obj):

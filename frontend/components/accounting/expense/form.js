@@ -29,8 +29,6 @@ export default function ExpenseForm({id, update, readOnly}){
   const [data, errors] = useSliceSelector(NAME_SPACE, ['data', 'errors']);
   const items = data.items || [];
 
-  console.log('data=', data)
-
   useEffect(() => {
     store.setState({
       data: {},
@@ -104,6 +102,7 @@ export default function ExpenseForm({id, update, readOnly}){
       }
       
       router.push(backUrl);
+      
     }catch(err){
       store.setState({
         errors: err?.response?.data ?? {}
@@ -151,30 +150,28 @@ export default function ExpenseForm({id, update, readOnly}){
                 <div class="col-4">
                   <input 
                     type="radio" 
-                    name="cash"
-                    checked={data.cash}
-                    defaultChecked={data.cash}
-                    onClick={() => !readOnly && updateData({cash: true})}
+                    name="cash" 
+                    checked={!data.cash} 
+                    onClick={() => !readOnly && updateData({cash: false})} 
                     disabled={readOnly}
-                  /> Tiền mặt
+                  /> Chuyển khoản
                 </div>
 
                 <div class="col-4">
                   <input 
                     type="radio" 
                     name="cash"
-                    check={!data.cash}
-                    defaultChecked={!data.cash}
-                    onClick={() => !readOnly && updateData({cash: false})}
+                    checked={data.cash}
+                    onClick={() => !readOnly && updateData({cash: true})}
                     disabled={readOnly}
-                  /> Chuyển khoản
+                  /> Tiền mặt
                 </div>
               </div>
               <ErrorList errors={errors.cash}/>
             </div>
           </div>
 
-          {data.cash === false &&
+          {!data.cash &&
             <div className="row mt-3">
               <div className="col-6 form-group">
                 <label className="form-label text-bold">Số tài khoản gửi tiền:</label>
