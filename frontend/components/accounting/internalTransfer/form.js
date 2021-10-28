@@ -36,13 +36,17 @@ export default function InternalTransferForm({id, update, readOnly}){
     });
 
     if(id) {
-      axios.get(`${baseUrl}/detail/${id}`).then(result => {
+      axios.get(`${baseUrl}/crud/${id}`).then(result => {
         store.setState({data: result.data});
       });
     }
   }, [id]);
 
   const updateData = newData => {
+    for(let [k,v] of Object.entries(newData)) {
+      if(k.endsWith('_obj')) newData[k.replace('_obj', '')] = v?.id;
+    }
+
     const data = store.getState().data ?? {};
     
     store.setState({
@@ -67,6 +71,10 @@ export default function InternalTransferForm({id, update, readOnly}){
   }
 
   const updateItem = (index, itemData) => {
+    for(let [k,v] of Object.entries(itemData)) {
+      if(k.endsWith('_obj')) itemData[k.replace('_obj', '')] = v?.id;
+    }
+
     const {data} = store.getState();
     const items = copyArray(data.items) || [];
     items[index] = {...items[index], ...itemData};
@@ -87,7 +95,12 @@ export default function InternalTransferForm({id, update, readOnly}){
     const {data} = store.getState();
 
     try{
-      await axios.post(`${baseUrl}/save`, data);
+      if(update) {
+        await axios.put(`${baseUrl}/crud/${id}/`, data);
+      }else{
+        await axios.post(`${baseUrl}/crud/`, data);
+      }
+
       router.push(backUrl);
     }catch(err){
       store.setState({
@@ -126,6 +139,7 @@ export default function InternalTransferForm({id, update, readOnly}){
                 type="input"
                 value={data.note}
                 onChange={val => updateData({note: val})}
+                readOnly={readOnly}
               />
               <ErrorList errors={errors.note}/>
             </div>
@@ -138,8 +152,9 @@ export default function InternalTransferForm({id, update, readOnly}){
                 optionsUrl='/accounting/search-bank-account'
                 resultDisplayFunc={item => item.account_number}
                 optionDisplayFunc={item => `${item.account_number} - ${item.bank} - ${item.account_holder}`}
-                value={data.from_bank_account}
-                onChange={val => updateData({from_bank_account: val})}
+                value={data.from_bank_account_obj}
+                onChange={val => updateData({from_bank_account_obj: val})}
+                readOnly={readOnly}
               />
               <ErrorList errors={errors.from_bank_account}/>
             </div>
@@ -149,8 +164,9 @@ export default function InternalTransferForm({id, update, readOnly}){
                 optionsUrl='/accounting/search-bank-account'
                 resultDisplayFunc={item => item.account_number}
                 optionDisplayFunc={item => `${item.account_number} - ${item.bank} - ${item.account_holder}`}
-                value={data.to_bank_account}
-                onChange={val => updateData({to_bank_account: val})}
+                value={data.to_bank_account_obj}
+                onChange={val => updateData({to_bank_account_obj: val})}
+                readOnly={readOnly}
               />
               <ErrorList errors={errors.to_bank_account}/>
             </div>
@@ -202,31 +218,31 @@ export default function InternalTransferForm({id, update, readOnly}){
                       value={item.amount}
                       onChange={val => updateItem(index, {amount: val})}
                     />
-                    <ErrorList errors={errors[`items[${index}]`]?.amount}/>
+                    <ErrorList errors={errors?.items?.[index]?.type}/>
                   </td>
                   <td>
                     <Input
                       type="async-select"
                       readOnly={readOnly}
-                      value={item.credit_account}
-                      onChange={val => updateItem(index, {credit_account: val})}
+                      value={item.credit_account_obj}
+                      onChange={val => updateItem(index, {credit_account_obj: val})}
                       optionsUrl="/accounting/search-account"
                       resultDisplayFunc={item => item.code}
                       optionDisplayFunc={item => `${item.code} - ${item.name}`}
                     />
-                    <ErrorList errors={errors[`items[${index}]`]?.credit_account}/>
+                    <ErrorList errors={errors?.items?.[index]?.credit_account}/>
                   </td>
                   <td>
                     <Input
                       type="async-select"
                       readOnly={readOnly}
-                      value={item.debit_account}
-                      onChange={val => updateItem(index, {debit_account: val})}
+                      value={item.debit_account_obj}
+                      onChange={val => updateItem(index, {debit_account_obj: val})}
                       optionsUrl="/accounting/search-account"
                       resultDisplayFunc={item => item.code}
                       optionDisplayFunc={item => `${item.code} - ${item.name}`}
                     />
-                    <ErrorList errors={errors[`items[${index}]`]?.debit_account}/>
+                    <ErrorList errors={errors?.items?.[index]?.debit_account}/>
                   </td>
                   <td>
                     <Input

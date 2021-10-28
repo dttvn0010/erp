@@ -36,7 +36,7 @@ export default function IncomeForm({id, update, readOnly}){
     });
 
     if(id) {
-      axios.get(`${baseUrl}/detail/${id}`).then(result => {
+      axios.get(`${baseUrl}/crud/${id}`).then(result => {
         store.setState({data: result.data});
       });
     }
@@ -45,6 +45,10 @@ export default function IncomeForm({id, update, readOnly}){
   const updateData = newData => {
     const data = store.getState().data ?? {};
     
+    for(let [k,v] of Object.entries(newData)) {
+      if(k.endsWith('_obj')) newData[k.replace('_obj', '')] = v?.id;
+    }
+
     store.setState({
       data: {
         ...data,
@@ -67,6 +71,10 @@ export default function IncomeForm({id, update, readOnly}){
   }
 
   const updateItem = (index, itemData) => {
+    for(let [k,v] of Object.entries(itemData)) {
+      if(k.endsWith('_obj')) itemData[k.replace('_obj', '')] = v?.id;
+    }
+
     const {data} = store.getState();
     const items = copyArray(data.items) || [];
     items[index] = {...items[index], ...itemData};
@@ -87,7 +95,12 @@ export default function IncomeForm({id, update, readOnly}){
     const {data} = store.getState();
 
     try{
-      await axios.post(`${baseUrl}/save`, data);
+      if(update) {
+        await axios.put(`${baseUrl}/crud/${id}/`, data);
+      }else{
+        await axios.post(`${baseUrl}/crud/`, data);
+      }
+
       router.push(backUrl);
     }catch(err){
       store.setState({
@@ -126,6 +139,7 @@ export default function IncomeForm({id, update, readOnly}){
                 type="input"
                 value={data.note}
                 onChange={val => updateData({note: val})}
+                readOnly={readOnly}
               />
               <ErrorList errors={errors.note}/>
             </div>
@@ -137,7 +151,8 @@ export default function IncomeForm({id, update, readOnly}){
                     type="radio" 
                     name="cash" 
                     checked={data.cash}
-                    onClick={() => updateData({cash: true})}
+                    onClick={() => !readOnly && updateData({cash: true})}
+                    readOnly={readOnly}
                   /> Tiền mặt
                 </div>
 
@@ -145,8 +160,9 @@ export default function IncomeForm({id, update, readOnly}){
                   <input 
                     type="radio" 
                     name="cash" 
-                    check={!data.cash}
-                    onClick={() => updateData({cash: false})}
+                    checked={!data.cash}
+                    onClick={() => !readOnly && updateData({cash: false})}
+                    readOnly={readOnly}
                   /> Chuyển khoản
                 </div>
               </div>
@@ -154,7 +170,7 @@ export default function IncomeForm({id, update, readOnly}){
             </div>
           </div>
 
-          {data.cash === false &&
+          {!data.cash &&
             <div className="row mt-3">
               <div className="col-6 form-group">
                 <label className="form-label text-bold">Số tài khoản gửi tiền:</label>
@@ -162,8 +178,9 @@ export default function IncomeForm({id, update, readOnly}){
                   optionsUrl='/accounting/search-bank-account'
                   resultDisplayFunc={item => item.account_number}
                   optionDisplayFunc={item => `${item.account_number} - ${item.bank} - ${item.account_holder}`}
-                  value={data.from_bank_account}
-                  onChange={val => updateData({from_bank_account: val})}
+                  value={data.from_bank_account_obj}
+                  onChange={val => updateData({from_bank_account_obj: val})}
+                  readOnly={readOnly}
                 />
                 <ErrorList errors={errors.from_bank_account}/>
               </div>
@@ -173,8 +190,9 @@ export default function IncomeForm({id, update, readOnly}){
                   optionsUrl='/accounting/search-bank-account'
                   resultDisplayFunc={item => item.account_number}
                   optionDisplayFunc={item => `${item.account_number} - ${item.bank} - ${item.account_holder}`}
-                  value={data.to_bank_account}
-                  onChange={val => updateData({to_bank_account: val})}
+                  value={data.to_bank_account_obj}
+                  onChange={val => updateData({to_bank_account_obj: val})}
+                  readOnly={readOnly}
                 />
                 <ErrorList errors={errors.to_bank_account}/>
               </div>
@@ -223,12 +241,12 @@ export default function IncomeForm({id, update, readOnly}){
                     <Input 
                       type="async-select"
                       readOnly={readOnly}
-                      value={item.type}
-                      onChange={val => updateItem(index, {type: val})}
+                      value={item.type_obj}
+                      onChange={val => updateItem(index, {type_obj: val})}
                       optionsUrl="/accounting/income/search-income-type"
                       labelField="name"
                     />
-                    <ErrorList errors={errors[`items[${index}]`]?.type}/>
+                    <ErrorList errors={errors?.items?.[index]?.type}/>
                   </td>
                   <td>
                     <Input
@@ -237,19 +255,19 @@ export default function IncomeForm({id, update, readOnly}){
                       value={item.amount}
                       onChange={val => updateItem(index, {amount: val})}
                     />
-                    <ErrorList errors={errors[`items[${index}]`]?.amount}/>
+                    <ErrorList errors={errors?.items?.[index]?.amount}/>
                   </td>
                   <td>
                     <Input
                       type="async-select"
                       readOnly={readOnly}
-                      value={item.debit_account}
-                      onChange={val => updateItem(index, {debit_account: val})}
+                      value={item.debit_account_obj}
+                      onChange={val => updateItem(index, {debit_account_obj: val})}
                       optionsUrl="/accounting/search-account"
                       resultDisplayFunc={item => item.code}
                       optionDisplayFunc={item => `${item.code} - ${item.name}`}
                     />
-                    <ErrorList errors={errors[`items[${index}]`]?.debit_account}/>
+                    <ErrorList errors={errors?.items?.[index]?.debit_account}/>
                   </td>
                   <td>
                     <Input

@@ -29,7 +29,7 @@ class SuppilerAsyncSearchView(AsyncSearchView):
         return Partner.objects.filter(
             company=company,
             is_supplier=True,
-            user__display__icontains=term,
+            name__icontains=term,
             status=BaseStatus.ACTIVE.name
         )
 

@@ -162,7 +162,7 @@ class InternalTransfer(models.Model):
         return self.ledger.memo
 
 class InternalTransferItem(models.Model):
-    transfer = models.ForeignKey(InternalTransfer, on_delete=models.PROTECT)
+    transfer = models.ForeignKey(InternalTransfer, related_name='items', on_delete=models.PROTECT)
 
     ledger_item = models.OneToOneField(LedgerItem,
         related_name='ledger_internal_transfer_item',
@@ -227,7 +227,7 @@ class Income(models.Model):
         return self.ledger.memo
 
 class IncomeItem(models.Model):
-    income = models.ForeignKey(Income, on_delete=models.CASCADE)
+    income = models.ForeignKey(Income, related_name='items', on_delete=models.CASCADE)
 
     type = models.ForeignKey(IncomeType, 
         blank=True, null=True, 

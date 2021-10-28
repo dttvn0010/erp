@@ -34,7 +34,7 @@ class CustomerAsyncSearchView(AsyncSearchView):
         return Partner.objects.filter(
             company=company,
             is_customer=True,
-            user__display__icontains=term,
+            name__icontains=term,
             status=BaseStatus.ACTIVE.name
         )
 
