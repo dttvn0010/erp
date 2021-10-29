@@ -25,18 +25,30 @@ const modules= [
         ] 
       },
       {
-        path: '/accounting', title: 'Thu chi',
+        path: '/accounting', title: 'Kế toán',
         children: [
           {path: '/expense', title: 'Chi phí'},
-          {path: '/income', title: 'Tiền thu'},
+          {path: '/income', title: 'Thu tiền'},
           {path: '/internalTransfer', title: 'Chuyển tiền nội bộ'},
         ]
       },
       {
         path: '/manufacturing', title: 'Sản xuất',
+        children:[
+          {path: '/bom', title: 'Định lượng NVL'},
+          {path: '/plan', title: 'Kế hoạch sản xuất'},
+          {path: '/order', title: 'Lệnh sản xuất'},
+        ]
       },
       {
         path: '/stock', title: 'Kho',
+        children: [
+          {path: '/import', title: 'Nhập kho'},
+          {path: '/export', title: 'Xuất kho'},
+          {path: '/exchange', title: 'Chuyển kho'},
+          {path: '/inventory', title: 'Tồn kho'},
+          {path: '/audit', title: 'Kiểm kê'},
+        ]
       },
     ]
   },

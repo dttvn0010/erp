@@ -132,7 +132,7 @@ function FilterButton({col, table, dispatch}) {
               <div className="half-width px-1">
                 <label className="mb-1">Từ ngày:</label>
                 <DatePicker
-                  className="full-width"
+                  className="full-width text-filter"
                   selected={fromDate}
                   onChange={(date) => setFromDate(date)}
                   dateFormat="dd/MM/yyyy"
@@ -142,7 +142,7 @@ function FilterButton({col, table, dispatch}) {
               <div className="half-width px-1">
                 <label className="mb-1">Đến ngày:</label>
                 <DatePicker
-                  className="full-width"
+                  className="full-width text-filter"
                   selected={toDate}
                   onChange={(date) => setToDate(date)}
                   dateFormat="dd/MM/yyyy"

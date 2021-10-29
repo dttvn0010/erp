@@ -94,6 +94,10 @@ class Import(models.Model):
     note = models.CharField(max_length=200)
     date = models.DateTimeField()
 
+    create_date = models.DateTimeField(auto_now_add=True)
+    update_date = models.DateTimeField(auto_now=True)    
+    status = models.CharField(choices=BaseStatus.choices(), default=BaseStatus.DRAFT.name, max_length=50)
+
 class ImportItem(models.Model):
     _import = models.ForeignKey(Import, on_delete=models.CASCADE)
 
@@ -107,6 +111,10 @@ class Export(models.Model):
     note = models.CharField(max_length=200)
     date = models.DateTimeField()
 
+    create_date = models.DateTimeField(auto_now_add=True)
+    update_date = models.DateTimeField(auto_now=True)    
+    status = models.CharField(choices=BaseStatus.choices(), default=BaseStatus.DRAFT.name, max_length=50)
+
 class ExportItem(models.Model):
     export = models.ForeignKey(Import, on_delete=models.CASCADE)
 
@@ -119,6 +127,10 @@ class Exchange(models.Model):
     company = models.ForeignKey(Company, on_delete=models.PROTECT)
     note = models.CharField(max_length=200)
     date = models.DateTimeField()
+
+    create_date = models.DateTimeField(auto_now_add=True)
+    update_date = models.DateTimeField(auto_now=True)    
+    status = models.CharField(choices=BaseStatus.choices(), default=BaseStatus.DRAFT.name, max_length=50)
 
 class ExchangeItem(models.Model):
     exchange = models.ForeignKey(Exchange, on_delete=models.CASCADE)
