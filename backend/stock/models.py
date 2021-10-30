@@ -99,7 +99,7 @@ class Import(models.Model):
     status = models.CharField(choices=BaseStatus.choices(), default=BaseStatus.DRAFT.name, max_length=50)
 
 class ImportItem(models.Model):
-    _import = models.ForeignKey(Import, on_delete=models.CASCADE)
+    _import = models.ForeignKey(Import, related_name='items', on_delete=models.CASCADE)
 
     product_move = models.OneToOneField(ProductMove,
         related_name='product_move_import_item',
@@ -116,7 +116,7 @@ class Export(models.Model):
     status = models.CharField(choices=BaseStatus.choices(), default=BaseStatus.DRAFT.name, max_length=50)
 
 class ExportItem(models.Model):
-    export = models.ForeignKey(Import, on_delete=models.CASCADE)
+    export = models.ForeignKey(Export, related_name='items', on_delete=models.CASCADE)
 
     product_move = models.OneToOneField(ProductMove,
         related_name='product_move_export_item',
@@ -133,7 +133,7 @@ class Exchange(models.Model):
     status = models.CharField(choices=BaseStatus.choices(), default=BaseStatus.DRAFT.name, max_length=50)
 
 class ExchangeItem(models.Model):
-    exchange = models.ForeignKey(Exchange, on_delete=models.CASCADE)
+    exchange = models.ForeignKey(Exchange, related_name='items', on_delete=models.CASCADE)
 
     product_move = models.OneToOneField(ProductMove,
         related_name='product_move_exchange_item',

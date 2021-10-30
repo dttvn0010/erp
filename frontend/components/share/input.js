@@ -53,7 +53,7 @@ export default function Input(props) {
       }else if(optionDisplayFunc){
         value = props.optionDisplayFunc(value);
       }else{
-        value = (value||{})[labelField] ?? (value?.label);
+        value = (value||{})[labelField ?? 'name'] ?? (value?.label);
       }
     }
 

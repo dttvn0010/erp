@@ -1,5 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 from stock.models import Import
+from core.views_api import DataTableView
 from .serializers import *
 
 class ImportViewSet(ModelViewSet):
@@ -10,3 +11,36 @@ class ImportViewSet(ModelViewSet):
         context = super().get_serializer_context()
         context['user'] = self.request.user
         return context
+
+class ImportDataTableView(DataTableView):
+    model = Import
+    order_by = '-update_date'
+    columns_def = [
+        {
+            'name': 'note',
+            'title': 'Diễn giải',
+            'width': '45%',
+        },
+        {
+            'name': 'date',
+            'title': 'Ngày nhập',
+            'width': '20%'
+        },
+        {
+            'name': 'status',
+            'display_list': BaseStatus.choices(),
+            'title': 'Trạng thái',
+            'orderable': False,
+            'width': '30%'
+        },
+        {
+            'title': 'Thao tác',
+            'orderable': False,
+            'search': False,
+            'css_class': 'text-center',
+            'width': '5%'
+        },
+    ]
+
+    def get_queryset(self, user):
+        return Import.objects.filter(company=user.employee.company)

@@ -1,6 +1,10 @@
 from django.urls import path, include
+from .views import *
 
 urlpatterns = [
+    path('search-product', ProductAsyncSearchView.as_view()),
+    path('search-location', LocationAsyncSearchView.as_view()),
+
     path('location/', include('stock.components.location.urls')),
     path('product-category/', include('stock.components.product_category.urls')),
     path('product/', include('stock.components.product.urls')),

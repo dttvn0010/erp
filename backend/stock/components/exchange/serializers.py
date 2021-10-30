@@ -15,7 +15,8 @@ from core.constants import BaseStatus
 class ExchangeItemSerializer(ModelSerializer):
     class Meta:
         model = ExchangeItem
-        fields = ['exchange', 'location', 'location_obj', 'note', 'product', 'product_obj', 'qty']
+        fields = ['exchange', 'location', 'location_obj', 'location_dest', 'location_dest_obj',
+                 'note', 'product', 'product_obj', 'qty']
 
     exchange = PrimaryKeyRelatedField(required=False, 
         queryset=Exchange.objects.all()
@@ -27,7 +28,7 @@ class ExchangeItemSerializer(ModelSerializer):
     
     location_obj = SerializerMethodField()
 
-    location_dest = PrimaryKeyRelatedField(source='product_move.location', 
+    location_dest = PrimaryKeyRelatedField(source='product_move.location_dest', 
         queryset=Location.objects.all()
     )
     
@@ -116,6 +117,9 @@ class ExchangeSerializer(ModelSerializer):
 
     def update(self, instance, validated_data):
         items_data = validated_data.pop('items', [])
+
+        instance.note = validated_data['note']
+        instance.save()
 
         for item in instance.items.all():
             item.delete()

@@ -103,6 +103,9 @@ class ExportSerializer(ModelSerializer):
     def update(self, instance, validated_data):
         items_data = validated_data.pop('items', [])
 
+        instance.note = validated_data['note']
+        instance.save()
+
         for item in instance.items.all():
             item.delete()
 

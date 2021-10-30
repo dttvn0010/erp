@@ -4,6 +4,7 @@ from rest_framework.routers import DefaultRouter
 from .views import *
 
 urlpatterns =[
+    path('search', ImportDataTableView.as_view()),
 ]
 
 router = DefaultRouter()

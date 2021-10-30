@@ -3,6 +3,7 @@ import appReducer from './appReducer';
 import purchaseReducer from './purchase';
 import salesReducer from './sales';
 import accountingReducer from './accounting';
+import stockReducer from './stock';
 import dataReducer from './data';
 
 import {combineReducers} from 'redux';
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
     purchase: purchaseReducer,
     sales: salesReducer,
     accounting: accountingReducer,
+    stock: stockReducer,
     data: dataReducer
 });
 
