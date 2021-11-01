@@ -16,12 +16,17 @@ class ProductTableView(DataTableView):
             'name': 'category',
             'display_field': 'name',
             'title': 'Nhóm',
-            'width': '32%',
+            'width': '25%',
+        },
+        {
+            'name': 'code',
+            'title': 'Mã',
+            'width': '20%'
         },
         {
             'name': 'name',
             'title': 'Tên',
-            'width': '32%'
+            'width': '25%'
         },
         {
             'name': 'status',
@@ -30,7 +35,7 @@ class ProductTableView(DataTableView):
             'title': 'Trạng thái',
             'orderable': False,
             'editable': True,
-            'width': '32%'
+            'width': '25%'
         },
         {
             'title': 'Thao tác',

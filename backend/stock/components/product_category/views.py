@@ -17,12 +17,17 @@ class ProductCategoryTableView(DataTableView):
             'name': 'parent',
             'display_field': 'name',
             'title': 'Nhóm cha',
-            'width': '32%',
+            'width': '25%',
+        },
+        {
+            'name': 'code',
+            'title': 'Mã nhóm',
+            'width': '20%'
         },
         {
             'name': 'name',
             'title': 'Tên nhóm',
-            'width': '32%'
+            'width': '25%'
         },
         {
             'name': 'status',
@@ -31,7 +36,7 @@ class ProductCategoryTableView(DataTableView):
             'title': 'Trạng thái',
             'orderable': False,
             'editable': True,
-            'width': '32%'
+            'width': '25%'
         },
         {
             'title': 'Thao tác',
