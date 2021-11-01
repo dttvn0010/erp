@@ -5,6 +5,7 @@ from .views import *
 urlpatterns = [
     path('search', ProductBomTableView.as_view()),
     path('search-product', ProductAsyncSearchView.as_view()),
+    path('change-status/<pk>', change_product_bom_status),
 ]
 
 router = DefaultRouter()

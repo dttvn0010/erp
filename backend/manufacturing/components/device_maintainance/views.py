@@ -2,9 +2,10 @@ from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.viewsets import ModelViewSet
-from core.constants import BaseStatus
 from core.views_api import DataTableView, AsyncSearchView
 from core.utils.date_utils import formatDateTime 
+from core.constants import BaseStatus
+from manufacturing.constants import DeviceMaintainanceStatus
 from manufacturing.models import Device
 from .serializers import *
 
@@ -30,7 +31,7 @@ class DeviceMaintainanceTableView(DataTableView):
         },
         {
             'name': 'status',
-            'display_list': BaseStatus.choices(),
+            'display_list': DeviceMaintainanceStatus.choices(),
             'title': 'Trạng thái',
             'orderable': False,
             'width': '25%'

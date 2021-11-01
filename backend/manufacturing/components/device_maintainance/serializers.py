@@ -7,11 +7,11 @@ class DeviceMaintainanceSerializer(ModelSerializer):
         model = DeviceMaintainance
         exclude = ['create_date', 'update_date']
 
-    planned_start_date = DateTimeField(format='%d/%m/%Y %H:%M:%S')
-    planned_end_date = DateTimeField(format='%d/%m/%Y %H:%M:%S')
+    planned_start_date = DateTimeField(format='%d/%m/%Y %H:%M', input_formats=['%d/%m/%Y %H:%M'])
+    planned_end_date = DateTimeField(format='%d/%m/%Y %H:%M', input_formats=['%d/%m/%Y %H:%M'])
 
-    start_date = DateTimeField(read_only=True, format='%d/%m/%Y %H:%M:%S')
-    end_date = DateTimeField(read_only=True, format='%d/%m/%Y %H:%M:%S')
+    start_date = DateTimeField(read_only=True, format='%d/%m/%Y %H:%M')
+    end_date = DateTimeField(read_only=True, format='%d/%m/%Y %H:%M')
 
     status = CharField(read_only=True)
     device_obj = SerializerMethodField()

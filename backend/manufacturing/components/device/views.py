@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view
 from rest_framework.viewsets import ModelViewSet
 from core.constants import BaseStatus
 from core.views_api import DataTableView, AsyncSearchView
-from manufacturing.models import DeviceClass
+from manufacturing.models import DeviceClass, WorkCenter
 
 from .serializers import *
 
@@ -52,6 +52,16 @@ class DeviceClassAsyncSearchView(AsyncSearchView):
 
     def get_queryset(self, term, request):
         return DeviceClass.objects.filter(
+            company=request.user.employee.company,
+            name__icontains=term,
+            status=BaseStatus.ACTIVE.name
+        )
+
+class WorkCenterAsyncSearchView(AsyncSearchView):
+    fields = ['name']
+
+    def get_queryset(self, term, request):
+        return WorkCenter.objects.filter(
             company=request.user.employee.company,
             name__icontains=term,
             status=BaseStatus.ACTIVE.name

@@ -124,7 +124,7 @@ export default function ExportForm({id, update, readOnly}){
     )
   }
 
-  let ncol = 5;
+  let ncol = 4;
   if(readOnly) ncol -= 1;
 
   return (

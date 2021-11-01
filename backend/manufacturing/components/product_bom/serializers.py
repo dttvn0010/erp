@@ -35,11 +35,19 @@ class ProductBomSerializer(ModelSerializer):
     class Meta:
         model = ProductBom
         fields = [
-            'id', 'product', 'name', 'status', 'items'
+            'id', 'product', 'product_obj', 'name', 'status', 'items'
         ]
 
+    product_obj = SerializerMethodField()
     status = CharField(read_only=True)
     items = ProductBomItemSerializer(many=True, required=False)
+
+    def get_product_obj(self, obj):
+        if obj and obj.product:
+            return {
+                'id': obj.product.id,
+                'name': obj.product.name,
+            }
 
     def create_item(self, bom, validated_item_data):
         

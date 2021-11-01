@@ -80,7 +80,6 @@ export function createForm(formMeta, update, id, readOnly){
             }
           });
 
-          console.log('newData=', newData);
           updateItemVar(newData);
         }
 

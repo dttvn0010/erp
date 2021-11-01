@@ -35,9 +35,10 @@ const modules= [
       {
         path: '/manufacturing', title: 'Sản xuất',
         children:[
-          {path: '/bom', title: 'Định lượng NVL'},
-          {path: '/plan', title: 'Kế hoạch sản xuất'},
-          {path: '/order', title: 'Lệnh sản xuất'},
+          {path: '/productBom', title: 'Định lượng NVL'},
+          {path: '/productionWorkflow', title: 'Quy trình sản xuất'},
+          {path: '/productionProcess', title: 'Lệnh sản xuất'},
+          {path: '/deviceMaintainance', title: 'Lịch bảo trì thiết bị'},
         ]
       },
       {
@@ -98,7 +99,17 @@ const modules= [
           {path: '/bank', title: 'Ngân hàng'},
           {path: '/bankAccount', title: 'Tài khoản ngân hàng'},
         ]
-      }
+      },
+      {
+        title: 'Sản xuất',
+        path: '/data/manufacturing',
+        children: [
+          {path: '/deviceCategory', title: 'Nhóm thiết bị'},
+          {path: '/deviceClass', title: 'Lớp thiết bị'},
+          {path: '/device', title: 'Thiết bị'},
+          {path: '/workCenter', title: 'Phân xưởng'},
+        ]
+      },
     ]
   }
 ]

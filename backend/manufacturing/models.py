@@ -23,7 +23,7 @@ class ProductBom(models.Model):
         return self.name
 
 class ProductBomItem(models.Model):
-    bom = models.ForeignKey(ProductBom, related_name='items', on_delete=models.PROTECT)
+    bom = models.ForeignKey(ProductBom, related_name='items', on_delete=models.CASCADE)
     component = models.ForeignKey(Product, on_delete=models.PROTECT)
     qty = models.IntegerField()
     sequence = models.IntegerField()
@@ -31,6 +31,7 @@ class ProductBomItem(models.Model):
 class WorkCenter(models.Model):
     company = models.ForeignKey(Company, on_delete=models.PROTECT)
     name = models.CharField(max_length=200)
+    description = models.CharField(max_length=500, blank=True)
     working_state = models.CharField(choices=WorkCenterState.choices(), 
         default=WorkCenterState.NORMAL.name,
         max_length=50
