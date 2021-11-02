@@ -1,5 +1,6 @@
 from django.db import models
-from core.models import Company
+from core.models import Company, Role
+from employee.models import Employee
 from stock.models import Product
 from core.constants import BaseStatus
 
@@ -109,9 +110,7 @@ class DeviceMaintainance(models.Model):
 
 class ProductionWorkflow(models.Model):
     bom = models.ForeignKey(ProductBom, on_delete=models.PROTECT)
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
     name = models.CharField(max_length=200)
-    duration = models.FloatField()
     
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
@@ -121,9 +120,8 @@ class ProductionWorkflow(models.Model):
         return self.name
 
 class ProductionWorkflowStep(models.Model):
-    process = models.ForeignKey(ProductionWorkflow, on_delete=models.PROTECT)
+    workflow = models.ForeignKey(ProductionWorkflow, related_name='steps', on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
-    duration = models.FloatField()
 
     sequence = models.IntegerField()
     workcenter = models.ForeignKey(WorkCenter, on_delete=models.PROTECT)
@@ -133,13 +131,21 @@ class ProductionWorkflowStep(models.Model):
         return self.name
 
 class ProductionWorkflowStepDeviceUse(models.Model):
-    step = models.ForeignKey(ProductionWorkflowStep, on_delete=models.PROTECT)
-    device = models.ForeignKey(DeviceClass, on_delete=models.PROTECT)
-    duration = models.FloatField()
+    step = models.ForeignKey(ProductionWorkflowStep, related_name='device_uses', on_delete=models.CASCADE)
+    device_class = models.ForeignKey(DeviceClass, on_delete=models.PROTECT)
+    hour_per_unit = models.FloatField(blank=True, null=True)
+    hour_offset = models.FloatField(default=0)
+
+class ProductionWorkflowStepEmployeeUse(models.Model):
+    step = models.ForeignKey(ProductionWorkflowStep, related_name='employee_roles', on_delete=models.CASCADE)
+    role = models.ForeignKey(Role, on_delete=models.PROTECT)
+    description = models.CharField(max_length=500, blank=True)
+    hour_per_unit = models.IntegerField(blank=True, null=True)
+    hour_offset = models.FloatField(default=0)
 
 class ProductionProcess(models.Model):
-    workflow = models.ForeignKey(ProductionWorkflow, on_delete=models.PROTECT)
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    bom = models.ForeignKey(ProductBom, on_delete=models.PROTECT)
+    workflow = models.ForeignKey(ProductionWorkflow, blank=True, null=True, on_delete=models.PROTECT)
     product_qty = models.IntegerField()
 
     planned_start_date = models.DateTimeField()
@@ -159,16 +165,27 @@ class ProductionProcess(models.Model):
         return self.workflow.name
 
 class ProductionStep(models.Model):
-    production = models.ForeignKey(ProductionProcess, on_delete=models.PROTECT)
+    production = models.ForeignKey(ProductionProcess, related_name='steps', on_delete=models.PROTECT)
     workflow_step = models.ForeignKey(ProductionWorkflowStep, on_delete=models.PROTECT)
-    devices = models.ManyToManyField(Device)
-    start_date = models.DateTimeField()
-    planned_end_date = models.DateTimeField()
+
+    planned_start_date = models.DateTimeField(blank=True, null=True)
+    planned_end_date = models.DateTimeField(blank=True, null=True)
+
+    start_date = models.DateTimeField(blank=True, null=True)
     end_date = models.DateTimeField(blank=True, null=True)
-    effective_duration = models.FloatField()
+
     status = models.CharField(choices=ProductionStepStatus.choices(), 
         default=ProductionStepStatus.NEW.name,
         max_length=50)
 
     def __str__(self):
         return self.workflow_step.name
+
+class ProductionStepDeviceUse:
+    step = models.ForeignKey(ProductionStep, related_name='device_uses', on_delete=models.CASCADE)
+    device = models.ForeignKey(Device, on_delete=models.PROTECT)
+
+class ProductionStepEmployeeUse(models.Model):
+    workflow_role = models.ForeignKey(Role, on_delete=models.PROTECT)
+    step = models.ForeignKey(ProductionStep, related_name='employee_roles', on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee, on_delete=models.PROTECT)

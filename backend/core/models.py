@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Permission
 from django.utils.translation import gettext as _
 from .constants import Gender, BaseStatus, CodeSystemStatus, CodeSystemDataType, PartnerType
 
@@ -7,8 +7,10 @@ class AddressBlock(models.Model):
     city = models.ForeignKey('Coding', related_name='city_blocks', on_delete=models.PROTECT)
     district = models.ForeignKey('Coding', related_name='district_blocks', on_delete=models.PROTECT)
     ward = models.ForeignKey('Coding', related_name='ward_blocks', on_delete=models.PROTECT)
-
+    
 class User(AbstractUser):
+    company = models.ForeignKey('Company', on_delete=models.PROTECT, blank=True, null=True)
+
     display = models.CharField(max_length=100, blank=True,
                 verbose_name=_("verbose_name.user.display"))
     
@@ -40,6 +42,7 @@ class User(AbstractUser):
     is_admin = models.BooleanField(blank=True, default=False, 
                 verbose_name=_("verbose_name.user.is_admin"))
 
+    roles = models.ManyToManyField('Role', blank=True)
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
 
@@ -60,7 +63,22 @@ class Company(models.Model):
                 max_length=300, blank=True, 
                 verbose_name=_("verbose_name.company.address"))
 
-    director = models.ForeignKey(User, on_delete=models.PROTECT)
+    director = models.ForeignKey(User, related_name='managed_companies', on_delete=models.PROTECT)
+
+    create_date = models.DateTimeField(auto_now_add=True)
+    update_date = models.DateTimeField(auto_now=True)
+
+    status = models.CharField(choices=BaseStatus.choices(),
+                            default=BaseStatus.DRAFT.name,
+                            max_length=50)
+
+    def __str__(self):
+        return self.name
+
+class Role(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.PROTECT)
+    name = models.CharField(max_length=200)
+    permissions = models.ManyToManyField(Permission, blank=True)
 
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
