@@ -1,4 +1,5 @@
-from rest_framework.serializers import ModelSerializer, CharField
+from rest_framework.serializers import CharField
+from core.utils.serializers import ModelSerializer
 from core.models import Partner
 
 class PartnerSerializer(ModelSerializer):
@@ -8,7 +9,3 @@ class PartnerSerializer(ModelSerializer):
                     'is_supplier', 'is_customer', 'is_organization', 'status']
 
     status = CharField(read_only=True)
-
-    def create(self, validated_data):
-        validated_data['company'] = self.context['user'].employee.company
-        return super().create(validated_data)

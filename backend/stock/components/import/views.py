@@ -1,4 +1,4 @@
-from rest_framework.viewsets import ModelViewSet
+from core.utils.viewsets import ModelViewSet
 from stock.models import Import
 from core.views_api import DataTableView
 from .serializers import *
@@ -6,11 +6,6 @@ from .serializers import *
 class ImportViewSet(ModelViewSet):
     serializer_class = ImportSerializer
     queryset = Import.objects.all()
-
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context['user'] = self.request.user
-        return context
 
 class ImportDataTableView(DataTableView):
     model = Import

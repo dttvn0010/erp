@@ -1,4 +1,4 @@
-from rest_framework.viewsets import ModelViewSet
+from core.utils.viewsets import ModelViewSet
 from stock.models import Exchange
 from core.views_api import DataTableView
 from .serializers import *
@@ -6,11 +6,6 @@ from .serializers import *
 class ExchangeViewSet(ModelViewSet):
     serializer_class = ExchangeSerializer
     queryset = Exchange.objects.all()
-
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context['user'] = self.request.user
-        return context
 
 class ExchangeDataTableView(DataTableView):
     model = Exchange

@@ -125,7 +125,7 @@ class ProductionWorkflowStep(models.Model):
 
     sequence = models.IntegerField()
     workcenter = models.ForeignKey(WorkCenter, on_delete=models.PROTECT)
-    prior_steps = models.ManyToManyField('ProductionWorkflowStep')
+    prior_steps = models.ManyToManyField('ProductionWorkflowStep', blank=True)
 
     def __str__(self):
         return self.name
@@ -181,7 +181,7 @@ class ProductionStep(models.Model):
     def __str__(self):
         return self.workflow_step.name
 
-class ProductionStepDeviceUse:
+class ProductionStepDeviceUse(models.Model):
     step = models.ForeignKey(ProductionStep, related_name='device_uses', on_delete=models.CASCADE)
     device = models.ForeignKey(Device, on_delete=models.PROTECT)
 

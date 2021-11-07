@@ -1,9 +1,6 @@
-from django.shortcuts import get_object_or_404
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from rest_framework.viewsets import ModelViewSet
+from core.utils.viewsets import ModelViewSet
 from core.constants import BaseStatus
-from core.views_api import DataTableView, AsyncSearchView
+from core.views_api import DataTableView, DataAsyncSearchView, ChangeItemStatusView
 from manufacturing.models import DeviceCategory
 from .serializers import *
 
@@ -46,36 +43,13 @@ class DeviceClassTableView(DataTableView):
     def get_queryset(self, user):
         return DeviceClass.objects.filter(company=user.employee.company)
 
-class CategoryAsyncSearchView(AsyncSearchView):
+class CategoryAsyncSearchView(DataAsyncSearchView):
+    model = DeviceCategory
     fields = ['name']
-
-    def get_queryset(self, term, request):
-        return DeviceCategory.objects.filter(
-            company=request.user.employee.company,
-            name__icontains=term,
-            status=BaseStatus.ACTIVE.name
-        )
 
 class DeviceClassViewSet(ModelViewSet):
     queryset = DeviceClass.objects.all()
     serializer_class = DeviceClassSerializer
 
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context['user'] = self.request.user
-        return context
-
-@api_view(['POST'])
-def change_device_class_status(request, pk):
-    device_class = get_object_or_404(DeviceClass, 
-        pk=pk,
-        company= request.user.employee.company
-    )
-    
-    if device_class.status != BaseStatus.ACTIVE.name:
-        device_class.status = BaseStatus.ACTIVE.name
-    else:
-        device_class.status = BaseStatus.INACTIVE.name
-
-    device_class.save()
-    return Response({'success': True})
+class ChangeDeviceClassStatusView(ChangeItemStatusView):
+    model = DeviceClass

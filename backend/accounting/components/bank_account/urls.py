@@ -4,7 +4,7 @@ from .views import *
 
 urlpatterns = [
     path('search', BankAccountTableView.as_view()),
-    path('change-status/<pk>', change_bank_account_status),
+    path('change-status/<pk>', ChangeBankAccountStatusView.as_view()),
     path('search-bank', BankAsyncSearchView.as_view()),
 ]
 

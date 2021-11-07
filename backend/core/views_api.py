@@ -1,8 +1,10 @@
 
 from datetime import timedelta
+from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .utils.date_utils import formatDate, parseStringToDate, parseStringToDateTime
+from .constants import BaseStatus
 
 class AsyncSearchView(APIView):
     fields = ...
@@ -30,6 +32,50 @@ class AsyncSearchView(APIView):
             for item in query_set
         ]
         return Response(results)
+
+class DataAsyncSearchView(AsyncSearchView):
+    model = None
+    company_field = 'company'
+    active_status = BaseStatus.ACTIVE.name
+
+    def get_queryset(self, term, request):
+
+        queryset = self.model.objects.filter(
+            **{self.fields[0] + '__icontains' : term }
+        )
+
+        if self.company_field:
+            company_field = self.company_field.replace('.', '__')
+            queryset = queryset.filter(**{
+                company_field: request.user.employee.company
+            })
+
+        if self.active_status:
+            queryset = queryset.filter(status=self.active_status)
+
+        return queryset
+
+class ChangeItemStatusView(APIView):
+    model = ...
+    company_field = 'company'
+
+    def post(self, request, pk):
+        if self.company_field:
+            company_field = self.company_field.replace('.', '__')
+            item = get_object_or_404(self.model, **{
+                'pk': pk, 
+                company_field: request.user.employee.company
+            })
+        else:
+            item = get_object_or_404(self.model, pk=pk)
+        
+        if item.status != BaseStatus.ACTIVE.name:
+            item.status = BaseStatus.ACTIVE.name
+        else:
+            item.status = BaseStatus.INACTIVE.name
+
+        item.save()
+        return Response({'success': True})
 
 class DataTableView(APIView):
     model = None

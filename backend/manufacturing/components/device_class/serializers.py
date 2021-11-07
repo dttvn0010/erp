@@ -1,5 +1,5 @@
-from rest_framework.fields import SerializerMethodField
-from rest_framework.serializers import ModelSerializer, CharField
+from rest_framework.serializers import CharField, SerializerMethodField
+from core.utils.serializers import ModelSerializer
 from manufacturing.models import DeviceClass
 
 class DeviceClassSerializer(ModelSerializer):
@@ -9,10 +9,6 @@ class DeviceClassSerializer(ModelSerializer):
 
     status = CharField(read_only=True)
     category_obj = SerializerMethodField()
-
-    def create(self, validated_data):
-        validated_data['company'] = self.context['user'].employee.company
-        return super().create(validated_data)
 
     def get_category_obj(self, obj):
         if obj and obj.category:

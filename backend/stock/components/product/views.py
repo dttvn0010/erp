@@ -3,7 +3,7 @@ from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import user_passes_test
 from django.utils.translation import gettext as _
 
-from core.views_api import DataTableView, AsyncSearchView
+from core.views_api import DataTableView, DataAsyncSearchView
 from core.constants import BaseStatus
 from core.views import has_permission_func
 from .forms import *
@@ -83,12 +83,6 @@ def delete_product(request, pk):
     instance.delete()
     return HttpResponse({'success': True})
 
-class ProductCategoryAsyncSearchView(AsyncSearchView):
+class ProductCategoryAsyncSearchView(DataAsyncSearchView):
+    model = ProductCategory
     fields = ['name']
-
-    def get_queryset(self, term, request):
-        return ProductCategory.objects.filter(
-            company=request.user.employee.company,
-            name__icontains=term,
-            status=BaseStatus.ACTIVE.name
-        )

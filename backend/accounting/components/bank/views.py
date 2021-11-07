@@ -1,8 +1,5 @@
-from django.shortcuts import get_object_or_404
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
 from rest_framework.viewsets import ModelViewSet
-from core.views_api import DataTableView
+from core.views_api import DataTableView, ChangeItemStatusView
 from core.constants import BaseStatus
 from .serializers import *
 
@@ -54,17 +51,5 @@ class BankTableView(DataTableView):
     def get_queryset(self, user):
         return Bank.objects.filter(company=user.employee.company)
 
-@api_view(['POST'])
-def change_bank_status(request, pk):
-    bank = get_object_or_404(Bank, 
-        pk=pk,
-        company= request.user.employee.company
-    )
-    
-    if bank.status != BaseStatus.ACTIVE.name:
-        bank.status = BaseStatus.ACTIVE.name
-    else:
-        bank.status = BaseStatus.INACTIVE.name
-
-    bank.save()
-    return Response({'success': True})
+class ChangeBankStatusView(ChangeItemStatusView):
+    model = Bank

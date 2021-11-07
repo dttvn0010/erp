@@ -5,7 +5,7 @@ from .views import *
 urlpatterns = [
     path('search', DeviceClassTableView.as_view()),
     path('search-category', CategoryAsyncSearchView.as_view()),
-    path('change-status/<pk>', change_device_class_status),
+    path('change-status/<pk>', ChangeDeviceClassStatusView.as_view()),
 ]
 
 router = DefaultRouter()

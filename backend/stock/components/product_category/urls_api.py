@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from .views_api import *
 
 urlpatterns = [
-    path('change-status/<pk>', change_product_category_status),
+    path('change-status/<pk>', ChangeProductCategoryStatusView.as_view()),
 ]
 
 router = DefaultRouter()

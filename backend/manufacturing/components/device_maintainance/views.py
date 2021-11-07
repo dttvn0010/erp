@@ -1,10 +1,6 @@
-from django.shortcuts import get_object_or_404
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from rest_framework.viewsets import ModelViewSet
-from core.views_api import DataTableView, AsyncSearchView
+from core.utils.viewsets import ModelViewSet
+from core.views_api import DataTableView, DataAsyncSearchView
 from core.utils.date_utils import formatDateTime 
-from core.constants import BaseStatus
 from manufacturing.constants import DeviceMaintainanceStatus
 from manufacturing.models import Device
 from .serializers import *
@@ -54,15 +50,9 @@ class DeviceMaintainanceTableView(DataTableView):
     def get_end_date(self, obj, context):
         return formatDateTime(obj.end_date or obj.planned_end_date)
 
-class DeviceAsyncSearchView(AsyncSearchView):
+class DeviceAsyncSearchView(DataAsyncSearchView):
+    model = Device
     fields = ['name']
-
-    def get_queryset(self, term, request):
-        return Device.objects.filter(
-            company=request.user.employee.company,
-            name__icontains=term,
-            status=BaseStatus.ACTIVE.name
-        )
 
 class DeviceMaintainanceViewSet(ModelViewSet):
     queryset = DeviceMaintainance.objects.all()

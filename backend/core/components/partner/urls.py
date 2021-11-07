@@ -4,7 +4,7 @@ from .views import *
 
 urlpatterns = [
     path('search', PartnerTableView.as_view()),
-    path('change-status/<pk>', change_partner_status),
+    path('change-status/<pk>', ChangePartnerStatusView.as_view()),
 ]
 
 router = DefaultRouter()

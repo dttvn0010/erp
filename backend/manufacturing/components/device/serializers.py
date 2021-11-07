@@ -1,5 +1,6 @@
 from rest_framework.fields import SerializerMethodField
-from rest_framework.serializers import ModelSerializer, CharField
+from rest_framework.serializers import CharField
+from core.utils.serializers import ModelSerializer
 from manufacturing.models import Device
 
 class DeviceSerializer(ModelSerializer):
@@ -12,14 +13,6 @@ class DeviceSerializer(ModelSerializer):
     class_obj = SerializerMethodField()
     workcenter_obj = SerializerMethodField()
     _class_obj = SerializerMethodField()
-
-    def create(self, validated_data):
-        validated_data['company'] = self.context['user'].employee.company
-        return super().create(validated_data)
-
-    def update(self, instance, validated_data):
-        print('validated_data=', validated_data)
-        return super().update(instance, validated_data)
 
     def get__class_obj(self, obj):
         if obj and obj._class:

@@ -1,5 +1,5 @@
-from rest_framework.viewsets import ModelViewSet
-from core.views_api import DataTableView, AsyncSearchView
+from core.utils.viewsets import ModelViewSet
+from core.views_api import DataTableView, DataAsyncSearchView
 from core.constants import BaseStatus
 from accounting.models import IncomeType
 from .serializers import *
@@ -7,11 +7,6 @@ from .serializers import *
 class IncomeViewSet(ModelViewSet):
     serializer_class = IncomeSerializer
     queryset = Income.objects.all()
-
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context['user'] = self.request.user
-        return context
 
 class IncomeTableView(DataTableView):
     model = Income
@@ -68,11 +63,6 @@ class IncomeTableView(DataTableView):
     def get_queryset(self, user):
         return Income.objects.filter(company=user.employee.company)
 
-class IncomeTypeAsyncSearchView(AsyncSearchView):
+class IncomeTypeAsyncSearchView(DataAsyncSearchView):
+    model = IncomeType
     fields = ['name']
-    
-    def get_queryset(self, term, request):
-        return IncomeType.objects.filter(
-            company=request.user.employee.company,
-            name__icontains=term
-        )

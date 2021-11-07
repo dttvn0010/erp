@@ -1,9 +1,6 @@
-from django.shortcuts import get_object_or_404
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from rest_framework.viewsets import ModelViewSet
 from core.constants import BaseStatus
-from core.views_api import DataTableView, AsyncSearchView
+from core.utils.viewsets import ModelViewSet
+from core.views_api import DataTableView, DataAsyncSearchView, ChangeItemStatusView
 from manufacturing.models import DeviceClass, WorkCenter
 
 from .serializers import *
@@ -47,46 +44,17 @@ class DeviceTableView(DataTableView):
     def get_queryset(self, user):
         return Device.objects.filter(company=user.employee.company)
 
-class DeviceClassAsyncSearchView(AsyncSearchView):
+class DeviceClassAsyncSearchView(DataAsyncSearchView):
+    model = DeviceClass
     fields = ['name']
-
-    def get_queryset(self, term, request):
-        return DeviceClass.objects.filter(
-            company=request.user.employee.company,
-            name__icontains=term,
-            status=BaseStatus.ACTIVE.name
-        )
-
-class WorkCenterAsyncSearchView(AsyncSearchView):
+    
+class WorkCenterAsyncSearchView(DataAsyncSearchView):
+    model = WorkCenter
     fields = ['name']
-
-    def get_queryset(self, term, request):
-        return WorkCenter.objects.filter(
-            company=request.user.employee.company,
-            name__icontains=term,
-            status=BaseStatus.ACTIVE.name
-        )
 
 class DeviceViewSet(ModelViewSet):
     queryset = Device.objects.all()
     serializer_class = DeviceSerializer
 
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context['user'] = self.request.user
-        return context
-
-@api_view(['POST'])
-def change_device_status(request, pk):
-    device = get_object_or_404(Device, 
-        pk=pk,
-        company= request.user.employee.company
-    )
-    
-    if device.status != BaseStatus.ACTIVE.name:
-        device.status = BaseStatus.ACTIVE.name
-    else:
-        device.status = BaseStatus.INACTIVE.name
-
-    device.save()
-    return Response({'success': True})
+class ChangeDeviceStatusView(ChangeItemStatusView):
+    model = Device

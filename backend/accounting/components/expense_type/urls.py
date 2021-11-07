@@ -4,7 +4,7 @@ from .views import *
 
 urlpatterns = [
     path('search', ExpenseTypeTableView.as_view()),
-    path('change-status/<pk>', change_expense_type_status),
+    path('change-status/<pk>', ChangeExpenseTypeStatusView.as_view()),
 ]
 
 router = DefaultRouter()

@@ -1,20 +1,15 @@
 from django.shortcuts import get_object_or_404
-from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from core.views_api import DataTableView
+from core.utils.viewsets import ModelViewSet
+from core.views_api import DataTableView, ChangeItemStatusView
 from core.constants import BaseStatus
 from .serializers import *
 
 class PartnerViewSet(ModelViewSet):
     serializer_class = PartnerSerializer
     queryset = Partner.objects.all()
-
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context['user'] = self.request.user
-        return context
 
 class PartnerTableView(DataTableView):
     model = Partner
@@ -80,17 +75,5 @@ class PartnerTableView(DataTableView):
     def get_queryset(self, user):
         return Partner.objects.filter(company=user.employee.company)
 
-@api_view(['POST'])
-def change_partner_status(request, pk):
-    partner = get_object_or_404(Partner, 
-        pk=pk,
-        company= request.user.employee.company
-    )
-    
-    if partner.status != BaseStatus.ACTIVE.name:
-        partner.status = BaseStatus.ACTIVE.name
-    else:
-        partner.status = BaseStatus.INACTIVE.name
-
-    partner.save()
-    return Response({'success': True})
+class ChangePartnerStatusView(ChangeItemStatusView):
+    model = Partner

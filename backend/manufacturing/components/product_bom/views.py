@@ -1,9 +1,6 @@
-from django.shortcuts import get_object_or_404
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from rest_framework.viewsets import ModelViewSet
+from core.utils.viewsets import ModelViewSet
 from core.constants import BaseStatus
-from core.views_api import DataTableView, AsyncSearchView
+from core.views_api import DataTableView, DataAsyncSearchView, ChangeItemStatusView
 from stock.models import Product
 
 from .serializers import *
@@ -44,31 +41,13 @@ class ProductBomTableView(DataTableView):
     def get_queryset(self, user):
         return ProductBom.objects.filter(product__company=user.employee.company)
 
-class ProductAsyncSearchView(AsyncSearchView):
+class ProductAsyncSearchView(DataAsyncSearchView):
+    model = Product
     fields = ['name']
-
-    def get_queryset(self, term, request):
-        return Product.objects.filter(
-            company=request.user.employee.company,
-            name__icontains=term,
-            status=BaseStatus.ACTIVE.name
-        )
 
 class ProductBomViewSet(ModelViewSet):
     queryset = ProductBom.objects.all()
     serializer_class = ProductBomSerializer
 
-@api_view(['POST'])
-def change_product_bom_status(request, pk):
-    bom = get_object_or_404(ProductBom, 
-        pk=pk,
-        product__company=request.user.employee.company
-    )
-    
-    if bom.status != BaseStatus.ACTIVE.name:
-        bom.status = BaseStatus.ACTIVE.name
-    else:
-        bom.status = BaseStatus.INACTIVE.name
-
-    bom.save()
-    return Response({'success': True})
+class ChangeProductBomStatusView(ChangeItemStatusView):
+    model = ProductBom

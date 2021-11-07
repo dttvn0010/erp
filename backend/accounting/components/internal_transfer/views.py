@@ -1,4 +1,4 @@
-from rest_framework.viewsets import ModelViewSet
+from core.utils.viewsets import ModelViewSet
 from core.views_api import DataTableView
 from core.constants import BaseStatus
 from accounting.constants import BankAccountType
@@ -7,11 +7,6 @@ from .serializers import *
 class InternalTransferViewSet(ModelViewSet):
     serializer_class = InternalTransferSerializer
     queryset = InternalTransfer.objects.all()
-
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context['user'] = self.request.user
-        return context
 
 class InternalTransferTableView(DataTableView):
     model = InternalTransfer

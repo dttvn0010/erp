@@ -3,9 +3,8 @@ from rest_framework.routers import DefaultRouter
 from .views import *
 
 urlpatterns = [
-    path('', list_location),
     path('search', LocationTableView.as_view()),
-    path('change-status/<pk>', change_location_status),
+    path('change-status/<pk>', ChangeLocationStatusView.as_view()),
 ]
 
 router = DefaultRouter()

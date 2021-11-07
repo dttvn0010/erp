@@ -6,7 +6,7 @@ urlpatterns = [
     path('search', DeviceTableView.as_view()),
     path('search-device-class', DeviceClassAsyncSearchView.as_view()),
     path('search-work-center', WorkCenterAsyncSearchView.as_view()),
-    path('change-status/<pk>', change_device_status),
+    path('change-status/<pk>', ChangeDeviceStatusView.as_view()),
 ]
 
 router = DefaultRouter()

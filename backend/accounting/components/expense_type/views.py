@@ -1,19 +1,11 @@
-from django.shortcuts import get_object_or_404
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from rest_framework.viewsets import ModelViewSet
-from core.views_api import DataTableView
+from core.utils.viewsets import ModelViewSet
+from core.views_api import DataTableView, ChangeItemStatusView
 from core.constants import BaseStatus
 from .serializers import *
 
 class ExpenseTypeViewSet(ModelViewSet):
     serializer_class = ExpenseTypeSerializer
     queryset = ExpenseType.objects.all()
-
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context['user'] = self.request.user
-        return context
 
 class ExpenseTypeTableView(DataTableView):
     model = ExpenseType
@@ -48,17 +40,5 @@ class ExpenseTypeTableView(DataTableView):
     def get_queryset(self, user):
         return ExpenseType.objects.filter(company=user.employee.company)
 
-@api_view(['POST'])
-def change_expense_type_status(request, pk):
-    expense_type = get_object_or_404(ExpenseType, 
-        pk=pk,
-        company= request.user.employee.company
-    )
-    
-    if expense_type.status != BaseStatus.ACTIVE.name:
-        expense_type.status = BaseStatus.ACTIVE.name
-    else:
-        expense_type.status = BaseStatus.INACTIVE.name
-
-    expense_type.save()
-    return Response({'success': True})
+class ChangeExpenseTypeStatusView(ChangeItemStatusView):
+    model = ExpenseType

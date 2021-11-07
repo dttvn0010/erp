@@ -4,7 +4,7 @@ from .views import *
 
 urlpatterns = [
     path('search', BankTableView.as_view()),
-    path('change-status/<pk>', change_bank_status),
+    path('change-status/<pk>', ChangeBankStatusView.as_view()),
 ]
 
 router = DefaultRouter()
