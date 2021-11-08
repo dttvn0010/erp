@@ -165,7 +165,7 @@ class ProductionProcess(models.Model):
         return self.workflow.name
 
 class ProductionStep(models.Model):
-    production = models.ForeignKey(ProductionProcess, related_name='steps', on_delete=models.PROTECT)
+    production = models.ForeignKey(ProductionProcess, related_name='steps', on_delete=models.CASCADE)
     workflow_step = models.ForeignKey(ProductionWorkflowStep, on_delete=models.PROTECT)
 
     planned_start_date = models.DateTimeField(blank=True, null=True)

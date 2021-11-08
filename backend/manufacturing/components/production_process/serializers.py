@@ -26,19 +26,33 @@ from manufacturing.constants import (
 class ProductionStepDeviceUseSerializer(ModelSerializer):
     class Meta:
         model = ProductionStepDeviceUse
-        fields = ['step', 'device', 'device_obj']
+        fields = ['step', 'device', 'device_obj', 'device_class', 'device_class_obj']
 
     step = PrimaryKeyRelatedField(required=False,
         queryset=ProductionStep.objects.all()
     )
 
     device_obj = SerializerMethodField()
+    device_class = SerializerMethodField()
+    device_class_obj = SerializerMethodField()
 
     def get_device_obj(self, obj):
         if obj and obj.device:
             return {
                 'id': obj.device.id,
                 'name': obj.device.name
+            }
+
+    def get_device_class(self, obj):
+        if obj and obj.device:
+            return obj.device._class.pk
+
+    def get_device_class_obj(self, obj):
+        if obj and obj.device and obj.device._class:
+            device_class = obj.device._class
+            return {
+                'id': device_class.id,
+                'name': device_class.name
             }
 
 class ProductionStepEmployeeUseSerializer(ModelSerializer):
@@ -97,10 +111,13 @@ class ProductionProcessSerializer(ModelSerializer):
     class Meta:
         model = ProductionProcess
         fields = [
-            'id', 'bom', 'bom_obj', 'workflow', 'workflow_obj', 'product_qty',
+            'id', 'product', 'product_obj', 
+            'bom', 'bom_obj', 'workflow', 'workflow_obj', 'product_qty',
             'planned_start_date', 'planned_end_date', 'status', 'steps'
         ]
 
+    product = SerializerMethodField()
+    product_obj = SerializerMethodField()
     bom_obj = SerializerMethodField()
     workflow_obj = SerializerMethodField()
 
@@ -109,6 +126,18 @@ class ProductionProcessSerializer(ModelSerializer):
 
     status = CharField(read_only=True)
     steps = ProductionStepSerializer(many=True, required=False)
+
+    def get_product(self, obj):
+        if obj and obj.bom and obj.bom.product:
+            return obj.bom.product.id
+
+    def get_product_obj(self, obj):
+        if obj and obj.bom and obj.bom.product:
+            product = obj.bom.product
+            return {
+                'id': product.id,
+                'name': product.name
+            }
 
     def get_bom_obj(self, obj):
         if obj and obj.bom:

@@ -6,7 +6,9 @@ from core.utils.date_utils import formatDateTime
 from manufacturing.models import(
     Product, 
     ProductBom, 
-    ProductionWorkflow
+    ProductionWorkflow,
+    DeviceClass,
+    Device
 )
 
 from manufacturing.constants import ProductionProcessStatus
@@ -25,22 +27,22 @@ class ProductionProcessTableView(DataTableView):
             'search_options': {
                 'async': True,
             },
-            'width': '25%',
+            'width': '20%',
         },
         {
             'name': 'product_qty',
             'title': 'Số lượng',
-            'width': '25%',
+            'width': '15%',
         },
         {
             'name': 'start_date',
             'title': 'Ngày bắt đầu',
-            'width': '20%'
+            'width': '18%'
         },
         {
             'name': 'end_date',
             'title': 'Ngày kết thúc',
-            'width': '25%'
+            'width': '18%'
         },
         {
             'name': 'status',
@@ -54,7 +56,7 @@ class ProductionProcessTableView(DataTableView):
             'orderable': False,
             'search': False,
             'css_class': 'text-center',
-            'width': '5%'
+            'width': '4%'
         },
     ]
 
@@ -79,7 +81,9 @@ class ProductBomAsyncSearchView(AsyncSearchView):
     fields = ['name']
     
     def get_queryset(self, term, request):
+        
         product_id = request.GET.get('product_id')
+        
         return ProductBom.objects.filter(
             product__id=product_id,
             name__icontains=term,
@@ -91,8 +95,39 @@ class ProductionWorkflowAsyncSearchView(AsyncSearchView):
     
     def get_queryset(self, term, request):
         bom_id = request.GET.get('bom_id')
-        return ProductionWorkflow.objects.filter(
+
+        queryset =  ProductionWorkflow.objects.filter(
             bom__id=bom_id,
+            name__icontains=term,
+            status=BaseStatus.ACTIVE.name
+        )
+
+        return queryset
+
+class DeviceClassAsyncSearchView(AsyncSearchView):
+    fields = ['name']
+    
+    def get_queryset(self, term, request):
+        workflow_step_id = request.GET.get('workflow_step_id')
+
+        print('workflow_step_id=', workflow_step_id)
+        
+        return DeviceClass.objects.filter(
+            productionworkflowstepdeviceuse__step__id=workflow_step_id,
+            name__icontains=term,
+            status=BaseStatus.ACTIVE.name
+        )
+
+class DeviceAsyncSearchView(AsyncSearchView):
+    fields = ['name']
+    
+    def get_queryset(self, term, request):
+        workflow_step_id = request.GET.get('workflow_step_id')
+        device_class_id = request.GET.get('device_class_id')
+        
+        return Device.objects.filter(
+            _class__id=device_class_id,
+            workcenter__productionworkflowstep__id=workflow_step_id,
             name__icontains=term,
             status=BaseStatus.ACTIVE.name
         )

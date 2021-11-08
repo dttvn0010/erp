@@ -1,7 +1,7 @@
 from core.utils.viewsets import ModelViewSet
 from core.constants import BaseStatus
 from core.views_api import DataTableView, DataAsyncSearchView, ChangeItemStatusView
-from manufacturing.models import ProductBom
+from manufacturing.models import ProductBom, WorkCenter, DeviceClass
 from .serializers import *
 
 class ProductionWorkflowTableView(DataTableView):
@@ -48,8 +48,17 @@ class ProductionWorkflowViewSet(ModelViewSet):
 
 class ChangeProductionWorkflowStatusView(ChangeItemStatusView):
     model = ProductionWorkflow
+    company_field = 'bom.product.company'
 
 class ProductBomAsyncSearchView(DataAsyncSearchView):
     fields = ['name']
     company_field = 'product.company'
     model = ProductBom
+
+class WorkCenterAsyncSearchView(DataAsyncSearchView):
+    model = WorkCenter
+    fields = ['name']
+
+class DeviceClassAsyncSearchView(DataAsyncSearchView):
+    model = DeviceClass
+    fields = ['name']

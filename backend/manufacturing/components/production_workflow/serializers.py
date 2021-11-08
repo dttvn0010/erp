@@ -56,7 +56,7 @@ class ProductionWorkflowStepEmployeeUseSerializer(ModelSerializer):
 class ProductionWorkflowStepSerializer(ModelSerializer):
     class Meta:
         model = ProductionWorkflowStep
-        fields = ['id', 'workflow', 'name', 'workcenter', 'workcenter_obj', 'prior_steps', 'device_uses', 'employee_uses', 'sequence']
+        fields = ['id', 'workflow', 'name', 'workcenter', 'workcenter_obj', 'device_uses', 'employee_uses', 'sequence']
 
     workflow = PrimaryKeyRelatedField(required=False, 
         queryset=ProductionWorkflow.objects.all()
@@ -132,8 +132,12 @@ class ProductionWorkflowSerializer(ModelSerializer):
         return workflow
 
     def update(self, instance, validated_data):
-        steps_data = validated_data.pop('steps', [])
+        if instance.status == BaseStatus.ACTIVE.name:
+            instance.name = validated_data['name']
+            instance.save()
+            return instance
 
+        steps_data = validated_data.pop('steps', [])
         instance.name = validated_data['name']
         instance.bom = validated_data['bom']
         instance.save()

@@ -62,6 +62,7 @@ class ChangeItemStatusView(APIView):
     def post(self, request, pk):
         if self.company_field:
             company_field = self.company_field.replace('.', '__')
+
             item = get_object_or_404(self.model, **{
                 'pk': pk, 
                 company_field: request.user.employee.company

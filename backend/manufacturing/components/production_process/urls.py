@@ -7,6 +7,8 @@ urlpatterns = [
     path('search-product', ProductAsyncSearchView.as_view()),
     path('search-product-bom', ProductBomAsyncSearchView.as_view()),
     path('search-production-workflow', ProductionWorkflowAsyncSearchView.as_view()),
+    path('search-device-class', DeviceClassAsyncSearchView.as_view()),
+    path('search-device', DeviceAsyncSearchView.as_view()),
 ]
 
 router = DefaultRouter()
