@@ -1,6 +1,6 @@
 from django.db import models
 from core.models import Company, Partner
-from stock.models import Location, Export, Product, ProductPricePolicy
+from stock.models import Location, Import, Export, Product, ProductPricePolicy
 from accounting.models import Invoice, Ledger, LedgerItem, ExpenseType
 
 from .constants import OrderStatus, OrderType
@@ -42,7 +42,8 @@ class Order(models.Model):
     amount = models.IntegerField()
 
     date_order = models.DateTimeField()
-    
+    accounting_date = models.DateTimeField()
+
     invoice = models.OneToOneField(Invoice,
         related_name='invoice_sa_order',
         blank=True, null=True,
@@ -51,6 +52,12 @@ class Order(models.Model):
 
     _export = models.OneToOneField(Export,
         related_name='export_sa_order',
+        blank=True, null=True,
+        on_delete=models.CASCADE
+    )
+
+    _import = models.OneToOneField(Import,
+        related_name='import_sa_order',
         blank=True, null=True,
         on_delete=models.CASCADE
     )

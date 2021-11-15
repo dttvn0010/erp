@@ -4,13 +4,15 @@ import { useRouter } from 'next/router';
 
 import { Tab, Tabs } from 'react-bootstrap';
 import Card from 'components/share/card';
+import Input from "components/share/input";
+import ErrorList from "components/share/errorlist";
+
 import DebtDeductNote from '../sections/note/debtDeductNote';
 import PaymentNote from '../sections/note/paymentNote';
 import InStockNote from '../sections/note/inStockNote';
 import Invoice from '../sections/note/invoice';
 
 import GoodItems from '../sections/itemList/goodsItems';
-import TaxItems from '../sections/itemList/taxItems';
 
 import { 
   IconLink, 
@@ -32,7 +34,7 @@ export default function ReturnForm({id, update, readOnly}){
   
   const router = useRouter();
   const store = useSliceStore(NAME_SPACE);
-  const [data] = useSliceSelector(NAME_SPACE, ['data']);
+  const [data, errors] = useSliceSelector(NAME_SPACE, ['data', 'errors']);
 
   useEffect(() => {
     store.setState({
@@ -47,6 +49,17 @@ export default function ReturnForm({id, update, readOnly}){
     }
   }, [id]);
 
+  const updateData = newData => {
+    const data = store.getState().data ?? {};
+    
+    store.setState({
+      data: {
+        ...data,
+        ...newData
+      }
+    }) 
+  }
+  
   const saveReturn = async (e) => {
     e.preventDefault();
     if(readOnly) return; 
@@ -82,6 +95,38 @@ export default function ReturnForm({id, update, readOnly}){
       title={title}
       body={
         <form id="fmt" onSubmit={saveReturn}>
+          <div className="row">
+            <div className="col p-2">
+              <div className="section-title">Thông tin khách hàng</div>
+              <hr className="mt-0"/>
+              <table className="table">
+                <tbody>
+                  <tr>
+                    <th style={{width: '25%'}}>Khách hàng:</th>
+                    <td>
+                      <Input
+                        type="async-select"
+                        readOnly={readOnly}
+                        value={data.customer}
+                        onChange={(val) => updateData({customer: val})}
+                        optionsUrl="/sales/search-customer"
+                        labelField="name"
+                      />
+                      <ErrorList errors={errors.customer}/>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="col p-2">
+              <div className="section-title">Thông tin chứng từ</div>
+              <hr className="my-0"/>
+            </div>
+          </div>
+
           <Tabs className="mt-2">
             <Tab eventKey="debtDeductNote" title="Chứng từ giảm công nợ">
               <DebtDeductNote readOnly={readOnly}/>
@@ -96,18 +141,15 @@ export default function ReturnForm({id, update, readOnly}){
               <Invoice readOnly={readOnly} invoiceReadOnly={true}/>
             </Tab>
           </Tabs>
+
+          <div className="row mt-3">
+            <div className="col p-2">
+              <div className="section-title">Thông tin hàng hoá/dịch vụ</div>
+              <hr className="my-0"/>
+            </div>
+          </div>
           
-          <Tabs className="mt-3">
-            <Tab eventKey="goodsItems" title="Hàng hoá/dịch vụ">
-              <GoodItems readOnly={readOnly}/>
-            </Tab>
-            <Tab eventKey="taxItems" title="Thuế">
-              <TaxItems readOnly={readOnly}/>
-            </Tab>
-            <Tab eventKey="misc" title="Khác">
-              <div>Khác</div>
-            </Tab>
-          </Tabs>
+          <GoodItems readOnly={readOnly}/>
 
           <div className="row mt-3">
             <div className="col">

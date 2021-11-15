@@ -1,30 +1,23 @@
 from django.shortcuts import render
 from employee.models import Employee
-from core.views_api import AsyncSearchView
+from core.views_api import AsyncSearchView, DataAsyncSearchView
 from core.models import Partner
 from employee.models import Employee
-from stock.models import Product
+from accounting.models import ExpenseType
+from stock.models import Product, Location as StockLocation
 
 from core.constants import BaseStatus
 
-# Create your views here.
-def list_order(request):
-    return render(request, 'sales/order/list.html')
-
-class ProductAsyncSearchView(AsyncSearchView):
+class ProductAsyncSearchView(DataAsyncSearchView):
+    model = Product
     fields = ['name', 'price_unit']
 
     def get_price_unit(self, item):
         return item.list_price
 
-    def get_queryset(self, term, request):
-        company = request.user.employee.company
-
-        return Product.objects.filter(
-            company=company,
-            name__icontains=term,
-            status=BaseStatus.ACTIVE.name
-        )
+class StockLocationAsyncSearchView(DataAsyncSearchView):
+    model = StockLocation
+    fields = ['name']
 
 class CustomerAsyncSearchView(AsyncSearchView):
     fields = ['name']
@@ -37,6 +30,11 @@ class CustomerAsyncSearchView(AsyncSearchView):
             name__icontains=term,
             status=BaseStatus.ACTIVE.name
         )
+
+
+class ExpenseTypeAsyncSearchView(DataAsyncSearchView):
+    model = ExpenseType
+    fields = ['name']
 
 class EmployeeAsyncSearchView(AsyncSearchView):
     fields = ['name']

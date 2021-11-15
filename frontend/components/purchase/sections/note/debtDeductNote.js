@@ -19,97 +19,47 @@ export default function DebtDeductNote({readOnly}) {
   }
 
   return(
-    <div className="row">
-      <div className="col-8 p-2">
-        <div className="section-title">Thông tin chung</div>
-        <hr className="mt-0"/>
-        <table className="table">
-          <tbody>
-            <tr>
-              <th style={{width: '30%'}}>Nhà cung cấp:</th>
-              <td>
-                <Input
-                  type="async-select"
-                  readOnly={readOnly}
-                  value={data.supplier}
-                  onChange={(val) => updateData({supplier: val})}
-                  optionsUrl="/purchase/search-supplier"
-                  labelField="name"
-                />
-                <ErrorList errors={errors.supplier}/>
-              </td>
-            </tr>
-
-            <tr>
-              <th>Diễn giải:</th>
-              <td>
-                <Input
-                  type="textarea"
-                  rows="2"
-                  readOnly={readOnly}
-                  value={data.detail}
-                  onChange={val => updateData({detail: val})}
-                />
-              </td>
-            </tr>
-
-            <tr>
-              <th>Nhân viên mua hàng:</th>
-              <td>
-                <Input
-                  type="async-select"
-                  readOnly={readOnly}
-                  value={data.purchase_person}
-                  onChange={val => updateData({purchase_person: val})}
-                  optionsUrl="/purchase/search-employee"
-                  labelField="name"
-                />
-              </td>
-            </tr>
-           
-          </tbody>
-        </table>
+    <div className="p-1">
+      <div className="row mt-2">
+        <div className="col-4 form-group">
+          <label className="form-label text-bold">Số chứng từ:</label>
+          <Input
+            type="input"
+            readOnly={readOnly}
+            value={data.debt_deduct_number}
+            onChange={val => updateData({debt_deduct_number: val})}
+          />
+        </div>
+        <div className="col-4 form-group">
+          <label className="form-label text-bold">Ngày hạch toán:</label>
+          <Input
+            type="date"
+            readOnly={readOnly}
+            value={data.acc_date}
+            onChange={val => updateData({acc_date: val})}
+          />
+        </div>
+        <div className="col-4 form-group">
+          <label className="form-label text-bold">Ngày chứng từ:</label>
+          <Input
+            type="date"
+            readOnly={readOnly}
+            value={data.ca_date}
+            onChange={val => updateData({ca_date: val})}
+          />
+        </div>
       </div>
-      <div className="col-4 p-2">
-        <div className="section-title">Chứng từ</div>
-        <hr className="mt-0"/>
-        <table className="table">
-          <tbody>
-            <tr>
-              <th style={{width: '35%'}}>Ngày hạch toán:</th>
-              <td>
-                <Input
-                  type="date"
-                  readOnly={readOnly}
-                  value={data.acc_date}
-                  onChange={val => updateData({acc_date: val})}
-                />
-              </td>
-            </tr>
-            <tr>
-              <th>Ngày chứng từ:</th>
-              <td>
-                <Input
-                  type="date"
-                  readOnly={readOnly}
-                  value={data.ca_date}
-                  onChange={val => updateData({ca_date: val})}
-                />
-              </td>
-            </tr>
-            <tr>
-              <th>Số chứng từ:</th>
-              <td>
-                <Input
-                  type="input"
-                  readOnly={readOnly}
-                  value={data.debt_deduct_number}
-                  onChange={val => updateData({debt_deduct_number: val})}
-                />
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div className="row mt-2">
+        <div className="col">
+          <label className="form-label text-bold">Ghi chú:</label>
+          <Input
+            type="textarea"
+            rows="3"
+            readOnly={readOnly}
+            value={data.detail}
+            onChange={val => updateData({detail: val})}
+          />
+        </div>
       </div>
     </div>
   )

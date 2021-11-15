@@ -7,9 +7,9 @@ import {
   copyArray,
 } from 'utils/helper';
 
-import { NAME_SPACE } from "redux/reducers/purchase/voucher/formReducer";
+import { NAME_SPACE } from "redux/reducers/sales/voucher/formReducer";
 
-export default function GoodItems({readOnly, toStock, paymentType}) {
+export default function GoodItems({readOnly, withStock, withDiscount, withTax}) {
   const store = useSliceStore(NAME_SPACE);
   const [data, errors] = useSliceSelector(NAME_SPACE, ['data', 'errors']);
   const items = data.items || [];
@@ -37,8 +37,8 @@ export default function GoodItems({readOnly, toStock, paymentType}) {
   const changeProduct = (index, val) => {
     updateItem(index, {
       product: val,
-      unit: val.unit,
-      price_unit: val.price_unit
+      unit: val?.unit,
+      price_unit: val?.price_unit
     })
   }
 
@@ -62,15 +62,28 @@ export default function GoodItems({readOnly, toStock, paymentType}) {
     }
   }
 
-  const getNet = (item) => {
-    let total = getTotal(item);
-    const discount = getDiscount(item);
-    if(total && discount) total -= discount;
-    return total;
+  const getVAT = (item) => {
+    const total = getTotal(item);
+    if(item.vat_rate && total){
+      return Math.round(total * item.vat_rate/100);
+    }
   }
 
-  let ncol = 11;
+  const getNet = (item) => {
+    let net = getTotal(item);
+    let vat = getVAT(item);
+    const discount = getDiscount(item);
+    if(net && discount) net -= discount;
+    if(net && vat) net += vat;
+    return net;
+  }
+
+  let ncol = 12;
   if(readOnly) ncol -= 1;
+  if(!withStock) ncol -= 1;
+  if(!withTax) ncol -= 2;
+  if(!withDiscount) ncol -= 2;
+  if(!withTax && !withDiscount) ncol -= 1;
   
   return(
     <div style={{overflow: "auto", minHeight: "200px"}}>
@@ -78,28 +91,29 @@ export default function GoodItems({readOnly, toStock, paymentType}) {
         <thead>
           <tr>
             {!readOnly &&
-              <th className="text-center">
+              <th className="text-center" style={{width: '4%'}}>
                 <a className="ms-3" href='#/' onClick={() => addItem(-1)}>
                   <i className="fas fa-plus"></i>
                 </a>
               </th>
             }
-            <th style={{width: '20%'}}>
+            <th style={{width: '18%'}}>
               Hàng hoá/dịch vụ
             </th>
-            <th style={{width: '7%'}}>
-              TK công nợ/chi phí
-            </th>
-            <th style={{width: '7%'}}>
-              TK doanh thu
-            </th>
-            <th style={{width: '10%'}}>Đơn giá</th>
-            <th style={{width: '7%'}}>Số lượng</th>
-            <th style={{width: '7%'}}>Đơn vị</th>
-            <th style={{width: '10%'}}>Thành tiền</th>
-            <th style={{width: '7%'}}>CK (%)</th>
-            <th style={{width: '10%'}}>Tiền CK</th>
-            <th style={{width: '10%'}}>Giá trị</th>
+            {withStock && 
+              <th style={{width: '12%'}}>
+                Lấy từ kho
+              </th>
+            }
+            <th style={{width: '8%'}}>Đơn giá</th>
+            <th style={{width: '8%'}}>Số lượng</th>
+            <th style={{width: '8%'}}>Đơn vị</th>
+            {(withTax || withDiscount) && <th style={{width: '8%'}}>Thành tiền</th>}
+            {withDiscount && <th style={{width: '5%'}}>% CK</th>}
+            {withDiscount && <th style={{width: '8%'}}>Tiền CK</th>}
+            {withTax && <th style={{width: '5%'}}>% Thuế GTGT</th>}
+            {withTax && <th style={{width: '8%'}}>Tiền thuế GTGT</th>}
+            <th style={{width: '8%'}}>Giá trị thanh toán</th>
           </tr>
         </thead>
         <tbody>
@@ -115,7 +129,7 @@ export default function GoodItems({readOnly, toStock, paymentType}) {
               {!readOnly &&
                 <td>
                   <>
-                    <a className="me-2" href='#/' onClick={() => deleteItem(index)}>
+                    <a className="me-3" href='#/' onClick={() => deleteItem(index)}>
                       <i className="fas fa-trash text-danger"></i>
                     </a>
                     <a href='#/' onClick={() => addItem(index)}>
@@ -137,52 +151,19 @@ export default function GoodItems({readOnly, toStock, paymentType}) {
                 <ErrorList errors={errors[`items[${index}]`]?.product}/>
               </td>
 
-              <td>
-                {toStock &&
+              {withStock &&
+                <td>
                   <Input
-                    type="input"
+                    type="async-select"
                     readOnly={readOnly}
                     value={item.stock}
                     onChange={val => updateItem(index, {stock: val})}
+                    optionsUrl="/sales/search-stock-location"
+                    labelField="name"
                   />
-                }
-                {!toStock &&
-                  <Input
-                    type="input"
-                    readOnly={readOnly}
-                    value={item.expense_account}
-                    onChange={val => updateItem(index, {expense_account: val})}
-                  />
-                }
-              </td>
-
-              <td>
-                {!paymentType && 
-                  <Input
-                    type="input"
-                    readOnly={readOnly}
-                    value={item.debt_account}
-                    onChange={val => updateItem(index, {debt_account: val})}
-                  />
-                }
-                {paymentType === 'cash' && 
-                  <Input
-                    type="input"
-                    readOnly={readOnly}
-                    value={item.cash_account}
-                    onChange={val => updateItem(index, {cash_account: val})}
-                  />
-                }
-                {paymentType === 'bank' && 
-                  <Input
-                    type="input"
-                    readOnly={readOnly}
-                    value={item.cash_account}
-                    onChange={val => updateItem(index, {bank_account: val})}
-                  />
-                }
-              </td>
-
+                </td>
+              }
+            
               <td>
                 <Input
                   type="number"
@@ -194,6 +175,7 @@ export default function GoodItems({readOnly, toStock, paymentType}) {
                 <ErrorList errors={errors[`items[${index}]`]?.price_unit}/>
               </td>
               
+              
               <td>
                 <Input
                   type="number"
@@ -204,26 +186,54 @@ export default function GoodItems({readOnly, toStock, paymentType}) {
                 />
                 <ErrorList errors={errors[`items[${index}]`]?.qty}/>
               </td>
-
+              
               <td>
                 <span>{item.unit}</span>
               </td>
 
-              <td>
-                <span>{getTotal(item)}</span>
-              </td>
-              <td>
-                <Input
-                  type="number"
-                  readOnly={readOnly}
-                  value={item.discount_rate}
-                  onChange={val => updateItem(index, {discount_rate: val})}
-                  min="0"
-                />
-              </td>
-              <td>
-                <span>{getDiscount(item)}</span>
-              </td>
+              { (withTax || withDiscount) &&
+                <td>
+                  <span>{getTotal(item)}</span>
+                </td>
+              }
+
+              {withDiscount &&
+                <td>
+                  <Input
+                    type="number"
+                    readOnly={readOnly}
+                    value={item.discount_rate}
+                    onChange={val => updateItem(index, {discount_rate: val})}
+                    min="0"
+                  />
+                </td>
+              }
+
+              {withDiscount &&
+                <td>
+                  <span>{getDiscount(item)}</span>
+                </td>
+              }
+
+              {withTax &&
+                <td>
+                  <Input
+                    type="number"
+                    readOnly={readOnly}
+                    value={item.vat_rate}
+                    onChange={val => updateItem(index, {vat_rate: val})}
+                    min="0"
+                  />
+                </td>
+              }
+
+              {withTax &&
+                <td>
+                  <span>{getVAT(item)}</span>
+                </td>
+              }
+
+              
               <td>
                 <span>{getNet(item)}</span>
               </td>

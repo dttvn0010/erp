@@ -4,6 +4,8 @@ from .views import *
 
 urlpatterns = [
     path('search-product', ProductAsyncSearchView.as_view()),
+    path('search-stock-location', StockLocationAsyncSearchView.as_view()),
+    path('search-expense-type', ExpenseTypeAsyncSearchView.as_view()),
     path('search-supplier', SuppilerAsyncSearchView.as_view()),
     path('search-employee', EmployeeAsyncSearchView.as_view()),
 

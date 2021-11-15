@@ -4,6 +4,9 @@ import { useRouter } from 'next/router';
 
 import { Tab, Tabs } from 'react-bootstrap';
 import Card from 'components/share/card';
+import Input from "components/share/input";
+import ErrorList from "components/share/errorlist";
+
 import DebtNote from '../sections/note/debtNote';
 import OutStockNote from '../sections/note/outStockNote';
 import ReceiptNote from '../sections/note/receiptNote';
@@ -11,7 +14,7 @@ import DepositNote from '../sections/note/depositNote';
 import Invoice from '../sections/note/invoice';
 
 import GoodItems from '../sections/itemList/goodsItems';
-import TaxItems from '../sections/itemList/taxItems';
+import ExpenseList from '../sections/itemList/expenseList';
 
 import { 
   IconLink, 
@@ -33,7 +36,7 @@ export default function VoucherForm({id, update, readOnly}){
   
   const router = useRouter();
   const store = useSliceStore(NAME_SPACE);
-  const [data] = useSliceSelector(NAME_SPACE, ['data']);
+  const [data, errors] = useSliceSelector(NAME_SPACE, ['data', 'errors']);
 
   useEffect(() => {
     store.setState({
@@ -47,6 +50,17 @@ export default function VoucherForm({id, update, readOnly}){
       });
     }
   }, [id]);
+
+  const updateData = newData => {
+    const data = store.getState().data ?? {};
+    
+    store.setState({
+      data: {
+        ...data,
+        ...newData
+      }
+    }) 
+  }
 
   const saveVoucher = async (e) => {
     e.preventDefault();
@@ -83,6 +97,38 @@ export default function VoucherForm({id, update, readOnly}){
       title={title}
       body={
         <form id="fmt" onSubmit={saveVoucher}>
+          <div className="row">
+            <div className="col p-2">
+              <div className="section-title">Thông tin khách hàng</div>
+              <hr className="mt-0"/>
+              <table className="table">
+                <tbody>
+                  <tr>
+                    <th style={{width: '25%'}}>Khách hàng:</th>
+                    <td>
+                      <Input
+                        type="async-select"
+                        readOnly={readOnly}
+                        value={data.customer}
+                        onChange={(val) => updateData({customer: val})}
+                        optionsUrl="/sales/search-customer"
+                        labelField="name"
+                      />
+                      <ErrorList errors={errors.customer}/>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="col p-2">
+              <div className="section-title">Thông tin chứng từ</div>
+              <hr className="my-0"/>
+            </div>
+          </div>
+
           <Tabs className="mt-2">
             <Tab eventKey="debtNote" title="Chứng từ ghi nợ">
               <DebtNote readOnly={readOnly}/>
@@ -100,21 +146,29 @@ export default function VoucherForm({id, update, readOnly}){
               <Invoice readOnly={readOnly}/>
             </Tab>
           </Tabs>
+
+          <div className="row mt-3">
+            <div className="col p-2">
+              <div className="section-title">Thông tin hàng hoá/dịch vụ</div>
+              <hr className="my-0"/>
+            </div>
+          </div>
           
-          <Tabs className="mt-3">
-            <Tab eventKey="goodsItems" title="Hàng hoá/dịch vụ">
-              <GoodItems readOnly={readOnly}/>
-            </Tab>
-            <Tab eventKey="taxItems" title="Thuế">
-              <TaxItems readOnly={readOnly}/>
-            </Tab>
-            <Tab eventKey="costItems" title="Giá vốn">
-              <div>Giá vốn</div>
-            </Tab>
-            <Tab eventKey="misc" title="Khác">
-              <div>Khác</div>
-            </Tab>
-          </Tabs>
+          <GoodItems 
+            readOnly={readOnly}
+            withTax={true}
+            withStock={true}
+            withDiscount={true}
+          />
+
+          <div className="row mt-2">
+            <div className="col p-2">
+              <div className="section-title">Chi phí bán hàng kèm theo</div>
+              <hr className="my-0"/>
+            </div>
+          </div>
+
+          <ExpenseList readOnly={readOnly}/>
 
           <div className="row mt-3">
             <div className="col">

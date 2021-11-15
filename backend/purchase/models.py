@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import gettext as _
 from accounting.models import Invoice, Ledger, LedgerItem, ExpenseType
 from core.models import Company, Partner, User
-from stock.models import Import, Product
+from stock.models import Import, Export, Product
 from .constants import OrderStatus, OrderType
 
 class Order(models.Model):
@@ -37,6 +37,7 @@ class Order(models.Model):
     amount = models.IntegerField()
 
     date_order = models.DateTimeField()
+    accounting_date = models.DateTimeField()
     
     invoice = models.OneToOneField(Invoice,
         related_name='invoice_pu_order',
@@ -46,6 +47,12 @@ class Order(models.Model):
 
     _import = models.OneToOneField(Import,
         related_name='import_pu_order',
+        blank=True, null=True,
+        on_delete=models.CASCADE
+    )
+
+    _export = models.OneToOneField(Export,
+        related_name='export_pu_order',
         blank=True, null=True,
         on_delete=models.CASCADE
     )

@@ -86,13 +86,24 @@ class ExpenseType(models.Model):
     def __str__(self):
         return self.name
 
+class InvoiceType(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.PROTECT)
+    name = models.CharField(max_length=200)
+    description = models.CharField(max_length=500, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Invoice(models.Model):
+    invoice_type = models.ForeignKey(InvoiceType, blank=True, null=True, on_delete=models.PROTECT)
     partner = models.ForeignKey(Partner, on_delete=models.PROTECT)
     partner_tax_number = models.CharField(max_length=50, blank=True)
     partner_name = models.CharField(max_length=200)
     partner_address = models.CharField(max_length=300, blank=True)
     invoice_number = models.CharField(max_length=100)
     invoice_date = models.DateTimeField()
+    note = models.CharField(max_length=500, blank=True)
     
 class Ledger(models.Model):
     company = models.ForeignKey(Company, on_delete=models.PROTECT)
