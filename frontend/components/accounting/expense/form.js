@@ -147,7 +147,7 @@ export default function ExpenseForm({id, update, readOnly}){
             <div className="col-6 form-group">
               <label className="form-label text-bold">Hình thức thanh toán:</label>
               <div className="row">
-                <div class="col-4">
+                <div className="col-4">
                   <input 
                     type="radio" 
                     name="cash" 
@@ -157,7 +157,7 @@ export default function ExpenseForm({id, update, readOnly}){
                   /> Chuyển khoản
                 </div>
 
-                <div class="col-4">
+                <div className="col-4">
                   <input 
                     type="radio" 
                     name="cash"

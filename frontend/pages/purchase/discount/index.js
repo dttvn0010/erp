@@ -14,7 +14,7 @@ const itemName = 'chứng từ giảm giá hàng mua';
 
 export default function Index() {
   const router = useRouter();
-  const baseUrl = '/purchase/discount/api';
+  const baseUrl = '/purchase/order';
   const deleteItem = getDeleteItemHandler(itemName, `${baseUrl}/crud/[$id$]/`);
 
 
@@ -64,7 +64,7 @@ export default function Index() {
 
           <DataTable 
             renders={renders}
-            apiUrl={"/purchase/discount/search"}
+            apiUrl={`${baseUrl}/search?type=discount`}
           />
         </>
       }

@@ -61,7 +61,7 @@ class ExpenseTableView(DataTableView):
         value = map(lambda x: x == 'true', value.split(','))
         return queryset.filter(ledger__cash__in=value)
 
-    def get_queryset(self, user):
+    def get_queryset(self, user, params):
         return Expense.objects.filter(company=user.employee.company)
 
 class ExpenseTypeAsyncSearchView(DataAsyncSearchView):

@@ -1,12 +1,13 @@
-from django.shortcuts import render
-from employee.models import Employee
-from core.views_api import AsyncSearchView, DataAsyncSearchView
+from django.db.models import Q
+
 from core.models import Partner
 from employee.models import Employee
-from accounting.models import ExpenseType
+from accounting.models import ExpenseType, BankAccount
 from stock.models import Product, Location as StockLocation
+from core.views_api import AsyncSearchView, DataAsyncSearchView
 
 from core.constants import BaseStatus
+from accounting.constants import BankAccountType
 
 class ProductAsyncSearchView(DataAsyncSearchView):
     model = Product
@@ -49,3 +50,32 @@ class EmployeeAsyncSearchView(AsyncSearchView):
             user__display__icontains=term,
             user__is_active=True
         )
+
+class BankAccountAsyncSearchView(AsyncSearchView):
+    fields = ['name', 'bank', 'account_number', 'account_holder']
+
+    def get_queryset(self, term, request):
+        customer_id = request.GET.get('customer_id')
+
+        queryset =  BankAccount.objects.filter(
+            Q(name__icontains=term) |
+            Q(account_number__icontains=term) |
+            Q(account_holder__icontains=term),
+            company=request.user.employee.company,
+            status=BaseStatus.ACTIVE.name
+        )
+
+        if customer_id:
+            queryset = queryset.filter(
+                partner__id=customer_id,
+                type=BankAccountType.PARTNER.name
+            )
+        else:
+            queryset = queryset.filter(
+                type=BankAccountType.INTERNAL.name
+            )
+        
+        return queryset
+
+    def get_bank(self, obj):
+        return obj.bank.code

@@ -39,7 +39,7 @@ class ProductionWorkflowTableView(DataTableView):
         },
     ]
 
-    def get_queryset(self, user):
+    def get_queryset(self, user, params):
         return ProductionWorkflow.objects.filter(bom__product__company=user.employee.company)
 
 class ProductionWorkflowViewSet(ModelViewSet):

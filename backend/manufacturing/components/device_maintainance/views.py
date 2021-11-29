@@ -1,6 +1,6 @@
 from core.utils.viewsets import ModelViewSet
 from core.views_api import DataTableView, DataAsyncSearchView
-from core.utils.date_utils import formatDateTime 
+from core.utils.date_utils import format_datetime 
 from manufacturing.constants import DeviceMaintainanceStatus
 from manufacturing.models import Device
 from .serializers import *
@@ -41,14 +41,14 @@ class DeviceMaintainanceTableView(DataTableView):
         },
     ]
 
-    def get_queryset(self, user):
+    def get_queryset(self, user, params):
         return DeviceMaintainance.objects.filter(device__company=user.employee.company)
 
     def get_start_date(self, obj, context):
-        return formatDateTime(obj.start_date or obj.planned_start_date)
+        return format_datetime(obj.start_date or obj.planned_start_date)
 
     def get_end_date(self, obj, context):
-        return formatDateTime(obj.end_date or obj.planned_end_date)
+        return format_datetime(obj.end_date or obj.planned_end_date)
 
 class DeviceAsyncSearchView(DataAsyncSearchView):
     model = Device

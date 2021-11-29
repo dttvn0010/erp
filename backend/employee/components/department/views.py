@@ -71,7 +71,7 @@ class DepartmentTableView(DataTableView):
         },
     ]
 
-    def get_queryset(self, user):
+    def get_queryset(self, user, params):
         return Department.objects.filter(company=user.employee.company)
 
 @api_view(['POST'])

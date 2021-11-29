@@ -26,26 +26,30 @@ export default function WithdrawNote({readOnly}) {
           <Input
             type="input"
             readOnly={readOnly}
-            value={data.withdraw_number}
-            onChange={val => updateData({withdraw_number: val})}
+            value={data.order_number}
+            onChange={val => updateData({order_number: val})}
           />
         </div>
         <div className="col-4 form-group">
           <label className="form-label text-bold">Tài khoản chuyển tiền:</label>
           <Input
-            type="input"
+            type="async-select"
             readOnly={readOnly}
             value={data.from_bank_account}
             onChange={val => updateData({from_bank_account: val})}
+            optionsUrl="/purchase/search-bank-account"
+            labelField="name"
           />
         </div>
         <div className="col-4 form-group">
           <label className="form-label text-bold">Tài khoản nhận:</label>
           <Input
-            type="date"
+            type="async-select"
             readOnly={readOnly}
             value={data.to_bank_account}
             onChange={val => updateData({to_bank_account: val})}
+            optionsUrl="/purchase/search-bank-account"
+            labelField="name"
           />
         </div>
       </div>
@@ -55,8 +59,8 @@ export default function WithdrawNote({readOnly}) {
           <Input
             type="date"
             readOnly={readOnly}
-            value={data.acc_date}
-            onChange={val => updateData({acc_date: val})}
+            value={data.accouting_date}
+            onChange={val => updateData({accouting_date: val})}
           />
         </div>
         <div className="col-4 form-group">
@@ -64,8 +68,8 @@ export default function WithdrawNote({readOnly}) {
           <Input
             type="date"
             readOnly={readOnly}
-            value={data.ca_date}
-            onChange={val => updateData({ca_date: val})}
+            value={data.order_date}
+            onChange={val => updateData({order_date: val})}
           />
         </div>
       </div>
@@ -76,8 +80,8 @@ export default function WithdrawNote({readOnly}) {
             type="textarea"
             rows="3"
             readOnly={readOnly}
-            value={data.detail}
-            onChange={val => updateData({detail: val})}
+            value={data.note}
+            onChange={val => updateData({note: val})}
           />
         </div>
       </div>

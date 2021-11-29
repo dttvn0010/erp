@@ -2,7 +2,7 @@ from core.constants import TextEnum
 from django.utils.translation import gettext as _
 
 class OrderType(TextEnum):
-    SALE = _('sales.order.type.sale')
+    SALES = _('sales.order.type.sale')
     DISCOUNT = _('sales.order.type.discount')
     RETURN = _('sales.order.type.return')
 

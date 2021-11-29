@@ -14,7 +14,7 @@ const itemName = 'chứng từ bán hàng';
 
 export default function Index() {
   const router = useRouter();
-  const baseUrl = '/sales/voucher/api';
+  const baseUrl = '/sales/order';
   const deleteItem = getDeleteItemHandler(itemName, `${baseUrl}/crud/[$id$]/`);
 
 
@@ -64,7 +64,7 @@ export default function Index() {
 
           <DataTable 
             renders={renders}
-            apiUrl={"/sales/voucher/search"}
+            apiUrl={`${baseUrl}/search?type=sales`}
           />
         </>
       }

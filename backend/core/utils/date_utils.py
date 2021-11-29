@@ -1,12 +1,12 @@
 from datetime import datetime
 
-def formatDate(date, fmt='%d/%m/%Y'):
+def format_date(date, fmt='%d/%m/%Y'):
     try:
         return date.strftime(fmt)
     except:
         return ''
 
-def formatDateTime(date, fmt='%d/%m/%Y %H:%M:%S'):
+def format_datetime(date, fmt='%d/%m/%Y %H:%M:%S'):
     try:
         return date.strftime(fmt)
     except:

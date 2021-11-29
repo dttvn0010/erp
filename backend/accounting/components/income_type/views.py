@@ -37,7 +37,7 @@ class IncomeTypeTableView(DataTableView):
         },
     ]
 
-    def get_queryset(self, user):
+    def get_queryset(self, user, params):
         return IncomeType.objects.filter(company=user.employee.company)
 
 class ChangeIncomeTypeStatusView(ChangeItemStatusView):

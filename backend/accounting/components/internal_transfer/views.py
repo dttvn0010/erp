@@ -78,5 +78,5 @@ class InternalTransferTableView(DataTableView):
         },
     ]
 
-    def get_queryset(self, user):
+    def get_queryset(self, user, params):
         return InternalTransfer.objects.filter(company=user.employee.company)

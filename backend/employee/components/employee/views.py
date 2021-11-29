@@ -74,7 +74,7 @@ class EmployeeTableView(DataTableView):
         else:
             return BaseStatus.INACTIVE.name
 
-    def get_queryset(self, user):
+    def get_queryset(self, user, params):
         return Employee.objects.filter(company=user.employee.company)
 
 class DepartmentAsyncSearchView(DataAsyncSearchView):

@@ -37,5 +37,5 @@ class ExportDataTableView(DataTableView):
         },
     ]
 
-    def get_queryset(self, user):
+    def get_queryset(self, user, params):
         return Export.objects.filter(company=user.employee.company)

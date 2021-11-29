@@ -46,7 +46,7 @@ class ProductTableView(DataTableView):
         },
     ]
 
-    def get_queryset(self, user):
+    def get_queryset(self, user, params):
         return Product.objects.filter(company=user.employee.company)
 
 # Create your views here.

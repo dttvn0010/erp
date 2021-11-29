@@ -1,7 +1,7 @@
 from core.views_api import DataTableView, DataAsyncSearchView, AsyncSearchView
 from core.constants import BaseStatus
 from core.utils.viewsets import ModelViewSet
-from core.utils.date_utils import formatDateTime 
+from core.utils.date_utils import format_datetime 
 
 from manufacturing.models import(
     Product, 
@@ -61,12 +61,12 @@ class ProductionProcessTableView(DataTableView):
     ]
 
     def get_start_date(self, obj, context):
-        return formatDateTime(obj.start_date or obj.planned_start_date)
+        return format_datetime(obj.start_date or obj.planned_start_date)
 
     def get_end_date(self, obj, context):
-        return formatDateTime(obj.end_date or obj.planned_end_date)
+        return format_datetime(obj.end_date or obj.planned_end_date)
 
-    def get_queryset(self, user):
+    def get_queryset(self, user, params):
         return ProductionProcess.objects.filter(bom__product__company=user.employee.company)
 
 class ProductionProcessViewSet(ModelViewSet):

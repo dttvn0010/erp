@@ -26,8 +26,8 @@ export default function DebtDeductNote({readOnly}) {
           <Input
             type="input"
             readOnly={readOnly}
-            value={data.debt_deduct_number}
-            onChange={val => updateData({debt_deduct_number: val})}
+            value={data.order_number}
+            onChange={val => updateData({order_number: val})}
           />
         </div>
         <div className="col-4 form-group">
@@ -35,8 +35,8 @@ export default function DebtDeductNote({readOnly}) {
           <Input
             type="date"
             readOnly={readOnly}
-            value={data.acc_date}
-            onChange={val => updateData({acc_date: val})}
+            value={data.accounting_date}
+            onChange={val => updateData({accounting_date: val})}
           />
         </div>
         <div className="col-4 form-group">
@@ -44,8 +44,8 @@ export default function DebtDeductNote({readOnly}) {
           <Input
             type="date"
             readOnly={readOnly}
-            value={data.ca_date}
-            onChange={val => updateData({ca_date: val})}
+            value={data.order_date}
+            onChange={val => updateData({order_date: val})}
           />
         </div>
       </div>
@@ -56,8 +56,8 @@ export default function DebtDeductNote({readOnly}) {
             type="textarea"
             rows="3"
             readOnly={readOnly}
-            value={data.detail}
-            onChange={val => updateData({detail: val})}
+            value={data.note}
+            onChange={val => updateData({note: val})}
           />
         </div>
       </div>

@@ -6,12 +6,12 @@ from stock.models import Import, Export, Product
 from .constants import OrderStatus, OrderType
 
 class Order(models.Model):
-    order_number = models.CharField(max_length=100)
-
     company = models.ForeignKey(Company, 
         on_delete=models.PROTECT, 
         related_name='company_pu_orders'
     )
+
+    order_number = models.CharField(max_length=100)
 
     type = models.CharField(choices=OrderType.choices(), max_length=50)
 
@@ -30,14 +30,10 @@ class Order(models.Model):
         on_delete=models.CASCADE
     )
 
-    discount = models.IntegerField()
     expense = models.IntegerField()
     amount_untaxed = models.IntegerField()
     amount_tax = models.IntegerField()
     amount = models.IntegerField()
-
-    date_order = models.DateTimeField()
-    accounting_date = models.DateTimeField()
     
     invoice = models.OneToOneField(Invoice,
         related_name='invoice_pu_order',
@@ -57,7 +53,7 @@ class Order(models.Model):
         on_delete=models.CASCADE
     )
 
-    note = models.CharField(max_length=500)
+    note = models.CharField(max_length=500, blank=True)
 
     request_person = models.ForeignKey(User, related_name='request_pu_orders', 
             blank=True, null=True,
@@ -81,7 +77,7 @@ class Order(models.Model):
     )
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
     
     product = models.ForeignKey(Product, 
         related_name='product_pu_order_items',
@@ -90,35 +86,35 @@ class OrderItem(models.Model):
 
     qty = models.IntegerField()
     price_unit = models.IntegerField()
-
     discount = models.IntegerField()
-    expense = models.IntegerField()
-    amount_untaxed = models.IntegerField()
     amount_tax = models.IntegerField()
-    amount = models.IntegerField()
-
+            
     ledger_item = models.OneToOneField(LedgerItem,
         related_name='ledger_pu_order_item',
         on_delete=models.PROTECT
     )
 
+    @property
+    def amount_untaxed(self):
+        return self.qty * self.price_unit - self.discount
+
 class OrderItemTax(models.Model):
     order_item = models.ForeignKey(OrderItem, on_delete=models.CASCADE)
-    tax_rate = models.FloatField()
-    amount_tax = models.IntegerField()
-
+        
     ledger_item = models.OneToOneField(LedgerItem,
         related_name='ledger_pu_order_item_tax',
         on_delete=models.PROTECT
     )
 
 class OrderExpense(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, related_name='expenses', on_delete=models.CASCADE)
     
     type = models.ForeignKey(ExpenseType, 
         related_name='expense_type_pu_order_expenses',
         on_delete=models.PROTECT
     )
+
+    note = models.CharField(max_length=500, blank=True)
 
     ledger_item = models.OneToOneField(LedgerItem,
         related_name='ledger_pu_order_expense',

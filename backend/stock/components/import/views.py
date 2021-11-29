@@ -37,5 +37,5 @@ class ImportDataTableView(DataTableView):
         },
     ]
 
-    def get_queryset(self, user):
+    def get_queryset(self, user, params):
         return Import.objects.filter(company=user.employee.company)

@@ -3,7 +3,7 @@ from datetime import timedelta
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .utils.date_utils import formatDate, parseStringToDate, parseStringToDateTime
+from .utils.date_utils import format_date, parseStringToDate, parseStringToDateTime
 from .constants import BaseStatus
 
 class AsyncSearchView(APIView):
@@ -87,7 +87,7 @@ class DataTableView(APIView):
     def user_can_edit(self, user):
         ...
 
-    def get_queryset(self, user):
+    def get_queryset(self, user, params={}):
         ...
 
     def get_context(self, user):
@@ -157,7 +157,7 @@ class DataTableView(APIView):
                 value = context['server_url'] + value.url[1:]
             
             if field_class in ['DateField', 'DateTimeField']:
-                value = formatDate(value, fmt=col.get('format', '%d/%m/%Y'))
+                value = format_date(value, fmt=col.get('format', '%d/%m/%Y'))
             
             elif field_class == 'ForeignKey':
                 value_id = value.pk if value is not None else None
@@ -207,7 +207,7 @@ class DataTableView(APIView):
             field = self.get_field(col)
             field_class = field.__class__.__name__
 
-            queryset = self.get_queryset(request.user)
+            queryset = self.get_queryset(request.user, request.GET)
             if queryset is None:
                 raise Exception('Method get_queryset not implemented!')
 
@@ -361,7 +361,7 @@ class DataTableView(APIView):
         keyword = request.query_params.get('search', '') 
         start = int(request.query_params.get('start', 0))
         length = int(request.query_params.get('length', 0))
-        queryset = self.get_queryset(request.user)
+        queryset = self.get_queryset(request.user, request.GET)
         items = self.filter_by_keyword(queryset, keyword)
 
         if queryset is None:

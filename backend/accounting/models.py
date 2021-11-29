@@ -38,7 +38,12 @@ class Bank(models.Model):
 
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
-    status = models.CharField(choices=BaseStatus.choices(), default=BaseStatus.DRAFT.name, max_length=50)
+    
+    status = models.CharField(
+        choices=BaseStatus.choices(), 
+        default=BaseStatus.DRAFT.name, 
+        max_length=50
+    )
 
     def __str__(self):
         return self.name
@@ -57,7 +62,12 @@ class BankAccount(models.Model):
 
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
-    status = models.CharField(choices=BaseStatus.choices(), default=BaseStatus.DRAFT.name, max_length=50)
+    
+    status = models.CharField(
+        choices=BaseStatus.choices(), 
+        default=BaseStatus.DRAFT.name, 
+        max_length=50
+    )
     
     def __str__(self):
         return self.name
@@ -69,7 +79,12 @@ class IncomeType(models.Model):
 
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
-    status = models.CharField(choices=BaseStatus.choices(), default=BaseStatus.DRAFT.name, max_length=50)
+    
+    status = models.CharField(
+        choices=BaseStatus.choices(), 
+        default=BaseStatus.DRAFT.name, 
+        max_length=50
+    )
 
     def __str__(self):
         return self.name
@@ -81,7 +96,12 @@ class ExpenseType(models.Model):
 
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
-    status = models.CharField(choices=BaseStatus.choices(), default=BaseStatus.DRAFT.name, max_length=50)
+
+    status = models.CharField(
+        choices=BaseStatus.choices(), 
+        default=BaseStatus.DRAFT.name, 
+        max_length=50
+    )
 
     def __str__(self):
         return self.name
@@ -93,7 +113,6 @@ class InvoiceType(models.Model):
 
     def __str__(self):
         return self.name
-
 
 class Invoice(models.Model):
     invoice_type = models.ForeignKey(InvoiceType, blank=True, null=True, on_delete=models.PROTECT)
@@ -167,7 +186,12 @@ class InternalTransfer(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)    
-    status = models.CharField(choices=BaseStatus.choices(), default=BaseStatus.DRAFT.name, max_length=50)
+    
+    status = models.CharField(
+        choices=BaseStatus.choices(), 
+        default=BaseStatus.DRAFT.name, 
+        max_length=50
+    )
 
     def __str__(self) -> str:
         return self.ledger.memo
@@ -232,7 +256,12 @@ class Income(models.Model):
 
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)    
-    status = models.CharField(choices=BaseStatus.choices(), default=BaseStatus.DRAFT.name, max_length=50)
+    
+    status = models.CharField(
+        choices=BaseStatus.choices(), 
+        default=BaseStatus.DRAFT.name, 
+        max_length=50
+    )
 
     def __str__(self) -> str:
         return self.ledger.memo

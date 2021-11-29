@@ -6,6 +6,10 @@ class TextEnum(Enum):
     def choices(cls, excludes=[]):
         return [(x.name, x.value) for x in cls if x.name not in excludes]
 
+    @classmethod
+    def value_map(cls):
+        return {x.name: x.value for x in cls}
+
 class Gender(TextEnum):
     MALE = _('gender.male')
     FEMALE = _('gender.female')

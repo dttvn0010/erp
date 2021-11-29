@@ -6,7 +6,6 @@ import Card from "components/share/card";
 import DataTable from 'components/share/datatable';
 import { 
   IconLink, 
-  getStatusSwitcher,
   getDeleteItemHandler
 } from 'utils/helper';
 
@@ -14,15 +13,11 @@ const itemName = 'chứng từ mua hàng';
 
 export default function Index() {
   const router = useRouter();
-  const baseUrl = '/purchase/voucher/api';
+  const baseUrl = '/purchase/order';
   const deleteItem = getDeleteItemHandler(itemName, `${baseUrl}/crud/[$id$]/`);
 
 
   const renders = {
-    col3: (data, row, dispatch) => (
-      getStatusSwitcher(data, row, dispatch, itemName, `${baseUrl}/change-status/[$id$]`)
-    ),
-
     col4: (_, row, dispatch) => {
       let items = [
         {
@@ -64,7 +59,7 @@ export default function Index() {
 
           <DataTable 
             renders={renders}
-            apiUrl={"/purchase/voucher/search"}
+            apiUrl={`${baseUrl}/search?type=purchase`}
           />
         </>
       }

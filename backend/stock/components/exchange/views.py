@@ -37,5 +37,5 @@ class ExchangeDataTableView(DataTableView):
         },
     ]
 
-    def get_queryset(self, user):
+    def get_queryset(self, user, params):
         return Exchange.objects.filter(company=user.employee.company)

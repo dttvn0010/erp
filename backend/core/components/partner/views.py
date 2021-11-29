@@ -72,7 +72,7 @@ class PartnerTableView(DataTableView):
         },
     ]
 
-    def get_queryset(self, user):
+    def get_queryset(self, user, params):
         return Partner.objects.filter(company=user.employee.company)
 
 class ChangePartnerStatusView(ChangeItemStatusView):

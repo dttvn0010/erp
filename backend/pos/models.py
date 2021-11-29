@@ -18,7 +18,8 @@ class Location(models.Model):
 
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
-    status = models.CharField(choices=BaseStatus.choices(), default=BaseStatus.DRAFT.name, max_length=50)
+    status = models.CharField(choices=BaseStatus.choices(), 
+				default=BaseStatus.DRAFT.name, max_length=50)
 
     def __str__(self):
         return self.name
@@ -28,6 +29,8 @@ class Order(models.Model):
         on_delete=models.PROTECT, 
         related_name='company_pos_orders'
     )
+
+    order_number = models.CharField(max_length=100)
 
     type = models.CharField(choices=OrderType.choices(), max_length=50)
 
@@ -52,8 +55,11 @@ class Order(models.Model):
         on_delete=models.CASCADE
     )
 
-    date_order = models.DateTimeField()
-    
+    expense = models.IntegerField()
+    amount_untaxed = models.IntegerField()
+    amount_tax = models.IntegerField()
+    amount = models.IntegerField()
+
     invoice = models.OneToOneField(Invoice,
         related_name='invoice_pos_order',
         blank=True, null=True,
@@ -66,8 +72,9 @@ class Order(models.Model):
         on_delete=models.CASCADE
     )
 
-    note = models.CharField(max_length=500)
-    
+    note = models.CharField(max_length=500, blank=True)
+
+    order_date = models.DateTimeField(blank=True, null=True)
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
 
@@ -94,10 +101,7 @@ class OrderItem(models.Model):
     )
 
     discount = models.IntegerField()
-    expense = models.IntegerField()
-    amount_untaxed = models.IntegerField()
     amount_tax = models.IntegerField()
-    amount = models.IntegerField()
 
     ledger_item = models.OneToOneField(LedgerItem,
         related_name='ledger_pos_order_item',
@@ -106,9 +110,7 @@ class OrderItem(models.Model):
 
 class OrderItemTax(models.Model):
     order_item = models.ForeignKey(OrderItem, on_delete=models.CASCADE)
-    tax_rate = models.FloatField()
-    amount_tax = models.IntegerField()
-
+    
     ledger_item = models.OneToOneField(LedgerItem,
         related_name='ledger_pos_order_item_tax',
         on_delete=models.PROTECT
@@ -121,6 +123,8 @@ class OrderExpense(models.Model):
         related_name='expense_type_pos_order_expenses',
         on_delete=models.PROTECT
     )
+
+    note = models.CharField(max_length=500, blank=True)
 
     ledger_item = models.OneToOneField(LedgerItem,
         related_name='ledger_pos_order_expense',

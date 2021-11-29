@@ -26,8 +26,8 @@ export default function ExpenseNote({readOnly}) {
           <Input
             type="input"
             readOnly={readOnly}
-            value={data.payment_number}
-            onChange={val => updateData({payment_number: val})}
+            value={data.order_number}
+            onChange={val => updateData({order_number: val})}
           />
         </div>
         <div className="col-4 form-group">
@@ -35,8 +35,8 @@ export default function ExpenseNote({readOnly}) {
           <Input
             type="date"
             readOnly={readOnly}
-            value={data.acc_date}
-            onChange={val => updateData({acc_date: val})}
+            value={data.accouting_date}
+            onChange={val => updateData({accouting_date: val})}
           />
         </div>
         <div className="col-4 form-group">
@@ -44,8 +44,8 @@ export default function ExpenseNote({readOnly}) {
           <Input
             type="date"
             readOnly={readOnly}
-            value={data.ca_date}
-            onChange={val => updateData({ca_date: val})}
+            value={data.order_date}
+            onChange={val => updateData({order_date: val})}
           />
         </div>
       </div>
@@ -56,8 +56,8 @@ export default function ExpenseNote({readOnly}) {
             type="textarea"
             rows="3"
             readOnly={readOnly}
-            value={data.detail}
-            onChange={val => updateData({detail: val})}
+            value={data.note}
+            onChange={val => updateData({note: val})}
           />
         </div>
       </div>

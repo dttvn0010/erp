@@ -91,6 +91,7 @@ class ProductMove(models.Model):
 
 class Import(models.Model):
     company = models.ForeignKey(Company, on_delete=models.PROTECT)
+    import_number = models.CharField(max_length=100)
     note = models.CharField(max_length=200)
     date = models.DateTimeField()
 
@@ -108,6 +109,7 @@ class ImportItem(models.Model):
 
 class Export(models.Model):
     company = models.ForeignKey(Company, on_delete=models.PROTECT)
+    export_number = models.CharField(max_length=100)
     note = models.CharField(max_length=200)
     date = models.DateTimeField()
 

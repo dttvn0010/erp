@@ -50,7 +50,7 @@ class ProductCategoryTableView(DataTableView):
     def user_can_edit(self, user):
         return False #return has_permission(user, 'stock.change_productcategory')
 
-    def get_queryset(self, user):
+    def get_queryset(self, user,params):
         return ProductCategory.objects.filter(company=user.employee.company)
 
 # Create your views here.

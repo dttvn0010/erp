@@ -48,7 +48,7 @@ class AccountTableView(DataTableView):
         },
     ]
 
-    def get_queryset(self, user):
+    def get_queryset(self, user, params):
         return Account.objects.filter(company=user.employee.company)
 
 @api_view(['PATCH'])

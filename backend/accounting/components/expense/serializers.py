@@ -25,7 +25,8 @@ from accounting.constants import BusinessType, ExpenseStatus
 class ExpenseItemSerializer(ModelSerializer):
     class Meta:
         model = ExpenseItem
-        fields = ['expense', 'type', 'type_obj', 'credit_account', 'credit_account_obj', 'note', 'amount']
+        fields = ['expense', 'type', 'type_obj', 'credit_account', 'credit_account_obj', 
+                    'note', 'amount']
 
     expense = PrimaryKeyRelatedField(required=False, 
         queryset=Expense.objects.all()
@@ -92,15 +93,13 @@ class ExpenseSerializer(ModelSerializer):
         if obj and obj.ledger and obj.ledger.from_bank_account:
             from_bank_account = obj.ledger.from_bank_account
             fields = ['id', 'name', 'account_number', 'account_holder']
-            return {field: getattr(from_bank_account, field) 
-                        for field in fields}
+            return {field: getattr(from_bank_account, field) for field in fields}
 
     def get_to_bank_account_obj(self, obj):
         if obj and obj.ledger and obj.ledger.to_bank_account:
             to_bank_account = obj.ledger.to_bank_account
             fields = ['id', 'name', 'account_number', 'account_holder']
-            return {field: getattr(to_bank_account, field) 
-                        for field in fields}
+            return {field: getattr(to_bank_account, field) for field in fields}
 
     def create_item(self, expense, validated_item_data):
         ledger_item_data = validated_item_data.pop('ledger_item', {})

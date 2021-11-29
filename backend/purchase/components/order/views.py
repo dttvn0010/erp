@@ -1,8 +1,16 @@
+
+from core.utils.viewsets import ModelViewSet
 from core.views_api import DataTableView
 from purchase.models import Order
-from core.constants import BaseStatus
 
-class ReturnTableView(DataTableView):
+from purchase.constants import OrderStatus
+from .serializers import *
+
+class OrderViewSet(ModelViewSet):
+    serializer_class = OrderSerializer
+    queryset = Order.objects.all()
+
+class OrderTableView(DataTableView):
     model = Order
     order_by = '-update_date'
     columns_def = [
@@ -25,7 +33,7 @@ class ReturnTableView(DataTableView):
         },
         {
             'name': 'status',
-            'display_list': BaseStatus.choices(),
+            'display_list': OrderStatus.choices(),
             'title': 'Trạng thái',
             'orderable': False,
             'width': '24%'
@@ -39,5 +47,6 @@ class ReturnTableView(DataTableView):
         },
     ]
 
-    def get_queryset(self, user):
-        return Order.objects.none()
+    def get_queryset(self, user, params):
+        type_ = params.get('type', '')
+        return Order.objects.filter(company=user.employee.company, type=type_.upper())

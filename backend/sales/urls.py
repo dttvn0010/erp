@@ -7,8 +7,6 @@ urlpatterns = [
     path('search-expense-type', ExpenseTypeAsyncSearchView.as_view()),
     path('search-customer', CustomerAsyncSearchView.as_view()),
     path('search-employee', EmployeeAsyncSearchView.as_view()),
-
-    path('voucher/', include('sales.components.voucher.urls')),
-    path('discount/', include('sales.components.discount.urls')),
-    path('return/', include('sales.components.return.urls')),
+    path('search-bank-account', BankAccountAsyncSearchView.as_view()),
+    path('order/', include('sales.components.order.urls')),
 ]

@@ -40,7 +40,7 @@ class DeviceCategoryTableView(DataTableView):
         },
     ]
 
-    def get_queryset(self, user):
+    def get_queryset(self, user, params):
         return DeviceCategory.objects.filter(company=user.employee.company)
 
 class ParentAsyncSearchView(AsyncSearchView):

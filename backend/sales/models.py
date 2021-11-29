@@ -1,6 +1,6 @@
 from django.db import models
 from core.models import Company, Partner
-from stock.models import Location, Import, Export, Product, ProductPricePolicy
+from stock.models import Import, Export, Product, ProductPricePolicy
 from accounting.models import Invoice, Ledger, LedgerItem, ExpenseType
 
 from .constants import OrderStatus, OrderType
@@ -11,6 +11,8 @@ class Order(models.Model):
         on_delete=models.PROTECT, 
         related_name='company_sa_orders'
     )
+
+    order_number = models.CharField(max_length=100)
 
     type = models.CharField(choices=OrderType.choices(), max_length=50)
 
@@ -23,27 +25,17 @@ class Order(models.Model):
         on_delete=models.PROTECT, 
         related_name='customer_sa_orders'
     )
-    
-    location = models.ForeignKey(Location, 
-        on_delete=models.PROTECT,
-        related_name='location_sa_orders',
-        blank=True, null=True
-    )
-
+   
     ledger = models.OneToOneField(Ledger, 
         related_name='ledger_sa_order',
         on_delete=models.CASCADE
     )
 
-    discount = models.IntegerField()
     expense = models.IntegerField()
     amount_untaxed = models.IntegerField()
     amount_tax = models.IntegerField()
     amount = models.IntegerField()
-
-    date_order = models.DateTimeField()
-    accounting_date = models.DateTimeField()
-
+   
     invoice = models.OneToOneField(Invoice,
         related_name='invoice_sa_order',
         blank=True, null=True,
@@ -62,8 +54,8 @@ class Order(models.Model):
         on_delete=models.CASCADE
     )
 
-    note = models.CharField(max_length=500)
-    
+    note = models.CharField(max_length=500, blank=True)
+    order_date = models.DateTimeField(blank=True, null=True)
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
 
@@ -73,7 +65,7 @@ class Order(models.Model):
     )
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
     
     product = models.ForeignKey(Product, 
         related_name='product_sa_order_items',
@@ -90,33 +82,34 @@ class OrderItem(models.Model):
     )
 
     discount = models.IntegerField()
-    expense = models.IntegerField()
-    amount_untaxed = models.IntegerField()
     amount_tax = models.IntegerField()
-    amount = models.IntegerField()
 
     ledger_item = models.OneToOneField(LedgerItem,
         related_name='ledger_sa_order_item',
         on_delete=models.PROTECT
     )
 
+    @property
+    def amount_untaxed(self):
+        return self.qty * self.price_unit - self.discount
+
 class OrderItemTax(models.Model):
     order_item = models.ForeignKey(OrderItem, on_delete=models.CASCADE)
-    tax_rate = models.FloatField()
-    amount_tax = models.IntegerField()
-
+   
     ledger_item = models.OneToOneField(LedgerItem,
         related_name='ledger_sa_order_item_tax',
         on_delete=models.PROTECT
     )
 
 class OrderExpense(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, related_name='expenses', on_delete=models.CASCADE)
     
     type = models.ForeignKey(ExpenseType, 
         related_name='expense_type_sa_order_expenses',
         on_delete=models.PROTECT
     )
+
+    note = models.CharField(max_length=500, blank=True)
 
     ledger_item = models.OneToOneField(LedgerItem,
         related_name='ledger_sa_order_expense',

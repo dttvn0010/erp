@@ -299,7 +299,10 @@ function TableBody({table, renders, dispatch}) {
 }
 
 async function getColumnsDef(apiUrl) {
-  apiUrl += "?__meta__=true";
+  if (!apiUrl.includes('?')) {
+    apiUrl += '?'
+  }
+  apiUrl += "&__meta__=true";
   let result = await axios.get(apiUrl);
   return result.data || [];
 } 

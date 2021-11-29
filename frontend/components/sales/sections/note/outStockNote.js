@@ -26,8 +26,8 @@ export default function OutStockNote({readOnly}) {
           <Input
             type="input"
             readOnly={readOnly}
-            value={data.out_stock_number}
-            onChange={val => updateData({out_stock_number: val})}
+            value={data.stock_number}
+            onChange={val => updateData({stock_number: val})}
           />
         </div>
         <div className="col-4 form-group">
@@ -35,8 +35,8 @@ export default function OutStockNote({readOnly}) {
           <Input
             type="date"
             readOnly={readOnly}
-            value={data.out_stock_date}
-            onChange={val => updateData({out_stock_date: val})}
+            value={data.stock_number}
+            onChange={val => updateData({stock_number: val})}
           />
         </div>
       </div>
@@ -47,8 +47,8 @@ export default function OutStockNote({readOnly}) {
             type="textarea"
             rows="3"
             readOnly={readOnly}
-            value={data.detail}
-            onChange={val => updateData({detail: val})}
+            value={data.note}
+            onChange={val => updateData({note: val})}
           />
         </div>
       </div>

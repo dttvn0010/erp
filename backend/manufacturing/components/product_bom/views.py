@@ -38,7 +38,7 @@ class ProductBomTableView(DataTableView):
         },
     ]
 
-    def get_queryset(self, user):
+    def get_queryset(self, user, params):
         return ProductBom.objects.filter(product__company=user.employee.company)
 
 class ProductAsyncSearchView(DataAsyncSearchView):
