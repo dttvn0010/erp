@@ -357,5 +357,5 @@ class OrderSerializer(ModelSerializer):
         if invoice_date.get('invoice_number'):
             self.create_invoice(order, invoice_data)
 
-        return ledger
+        return order
         
