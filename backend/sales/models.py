@@ -1,6 +1,6 @@
 from django.db import models
 from core.models import Company, Partner
-from stock.models import Import, Export, Product, ProductPricePolicy
+from stock.models import Import, Export, Product, ProductMove, ProductPricePolicy
 from accounting.models import Invoice, Ledger, LedgerItem, ExpenseType
 
 from .constants import OrderStatus, OrderType
@@ -86,6 +86,12 @@ class OrderItem(models.Model):
 
     ledger_item = models.OneToOneField(LedgerItem,
         related_name='ledger_sa_order_item',
+        on_delete=models.PROTECT
+    )
+
+    product_move = models.OneToOneField(ProductMove,
+        blank=True, null=True,
+        related_name='product_move_sa_order_item',
         on_delete=models.PROTECT
     )
 

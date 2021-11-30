@@ -1,0 +1,33 @@
+{
+    "order_number": "102021321",
+    "type": "PURCHASE",
+    "supplier": 1,
+    "order_date": "23/11/2021",
+    "accounting_date": "23/11/2021",
+    "note": "Mua hang 23/11/2021",
+    "from_bank_account": 3,
+    "to_bank_account": 6,
+    "invoice_note": "Hoá đơn lấy sau",
+    "invoice_number": "01321312",
+    "invoice_date": "30/11/2021",
+    "import_number": "034234343",
+    "import_note": "Nhập kho lưu tạm",
+    "import_date": "24/11/2021",
+    "items": [
+        {
+            "product": 1,
+            "stock_location_dest": 1,
+            "qty": 10,
+            "price_unit": 110000,
+            "discount": 5000,
+            "amount_tax": 5500
+        }
+    ],
+    "expenses": [
+        {
+            "type": 7,
+            "amount": 150000,
+            "note": "Thuê vận chuyển taxi tải Thành Hưng"
+        }
+    ]
+}

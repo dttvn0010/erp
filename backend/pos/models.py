@@ -2,7 +2,7 @@ from django.db import models
 from stock.models import Product
 from core.models import Company, Partner
 from accounting.models import  Invoice, ExpenseType, Ledger, LedgerItem
-from stock.models import ProductPricePolicy, Export
+from stock.models import ProductPricePolicy, Export, ProductMove
 from core.constants import BaseStatus
 from .constants import OrderStatus, OrderType
 # Create your models here.
@@ -105,6 +105,12 @@ class OrderItem(models.Model):
 
     ledger_item = models.OneToOneField(LedgerItem,
         related_name='ledger_pos_order_item',
+        on_delete=models.PROTECT
+    )
+
+    product_move = models.OneToOneField(ProductMove,
+        blank=True, null=True,
+        related_name='product_move_pos_order_item',
         on_delete=models.PROTECT
     )
 

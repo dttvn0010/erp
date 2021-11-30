@@ -118,7 +118,7 @@ class Export(models.Model):
     status = models.CharField(choices=BaseStatus.choices(), default=BaseStatus.DRAFT.name, max_length=50)
 
 class ExportItem(models.Model):
-    export = models.ForeignKey(Export, related_name='items', on_delete=models.CASCADE)
+    _export = models.ForeignKey(Export, related_name='items', on_delete=models.CASCADE)
 
     product_move = models.OneToOneField(ProductMove,
         related_name='product_move_export_item',

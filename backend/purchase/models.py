@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import gettext as _
 from accounting.models import Invoice, Ledger, LedgerItem, ExpenseType
 from core.models import Company, Partner, User
-from stock.models import Import, Export, Product
+from stock.models import Import, Export, Product, ProductMove
 from .constants import OrderStatus, OrderType
 
 class Order(models.Model):
@@ -91,6 +91,12 @@ class OrderItem(models.Model):
             
     ledger_item = models.OneToOneField(LedgerItem,
         related_name='ledger_pu_order_item',
+        on_delete=models.PROTECT
+    )
+
+    product_move = models.OneToOneField(ProductMove,
+        blank=True, null=True,
+        related_name='product_move_pu_order_item',
         on_delete=models.PROTECT
     )
 

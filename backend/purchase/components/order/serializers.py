@@ -10,7 +10,16 @@ from rest_framework.serializers import(
 
 from core.models import Partner
 from accounting.models import Ledger, LedgerItem, Invoice, InvoiceType, BankAccount
-from stock.models import Import, Export, Product
+
+from stock.models import (
+    Import, 
+    ImportItem, 
+    Export, 
+    ExportItem, 
+    Product, 
+    ProductMove, 
+    Location as StockLocation
+)
 
 from purchase.models import (
     Order,
@@ -28,13 +37,28 @@ from core.utils.date_utils import format_date
 class OrderItemSerializer(ModelSerializer):
     class Meta:
         model = OrderItem
-        fields = ['order', 'product', 'product_obj', 'qty', 'price_unit', 
+        fields = ['order', 'product', 'product_obj', 'qty', 'price_unit',
+                   'stock_location', 'stock_location_obj',
+                   'stock_location_dest', 'stock_location_dest_obj',
                    'discount', 'discount_pctg',
                    'amount_untaxed', 'amount_tax', 
                    'amount_tax_pctg', 'amount']
 
-    order = PrimaryKeyRelatedField(required=False,
+    order = PrimaryKeyRelatedField(
+        required=False,
         queryset=Order.objects.all()
+    )
+
+    stock_location = PrimaryKeyRelatedField(
+        required=False,
+        source='product_move.location',
+        queryset=StockLocation.objects.all()
+    )
+
+    stock_location_dest = PrimaryKeyRelatedField(
+        required=False,
+        source='product_move.location_dest',
+        queryset=StockLocation.objects.all()
     )
 
     discount_pctg = SerializerMethodField()
@@ -42,15 +66,17 @@ class OrderItemSerializer(ModelSerializer):
     amount_tax_pctg = SerializerMethodField()
     amount = SerializerMethodField()
     product_obj = SerializerMethodField()
+    stock_location_obj = SerializerMethodField()
+    stock_location_dest_obj = SerializerMethodField()
 
     def get_discount_pctg(self, obj):
-        return obj.discount/(obj.qty * obj.price_unit)
+        return round(100*obj.discount/obj.price_unit,2)
 
     def get_amount_tax_pctg(self, obj):
-        return obj.amount_tax/(obj.qty * obj.price_unit)
+        return round(100*obj.amount_tax/obj.price_unit,2)
 
     def get_amount_untaxed(self, obj):
-        return obj.qty * obj.price_unit - obj.discount
+        return obj.qty * (obj.price_unit - obj.discount)
 
     def get_amount(self, obj):
         amount_untaxed = self.get_amount_untaxed(obj)
@@ -61,6 +87,22 @@ class OrderItemSerializer(ModelSerializer):
             return {
                 'id': obj.product.id,
                 'name': obj.product.name,
+            }
+
+    def get_stock_location_obj(self, obj):
+        if obj and obj.product_move and obj.product_move.location:
+            location = obj.product_move.location
+            return {
+                'id': location.id,
+                'name': location.name
+            }
+
+    def get_stock_location_dest_obj(self, obj):
+        if obj and obj.product_move and obj.product_move.location_dest:
+            location_dest = obj.product_move.location_dest
+            return {
+                'id': location_dest.id,
+                'name': location_dest.name
             }
 
 class OrderExpenseSerializer(ModelSerializer):
@@ -89,8 +131,8 @@ class OrderSerializer(ModelSerializer):
                   'order_date', 'accounting_date', 'note', 'status',
                   'from_bank_account', 'from_bank_account_obj',
                   'to_bank_account', 'to_bank_account_obj',
-                  'in_stock_number', 'in_stock_date', 'in_stock_note',
-                  'out_stock_number', 'out_stock_date', 'out_stock_note',
+                  'import_number', 'import_date', 'import_note',
+                  'export_number', 'export_date', 'export_note',
                   'invoice_type', 'invoice_number', 'invoice_date', 'invoice_note',
                   'items', 'expenses']
 
@@ -120,28 +162,28 @@ class OrderSerializer(ModelSerializer):
     to_bank_account_obj = SerializerMethodField()
 
     # Import
-    in_stock_number = CharField(required=False, source='_import.import_number')
+    import_number = CharField(required=False, source='_import.import_number')
     
-    in_stock_date = DateTimeField(
+    import_date = DateTimeField(
         required=False,
         format='%d/%m/%Y', 
         input_formats=['%d/%m/%Y'],
         source='_import.date'
     )
 
-    in_stock_note = CharField(required=False, source='_import.note')
+    import_note = CharField(required=False, source='_import.note')
 
     # Export
-    out_stock_number = CharField(required=False, source='_export.import_number')
+    export_number = CharField(required=False, source='_export.export_number')
     
-    out_stock_date = DateTimeField(
+    export_date = DateTimeField(
         required=False,
         format='%d/%m/%Y', 
         input_formats=['%d/%m/%Y'],
         source='_export.date'
     )
 
-    out_stock_note = CharField(required=False, source='_export.note')
+    export_note = CharField(required=False, source='_export.note')
 
     # Invoice
     invoice_type = PrimaryKeyRelatedField(required=False, allow_null=True,
@@ -181,14 +223,15 @@ class OrderSerializer(ModelSerializer):
             fields = ['id', 'name', 'account_number', 'account_holder']
             return {field: getattr(to_bank_account, field) for field in fields}
 
-    def create_item(self, order, validated_item_data):
+    def create_item(self, order, _import, _export, validated_item_data):
+        product_move = validated_item_data.pop('product_move', {})
         product = validated_item_data['product']
         supplier = order.supplier
         qty = validated_item_data['qty']
         price_unit = validated_item_data['price_unit']
         discount = validated_item_data['discount'] or 0
         amount_tax = validated_item_data['amount_tax'] or 0
-        amount_untaxed = qty * price_unit - discount
+        amount_untaxed = qty * (price_unit - discount)
         order_date_str = format_date(order.order_date)
         
         ledger_item = LedgerItem.objects.create(
@@ -226,6 +269,40 @@ class OrderSerializer(ModelSerializer):
         ledger_item.ref_class = 'purchase.OrderItem'
         ledger_item.save()
 
+        if _import:
+            product_move = ProductMove.objects.create(
+                product=product,
+                qty=qty,
+                inward=True,
+                date=_import.date,
+                **product_move
+            )
+
+            ImportItem.objects.create(
+                _import=_import,
+                product_move=product_move
+            )
+
+            order_item.product_move = product_move
+            order_item.save()
+        
+        if _export:
+            product_move = ProductMove.objects.create(
+                product=product,
+                qty=qty,
+                inward=False,
+                date=_export.date,
+                **product_move
+            )
+
+            ExportItem.objects.create(
+                _export=_export,
+                product_move=product_move
+            )
+
+            order_item.product_move = product_move
+            order_item.save()
+
         return order_item
 
     def create_expense(self, order, validated_expense_data):
@@ -256,7 +333,6 @@ class OrderSerializer(ModelSerializer):
 
     def create_import(self, order, validated_import_data):
         return Import.objects.create(
-            order=order,
             company=order.company,
             status=BaseStatus.ACTIVE.name,
             **validated_import_data
@@ -264,7 +340,6 @@ class OrderSerializer(ModelSerializer):
 
     def create_export(self, order, validated_export_data):
         return Export.objects.create(
-            order=order,
             company=order.company,
             status=BaseStatus.ACTIVE.name,
             **validated_export_data
@@ -288,7 +363,7 @@ class OrderSerializer(ModelSerializer):
         ledger_data = validated_data.pop('ledger', {})
         import_data = validated_data.pop('_import', {})
         export_data = validated_data.pop('_export', {})
-        invoice_data = validated_data.pop('_invoice', {})
+        invoice_data = validated_data.pop('invoice', {})
 
         items_data = validated_data.pop('items', [])
         expenses_data = validated_data.pop('expenses', [])
@@ -332,7 +407,20 @@ class OrderSerializer(ModelSerializer):
             status=OrderStatus.APPROVED.name
         )
 
-        order_items = [self.create_item(order, item_data) for item_data in items_data]
+        if order.type == OrderType.PURCHASE.name and import_data.get('import_number'):
+            _import = self.create_import(order, import_data)
+        else:
+            _import = None
+
+        if order.type == OrderType.RETURN.name and export_data.get('export_number'):
+            _export = self.create_export(order, export_data)
+        else:
+            _export = None
+
+        if invoice_data.get('invoice_number'):
+            order.invoice = self.create_invoice(order, invoice_data)
+
+        order_items = [self.create_item(order, _import, _export, item_data) for item_data in items_data]
         order_expenses = [self.create_expense(order, expense_data) for expense_data in expenses_data]
 
         order.amount_untaxed = sum([order_item.amount_untaxed for order_item in order_items])
@@ -345,15 +433,6 @@ class OrderSerializer(ModelSerializer):
         ledger.ref_pk = order.pk
         ledger.ref_class = 'purchase.Order'
         ledger.save()
-
-        if import_data.get('import_number'):
-            self.create_import(order, import_data)
-
-        if export_data.get('export_number'):
-            self.create_export(order, export_data)
-
-        if invoice_date.get('invoice_number'):
-            self.create_invoice(order, invoice_data)
 
         return order
         

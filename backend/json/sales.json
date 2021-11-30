@@ -1,0 +1,33 @@
+{
+    "order_number": "1134322",
+    "type": "SALES",
+    "customer": 5,
+    "order_date": "23/11/2021",
+    "accounting_date": "23/11/2021",
+    "note": "Mua hang 23/11/2021",
+    "from_bank_account": 7,
+    "to_bank_account": 4,
+    "invoice_note": "Hoá đơn đỏ công ty",
+    "invoice_number": "3243245",
+    "invoice_date": "28/11/2021",
+    "export_number": "4324325",
+    "export_note": "Lấy từ kho 01",
+    "export_date": "25/11/2021",
+    "items": [
+        {
+            "product": 1,
+            "stock_location": 1,
+            "qty": 5,
+            "price_unit": 120000,
+            "discount": 5000,
+            "amount_tax": 5500
+        }
+    ],
+    "expenses": [
+        {
+            "type": 7,
+            "amount": 250000,
+            "note": "Thuê vận chuyển"
+        }
+    ]
+}

@@ -15,9 +15,9 @@ from core.constants import BaseStatus
 class ExportItemSerializer(ModelSerializer):
     class Meta:
         model = ExportItem
-        fields = ['export', 'location', 'location_obj', 'note', 'product', 'product_obj', 'qty']
+        fields = ['_export', 'location', 'location_obj', 'note', 'product', 'product_obj', 'qty']
 
-    export = PrimaryKeyRelatedField(required=False, 
+    _export = PrimaryKeyRelatedField(required=False, 
         queryset=Export.objects.all()
     )
     
@@ -64,7 +64,7 @@ class ExportSerializer(ModelSerializer):
     note = CharField()
     items = ExportItemSerializer(many=True, required=False)
 
-    def create_item(self, export, validated_item_data):
+    def create_item(self, _export, validated_item_data):
         product_move_data = validated_item_data.pop('product_move', {})
         
         date = datetime.now()
@@ -75,7 +75,7 @@ class ExportSerializer(ModelSerializer):
             date=date
         )
 
-        validated_item_data['export'] = export
+        validated_item_data['_export'] = _export
 
         return ExportItem.objects.create(
             product_move=product_move,
@@ -88,7 +88,7 @@ class ExportSerializer(ModelSerializer):
 
         items_data = validated_data.pop('items', [])
 
-        export = Export.objects.create(
+        _export = Export.objects.create(
             **validated_data,
             company=company,
             date=date,
@@ -96,9 +96,9 @@ class ExportSerializer(ModelSerializer):
         )
 
         for item_data in items_data:
-            self.create_item(export, item_data)
+            self.create_item(_export, item_data)
 
-        return export
+        return _export
 
     def update(self, instance, validated_data):
         items_data = validated_data.pop('items', [])
