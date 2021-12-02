@@ -1,6 +1,6 @@
 import ErrorList from "components/share/errorlist";
 import Input from "components/share/input";
-import { NAME_SPACE } from "redux/reducers/purchase/voucher/formReducer";
+import { NAME_SPACE } from "redux/reducers/purchase/formReducer";
 import { useSliceStore, useSliceSelector } from "utils/helper";
 
 export default function InStockNote({readOnly}) {
@@ -26,18 +26,20 @@ export default function InStockNote({readOnly}) {
           <Input
             type="input"
             readOnly={readOnly}
-            value={data.stock_number}
-            onChange={val => updateData({stock_number: val})}
+            value={data.import_number}
+            onChange={val => updateData({import_number: val})}
           />
+          <ErrorList errors={errors?.import_number}/>
         </div>
         <div className="col-4 form-group">
           <label className="form-label text-bold">Ngày nhập:</label>
           <Input
             type="date"
             readOnly={readOnly}
-            value={data.stock_date}
-            onChange={val => updateData({stock_date: val})}
+            value={data.import_date}
+            onChange={val => updateData({import_date: val})}
           />
+          <ErrorList errors={errors?.import_date}/>
         </div>
       </div>
       <div className="row mt-2">
@@ -47,9 +49,10 @@ export default function InStockNote({readOnly}) {
             type="textarea"
             rows="3"
             readOnly={readOnly}
-            value={data.note}
-            onChange={val => updateData({note: val})}
+            value={data.import_note}
+            onChange={val => updateData({import_note: val})}
           />
+          <ErrorList errors={errors?.import_note}/>
         </div>
       </div>
     </div>

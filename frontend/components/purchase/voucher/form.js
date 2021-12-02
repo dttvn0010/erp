@@ -24,12 +24,12 @@ import {
   Spiner
 } from 'utils/helper';
 
-import { NAME_SPACE } from 'redux/reducers/purchase/voucher/formReducer';
+import { NAME_SPACE } from 'redux/reducers/purchase/formReducer';
 
 const itemName = 'chứng từ mua hàng';
 
 export default function VoucherForm({id, update, readOnly}){
-  const baseUrl = '/purchase/voucher/api';
+  const baseUrl = '/purchase/order/crud';
   const backUrl = (update || readOnly)? '../' : '../voucher';
   const editUrl = id? `../update/${id}` : null;
   
@@ -44,13 +44,17 @@ export default function VoucherForm({id, update, readOnly}){
     });
 
     if(id) {
-      axios.get(`${baseUrl}/detail/${id}`).then(result => {
+      axios.get(`${baseUrl}/${id}`).then(result => {
         store.setState({data: result.data});
       });
     }
   }, [id]);
 
   const updateData = newData => {
+    for(let [k,v] of Object.entries(newData)) {
+      if(k.endsWith('_obj')) newData[k.replace('_obj', '')] = v?.id;
+    }
+
     const data = store.getState().data ?? {};
     
     store.setState({
@@ -66,11 +70,27 @@ export default function VoucherForm({id, update, readOnly}){
     if(readOnly) return; 
 
     const {data} = store.getState();
+    data.type = 'PURCHASE';
+  
+    data?.items.forEach(item => {
+      if(item.price_unit && item.qty){
+        const total = item.price_unit * item.qty;
+        if(item.amount_tax_pctg) {
+          item.amount_tax = Math.round(total * item.amount_tax_pctg/100)
+        }
+        if(item.discount_pctg) {
+          item.discount = Math.round(total * item.discount_pctg/100)
+        }
+      }
+    });
 
+    //console.log('data=', data);
+  
     try{
-      await axios.post(`${baseUrl}/save`, data);
+      await axios.post(`${baseUrl}/`, data);
       router.push(backUrl);
     }catch(err){
+      //console.log('err=', err?.response?.data);
       store.setState({
         errors: err?.response?.data ?? {}
       });
@@ -108,8 +128,8 @@ export default function VoucherForm({id, update, readOnly}){
                       <Input
                         type="async-select"
                         readOnly={readOnly}
-                        value={data.supplier}
-                        onChange={(val) => updateData({supplier: val})}
+                        value={data.supplier_obj}
+                        onChange={(val) => updateData({supplier_obj: val})}
                         optionsUrl="/purchase/search-supplier"
                         labelField="name"
                       />
@@ -155,7 +175,7 @@ export default function VoucherForm({id, update, readOnly}){
 
           <GoodItems 
             readOnly={readOnly}
-            withStock={true}
+            withImport={true}
             withTax={true}
             withDiscount={true}
           />
@@ -186,7 +206,7 @@ export default function VoucherForm({id, update, readOnly}){
                     title="Lưu lại"
                   />
                 }
-                {readOnly && 
+                {readOnly && false &&
                   <IconLink
                     href={editUrl}
                     icon="edit"

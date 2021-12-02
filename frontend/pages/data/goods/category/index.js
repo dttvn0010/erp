@@ -22,7 +22,7 @@ export default function Index() {
       return getStatusSwitcher(data, row, dispatch, itemName, `${baseUrl}/change-status/[$id$]`)
     },
 
-    col3: (_, row, dispatch) => {
+    col4: (_, row, dispatch) => {
       let items = [
         {
           title: 'Xem thông tin',

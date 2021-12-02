@@ -1,6 +1,6 @@
 import ErrorList from "components/share/errorlist";
 import Input from "components/share/input";
-import { NAME_SPACE } from "redux/reducers/sales/voucher/formReducer";
+import { NAME_SPACE } from "redux/reducers/sales/formReducer";
 import { useSliceStore, useSliceSelector } from "utils/helper";
 
 export default function DebtNote({readOnly}) {
@@ -29,15 +29,17 @@ export default function DebtNote({readOnly}) {
             value={data.order_number}
             onChange={val => updateData({order_number: val})}
           />
+          <ErrorList errors={errors?.order_number}/>
         </div>
         <div className="col-4 form-group">
           <label className="form-label text-bold">Ngày hạch toán:</label>
           <Input
             type="date"
             readOnly={readOnly}
-            value={data.accouting_date}
-            onChange={val => updateData({accouting_date: val})}
+            value={data.accounting_date}
+            onChange={val => updateData({accounting_date: val})}
           />
+          <ErrorList errors={errors?.accounting_date}/>
         </div>
         <div className="col-4 form-group">
           <label className="form-label text-bold">Ngày chứng từ:</label>
@@ -47,6 +49,7 @@ export default function DebtNote({readOnly}) {
             value={data.order_date}
             onChange={val => updateData({order_date: val})}
           />
+          <ErrorList errors={errors?.order_date}/>
         </div>
       </div>
       <div className="row mt-2">
@@ -59,6 +62,7 @@ export default function DebtNote({readOnly}) {
             value={data.note}
             onChange={val => updateData({note: val})}
           />
+          <ErrorList errors={errors?.note}/>
         </div>
       </div>
     </div>

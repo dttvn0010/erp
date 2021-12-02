@@ -7,7 +7,7 @@ import {
   copyArray,
 } from 'utils/helper';
 
-import { NAME_SPACE } from "redux/reducers/purchase/voucher/formReducer";
+import { NAME_SPACE } from "redux/reducers/purchase/formReducer";
 
 export default function ExpenseList({readOnly}) {
   const store = useSliceStore(NAME_SPACE);
@@ -28,6 +28,10 @@ export default function ExpenseList({readOnly}) {
   }
 
   const updateExpense = (index, expenseData) => {
+    for(let [k,v] of Object.entries(expenseData)) {
+      if(k.endsWith('_obj')) expenseData[k.replace('_obj', '')] = v?.id;
+    }
+
     const {data} = store.getState();
     const expenses = copyArray(data.expenses) || [];
     expenses[index] = {...expenses[index], ...expenseData};
@@ -99,7 +103,7 @@ export default function ExpenseList({readOnly}) {
                   optionsUrl="/purchase/search-expense-type"
                   labelField="name"
                 />
-                <ErrorList errors={errors[`expenses[${index}]`]?.type}/>
+                <ErrorList errors={errors?.expenses?.[index]?.type}/>
               </td>
 
              
@@ -111,7 +115,7 @@ export default function ExpenseList({readOnly}) {
                   onChange={val => updateExpense(index, {amount: val})}
                   min="0"
                 />
-                <ErrorList errors={errors[`expenses[${index}]`]?.amount}/>
+                <ErrorList errors={errors?.expenses?.[index]?.amount}/>
               </td>
               
               <td>
@@ -122,7 +126,7 @@ export default function ExpenseList({readOnly}) {
                   onChange={val => updateExpense(index, {note: val})}
                   min="1"
                 />
-                <ErrorList errors={errors[`expenses[${index}]`]?.note}/>
+                <ErrorList errors={errors?.expenses?.[index]?.note}/>
               </td>
              
             </tr>

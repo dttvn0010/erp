@@ -22,13 +22,13 @@ import {
   Spiner
 } from 'utils/helper';
 
-import { NAME_SPACE } from 'redux/reducers/sales/return/formReducer';
+import { NAME_SPACE } from 'redux/reducers/sales/formReducer';
 
 
 const itemName = 'chứng từ trả lại hàng bán';
 
 export default function ReturnForm({id, update, readOnly}){
-  const baseUrl = '/sales/return/api';
+  const baseUrl = '/sales/order/crud';
   const backUrl = (update || readOnly)? '../' : '../return';
   const editUrl = id? `../update/${id}` : null;
   
@@ -43,13 +43,17 @@ export default function ReturnForm({id, update, readOnly}){
     });
 
     if(id) {
-      axios.get(`${baseUrl}/detail/${id}`).then(result => {
+      axios.get(`${baseUrl}/${id}`).then(result => {
         store.setState({data: result.data});
       });
     }
   }, [id]);
 
   const updateData = newData => {
+    for(let [k,v] of Object.entries(newData)) {
+      if(k.endsWith('_obj')) newData[k.replace('_obj', '')] = v?.id;
+    }
+
     const data = store.getState().data ?? {};
     
     store.setState({
@@ -65,9 +69,14 @@ export default function ReturnForm({id, update, readOnly}){
     if(readOnly) return; 
 
     const {data} = store.getState();
+    data.type = 'RETURN';
+
+    data?.items.forEach(item => {
+      item.amount_tax = item.discount = 0;
+    });
 
     try{
-      await axios.post(`${baseUrl}/save`, data);
+      await axios.post(`${baseUrl}/`, data);
       router.push(backUrl);
     }catch(err){
       store.setState({
@@ -107,8 +116,8 @@ export default function ReturnForm({id, update, readOnly}){
                       <Input
                         type="async-select"
                         readOnly={readOnly}
-                        value={data.customer}
-                        onChange={(val) => updateData({customer: val})}
+                        value={data.customer_obj}
+                        onChange={(val) => updateData({customer_obj: val})}
                         optionsUrl="/sales/search-customer"
                         labelField="name"
                       />
@@ -149,7 +158,10 @@ export default function ReturnForm({id, update, readOnly}){
             </div>
           </div>
           
-          <GoodItems readOnly={readOnly}/>
+          <GoodItems 
+            readOnly={readOnly}
+            withImport={true}
+          />
 
           <div className="row mt-3">
             <div className="col">

@@ -7,9 +7,9 @@ import {
   copyArray,
 } from 'utils/helper';
 
-import { NAME_SPACE } from "redux/reducers/sales/voucher/formReducer";
+import { NAME_SPACE } from "redux/reducers/sales/formReducer";
 
-export default function GoodItems({readOnly, withStock, withDiscount, withTax}) {
+export default function GoodItems({readOnly, withImport, withExport, withDiscount, withTax}) {
   const store = useSliceStore(NAME_SPACE);
   const [data, errors] = useSliceSelector(NAME_SPACE, ['data', 'errors']);
   const items = data.items || [];
@@ -28,6 +28,10 @@ export default function GoodItems({readOnly, withStock, withDiscount, withTax}) 
   }
 
   const updateItem = (index, itemData) => {
+    for(let [k,v] of Object.entries(itemData)) {
+      if(k.endsWith('_obj')) itemData[k.replace('_obj', '')] = v?.id;
+    }
+
     const {data} = store.getState();
     const items = copyArray(data.items) || [];
     items[index] = {...items[index], ...itemData};
@@ -36,7 +40,7 @@ export default function GoodItems({readOnly, withStock, withDiscount, withTax}) 
 
   const changeProduct = (index, val) => {
     updateItem(index, {
-      product: val,
+      product_obj: val,
       unit: val?.unit,
       price_unit: val?.price_unit
     })
@@ -57,15 +61,15 @@ export default function GoodItems({readOnly, withStock, withDiscount, withTax}) 
 
   const getDiscount = (item) => {
     const total = getTotal(item);
-    if(item.discount_rate && total){
-      return Math.round(total * item.discount_rate/100);
+    if(item.discount_pctg && total){
+      return Math.round(total * item.discount_pctg/100);
     }
   }
 
   const getVAT = (item) => {
     const total = getTotal(item);
-    if(item.vat_rate && total){
-      return Math.round(total * item.vat_rate/100);
+    if(item.amount_tax_pctg && total){
+      return Math.round(total * item.amount_tax_pctg/100);
     }
   }
 
@@ -80,7 +84,7 @@ export default function GoodItems({readOnly, withStock, withDiscount, withTax}) 
 
   let ncol = 12;
   if(readOnly) ncol -= 1;
-  if(!withStock) ncol -= 1;
+  if(!withImport && !withExport) ncol -= 1;
   if(!withTax) ncol -= 2;
   if(!withDiscount) ncol -= 2;
   if(!withTax && !withDiscount) ncol -= 1;
@@ -100,9 +104,14 @@ export default function GoodItems({readOnly, withStock, withDiscount, withTax}) 
             <th style={{width: '18%'}}>
               Hàng hoá/dịch vụ
             </th>
-            {withStock && 
+            {withImport && 
               <th style={{width: '12%'}}>
-                Lấy từ kho
+                Nhập vào kho
+              </th>
+            }
+            {withExport && 
+              <th style={{width: '12%'}}>
+                Xuất từ kho
               </th>
             }
             <th style={{width: '8%'}}>Đơn giá</th>
@@ -143,24 +152,39 @@ export default function GoodItems({readOnly, withStock, withDiscount, withTax}) 
                 <Input
                   type="async-select"
                   readOnly={readOnly}
-                  value={item.product}
+                  value={item.product_obj}
                   onChange={(val) => changeProduct(index, val)}
                   optionsUrl="/sales/search-product"
                   labelField="name"
                 />
-                <ErrorList errors={errors[`items[${index}]`]?.product}/>
+                <ErrorList errors={errors?.items?.[index]?.product}/>
               </td>
 
-              {withStock &&
+              {withImport &&
                 <td>
                   <Input
                     type="async-select"
                     readOnly={readOnly}
-                    value={item.stock}
-                    onChange={val => updateItem(index, {stock: val})}
+                    value={item.stock_location_dest_obj}
+                    onChange={val => updateItem(index, {stock_location_dest_obj: val})}
+                    optionsUrl="/purchase/search-stock-location"
+                    labelField="name"
+                  />
+                  <ErrorList errors={errors?.items?.[index]?.stock_location_dest}/>
+                </td>
+              }
+
+              {withExport &&
+                <td>
+                  <Input
+                    type="async-select"
+                    readOnly={readOnly}
+                    value={item.stock_location_obj}
+                    onChange={val => updateItem(index, {stock_location_obj: val})}
                     optionsUrl="/sales/search-stock-location"
                     labelField="name"
                   />
+                  <ErrorList errors={errors?.items?.[index]?.stock_location}/>
                 </td>
               }
             
@@ -172,7 +196,7 @@ export default function GoodItems({readOnly, withStock, withDiscount, withTax}) 
                   onChange={val => updateItem(index, {price_unit: val})}
                   min="0"
                 />
-                <ErrorList errors={errors[`items[${index}]`]?.price_unit}/>
+                <ErrorList errors={errors?.items?.[index]?.price_unit}/>
               </td>
               
               
@@ -184,7 +208,7 @@ export default function GoodItems({readOnly, withStock, withDiscount, withTax}) 
                   onChange={val => updateItem(index, {qty: val})}
                   min="1"
                 />
-                <ErrorList errors={errors[`items[${index}]`]?.qty}/>
+                <ErrorList errors={errors?.items?.[index]?.qty}/>
               </td>
               
               <td>
@@ -202,10 +226,11 @@ export default function GoodItems({readOnly, withStock, withDiscount, withTax}) 
                   <Input
                     type="number"
                     readOnly={readOnly}
-                    value={item.discount_rate}
-                    onChange={val => updateItem(index, {discount_rate: val})}
+                    value={item.discount_pctg}
+                    onChange={val => updateItem(index, {discount_pctg: val})}
                     min="0"
                   />
+                  <ErrorList errors={errors?.items?.[index]?.discount_pctg}/>
                 </td>
               }
 
@@ -220,10 +245,11 @@ export default function GoodItems({readOnly, withStock, withDiscount, withTax}) 
                   <Input
                     type="number"
                     readOnly={readOnly}
-                    value={item.vat_rate}
-                    onChange={val => updateItem(index, {vat_rate: val})}
+                    value={item.amount_tax_pctg}
+                    onChange={val => updateItem(index, {amount_tax_pctg: val})}
                     min="0"
                   />
+                  <ErrorList errors={errors?.items?.[index]?.amount_tax_pctg}/>
                 </td>
               }
 
@@ -233,7 +259,6 @@ export default function GoodItems({readOnly, withStock, withDiscount, withTax}) 
                 </td>
               }
 
-              
               <td>
                 <span>{getNet(item)}</span>
               </td>

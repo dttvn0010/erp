@@ -1,6 +1,6 @@
 import ErrorList from "components/share/errorlist";
 import Input from "components/share/input";
-import { NAME_SPACE } from "redux/reducers/sales/voucher/formReducer";
+import { NAME_SPACE } from "redux/reducers/sales/formReducer";
 import { useSliceStore, useSliceSelector } from "utils/helper";
 
 export default function ReceiptNote({readOnly}) {
@@ -35,8 +35,8 @@ export default function ReceiptNote({readOnly}) {
           <Input
             type="date"
             readOnly={readOnly}
-            value={data.accouting_date}
-            onChange={val => updateData({accouting_date: val})}
+            value={data.accounting_date}
+            onChange={val => updateData({accounting_date: val})}
           />
         </div>
         <div className="col-4 form-group">

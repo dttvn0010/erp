@@ -1,6 +1,6 @@
 import ErrorList from "components/share/errorlist";
 import Input from "components/share/input";
-import { NAME_SPACE } from "redux/reducers/purchase/voucher/formReducer";
+import { NAME_SPACE } from "redux/reducers/purchase/formReducer";
 import { useSliceStore, useSliceSelector } from "utils/helper";
 
 export default function WithdrawNote({readOnly}) {
@@ -8,6 +8,10 @@ export default function WithdrawNote({readOnly}) {
   const [data, errors] = useSliceSelector(NAME_SPACE, ['data', 'errors']);
   
   const updateData = newData => {
+    for(let [k,v] of Object.entries(newData)) {
+      if(k.endsWith('_obj')) newData[k.replace('_obj', '')] = v?.id;
+    }
+
     const data = store.getState().data ?? {};
     
     store.setState({
@@ -29,28 +33,31 @@ export default function WithdrawNote({readOnly}) {
             value={data.order_number}
             onChange={val => updateData({order_number: val})}
           />
+          <ErrorList errors={errors?.order_number}/>
         </div>
         <div className="col-4 form-group">
           <label className="form-label text-bold">Tài khoản chuyển tiền:</label>
           <Input
             type="async-select"
             readOnly={readOnly}
-            value={data.from_bank_account}
-            onChange={val => updateData({from_bank_account: val})}
+            value={data.from_bank_account_obj}
+            onChange={val => updateData({from_bank_account_obj: val})}
             optionsUrl="/purchase/search-bank-account"
             labelField="name"
           />
+          <ErrorList errors={errors?.from_bank_account}/>
         </div>
         <div className="col-4 form-group">
           <label className="form-label text-bold">Tài khoản nhận:</label>
           <Input
             type="async-select"
             readOnly={readOnly}
-            value={data.to_bank_account}
-            onChange={val => updateData({to_bank_account: val})}
+            value={data.to_bank_account_obj}
+            onChange={val => updateData({to_bank_account_obj: val})}
             optionsUrl="/purchase/search-bank-account"
             labelField="name"
           />
+          <ErrorList errors={errors?.to_bank_account}/>
         </div>
       </div>
       <div className="row mt-2">
@@ -59,9 +66,10 @@ export default function WithdrawNote({readOnly}) {
           <Input
             type="date"
             readOnly={readOnly}
-            value={data.accouting_date}
-            onChange={val => updateData({accouting_date: val})}
+            value={data.accounting_date}
+            onChange={val => updateData({accounting_date: val})}
           />
+          <ErrorList errors={errors?.accounting_date}/>
         </div>
         <div className="col-4 form-group">
           <label className="form-label text-bold">Ngày chứng từ:</label>
@@ -71,6 +79,7 @@ export default function WithdrawNote({readOnly}) {
             value={data.order_date}
             onChange={val => updateData({order_date: val})}
           />
+          <ErrorList errors={errors?.order_date}/>
         </div>
       </div>
       <div className="row mt-2">
@@ -83,6 +92,7 @@ export default function WithdrawNote({readOnly}) {
             value={data.note}
             onChange={val => updateData({note: val})}
           />
+          <ErrorList errors={errors?.note}/>
         </div>
       </div>
     </div>

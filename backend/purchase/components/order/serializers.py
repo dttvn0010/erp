@@ -70,10 +70,10 @@ class OrderItemSerializer(ModelSerializer):
     stock_location_dest_obj = SerializerMethodField()
 
     def get_discount_pctg(self, obj):
-        return round(100*obj.discount/obj.price_unit,2)
+        return 100*obj.discount/obj.price_unit
 
     def get_amount_tax_pctg(self, obj):
-        return round(100*obj.amount_tax/obj.price_unit,2)
+        return 100*obj.amount_tax/obj.price_unit
 
     def get_amount_untaxed(self, obj):
         return obj.qty * (obj.price_unit - obj.discount)
@@ -223,7 +223,7 @@ class OrderSerializer(ModelSerializer):
             fields = ['id', 'name', 'account_number', 'account_holder']
             return {field: getattr(to_bank_account, field) for field in fields}
 
-    def create_item(self, order, _import, _export, validated_item_data):
+    def create_item(self, order, validated_item_data):
         product_move = validated_item_data.pop('product_move', {})
         product = validated_item_data['product']
         supplier = order.supplier
@@ -269,34 +269,34 @@ class OrderSerializer(ModelSerializer):
         ledger_item.ref_class = 'purchase.OrderItem'
         ledger_item.save()
 
-        if _import:
+        if order._import:
             product_move = ProductMove.objects.create(
                 product=product,
                 qty=qty,
                 inward=True,
-                date=_import.date,
+                date=order._import.date,
                 **product_move
             )
 
             ImportItem.objects.create(
-                _import=_import,
+                _import=order._import,
                 product_move=product_move
             )
 
             order_item.product_move = product_move
             order_item.save()
         
-        if _export:
+        if order._export:
             product_move = ProductMove.objects.create(
                 product=product,
                 qty=qty,
                 inward=False,
-                date=_export.date,
+                date=order._export.date,
                 **product_move
             )
 
             ExportItem.objects.create(
-                _export=_export,
+                _export=order._export,
                 product_move=product_move
             )
 
@@ -355,6 +355,7 @@ class OrderSerializer(ModelSerializer):
         )
 
     def create(self, validated_data):
+        print('validated_data=', validated_data)
         company = self.context['user'].employee.company
         order_number = validated_data.pop('order_number')
         order_date = validated_data.pop('order_date')
@@ -377,8 +378,8 @@ class OrderSerializer(ModelSerializer):
         }.get(type, '')
 
         type_str = OrderType.value_map().get(type, '')
-        from_bank_account = ledger_data.get('from_bank_account', '')
-        to_bank_account = ledger_data.get('to_bank_account', '')
+        from_bank_account = ledger_data.get('from_bank_account')
+        to_bank_account = ledger_data.get('to_bank_account')
         
         ledger = Ledger.objects.create(
             company=company,
@@ -408,19 +409,15 @@ class OrderSerializer(ModelSerializer):
         )
 
         if order.type == OrderType.PURCHASE.name and import_data.get('import_number'):
-            _import = self.create_import(order, import_data)
-        else:
-            _import = None
+            order._import = self.create_import(order, import_data)
 
         if order.type == OrderType.RETURN.name and export_data.get('export_number'):
-            _export = self.create_export(order, export_data)
-        else:
-            _export = None
+            order._export = self.create_export(order, export_data)
 
         if invoice_data.get('invoice_number'):
             order.invoice = self.create_invoice(order, invoice_data)
 
-        order_items = [self.create_item(order, _import, _export, item_data) for item_data in items_data]
+        order_items = [self.create_item(order, item_data) for item_data in items_data]
         order_expenses = [self.create_expense(order, expense_data) for expense_data in expenses_data]
 
         order.amount_untaxed = sum([order_item.amount_untaxed for order_item in order_items])

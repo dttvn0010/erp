@@ -1,4 +1,4 @@
-export const NAME_SPACE = 'sales/discount/form';
+export const NAME_SPACE = 'purchase/form';
 
 export const ACTIONS = {
   SET_STATE: 'setState'

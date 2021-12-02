@@ -1,6 +1,6 @@
 import ErrorList from "components/share/errorlist";
 import Input from "components/share/input";
-import { NAME_SPACE } from "redux/reducers/purchase/voucher/formReducer";
+import { NAME_SPACE } from "redux/reducers/purchase/formReducer";
 import { useSliceStore, useSliceSelector } from "utils/helper";
 
 export default function Invoice({readOnly, invoiceReadOnly}) {
@@ -26,8 +26,8 @@ export default function Invoice({readOnly, invoiceReadOnly}) {
           <Input
             type="input"
             readOnly={readOnly || invoiceReadOnly}
-            value={data.invoice_template}
-            onChange={val => updateData({invoice_template: val})}
+            value={data.invoice_type}
+            onChange={val => updateData({invoice_type: val})}
           />
         </div>
         <div className="col-4 form-group">
@@ -38,6 +38,7 @@ export default function Invoice({readOnly, invoiceReadOnly}) {
             value={data.invoice_number}
             onChange={val => updateData({invoice_number: val})}
           />
+          <ErrorList errors={errors?.invoice_number}/>
         </div>
         <div className="col-4 form-group">
           <label className="form-label text-bold">Ngày hoá đơn:</label>
@@ -47,6 +48,7 @@ export default function Invoice({readOnly, invoiceReadOnly}) {
             value={data.invoice_date}
             onChange={val => updateData({invoice_date: val})}
           />
+          <ErrorList errors={errors?.invoice_date}/>
         </div>
       </div>
       <div className="row mt-2">
@@ -56,9 +58,10 @@ export default function Invoice({readOnly, invoiceReadOnly}) {
             type="textarea"
             rows="3"
             readOnly={readOnly}
-            value={data.detail}
-            onChange={val => updateData({detail: val})}
+            value={data.invoice_note}
+            onChange={val => updateData({invoice_note: val})}
           />
+          <ErrorList errors={errors?.invoice_note}/>
         </div>
       </div>
     </div>

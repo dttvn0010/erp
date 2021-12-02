@@ -23,11 +23,11 @@ export default function Index() {
         {
           title: 'Xem thông tin',
           onClick: () => router.push(`./voucher/view/${row.pk}`)
-        },
+        },/*
         {
           title: 'Cập nhật',
           onClick: () => router.push(`./voucher/update/${row.pk}`)
-        }
+        }*/
       ];
 
       if(row.status_id === 'DRAFT') {
