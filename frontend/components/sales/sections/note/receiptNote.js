@@ -29,6 +29,7 @@ export default function ReceiptNote({readOnly}) {
             value={data.order_number}
             onChange={val => updateData({order_number: val})}
           />
+          <ErrorList errors={errors?.order_number}/>
         </div>
         <div className="col-4 form-group">
           <label className="form-label text-bold">Ngày hạch toán:</label>
@@ -38,6 +39,7 @@ export default function ReceiptNote({readOnly}) {
             value={data.accounting_date}
             onChange={val => updateData({accounting_date: val})}
           />
+          <ErrorList errors={errors?.accounting_date}/>
         </div>
         <div className="col-4 form-group">
           <label className="form-label text-bold">Ngày thực hiện:</label>
@@ -47,6 +49,7 @@ export default function ReceiptNote({readOnly}) {
             value={data.order_date}
             onChange={val => updateData({order_date: val})}
           />
+          <ErrorList errors={errors?.order_date}/>
         </div>
       </div>
       <div className="row mt-2">
@@ -59,6 +62,7 @@ export default function ReceiptNote({readOnly}) {
             value={data.note}
             onChange={val => updateData({note: val})}
           />
+          <ErrorList errors={errors?.note}/>
         </div>
       </div>
     </div>
