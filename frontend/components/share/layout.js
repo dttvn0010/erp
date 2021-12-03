@@ -75,7 +75,7 @@ const modules= [
         title: 'Đối tượng',
         path: '/data/entity',
         children: [
-          {path: '/partner', title: 'Khác hàng/nhà cung cấp'},
+          {path: '/partner', title: 'Khách hàng/nhà cung cấp'},
           {path: '/department', title: 'Phòng/ban'},
           {path: '/employee', title: 'Nhân viên'},
         ]
