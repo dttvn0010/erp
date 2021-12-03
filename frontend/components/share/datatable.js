@@ -1,9 +1,8 @@
-import React, { useEffect, useReducer, useState } from 'react';
-import moment from 'moment';
-import {Dropdown} from "react-bootstrap";
-import DatePicker from "react-datepicker";
-import Select from 'react-select'
 import axios from 'axios';
+import React, { useEffect, useReducer, useState } from 'react';
+import {Dropdown} from "react-bootstrap";
+import Input from "components/share/input";
+import {appendUrlParams} from "utils/helper";
 
 function compareRowByCol(row1, row2, colName) {
   if(row1[colName] < row2[colName]){
@@ -40,23 +39,17 @@ function FilterButton({col, table, dispatch}) {
   let colName = col.data;
   let searchActive = table.searchActive[colName];
   let [searchValue, setSearchValue] = useState('');
-  let [fromDate, setFromDate] = useState(new Date());
-  let [toDate, setToDate] = useState(new Date());
+  let [fromDate, setFromDate] = useState('');
+  let [toDate, setToDate] = useState('');
   let [selectedOptions, setSelectedOptions] = useState([]);
 
   let options = (col.displayList || []).map(item => (
     {
-      label: item[1],
+      name: item[1],
       value: item[0]
     }
   ));
   
-  let getDateRange = () => {
-    let fromDateStr = moment(fromDate).format("dd/MM/yyyy");
-    let toDateStr = moment(toDate).format("dd/MM/yyyy");
-    return `${fromDateStr}--${toDateStr}`;
-  }
-
   let getSelectedIds = () => {
     return selectedOptions.map(opt => opt.value).join(",");
   }
@@ -131,27 +124,25 @@ function FilterButton({col, table, dispatch}) {
             <div className="d-flex">
               <div className="half-width px-1">
                 <label className="mb-1">Từ ngày:</label>
-                <DatePicker
-                  className="full-width text-filter"
-                  selected={fromDate}
-                  onChange={(date) => setFromDate(date)}
-                  dateFormat="dd/MM/yyyy"
+                <Input
+                  type="date"
+                  value={fromDate}
+                  onChange={val => setFromDate(val)}
                 />
               </div>
 
               <div className="half-width px-1">
                 <label className="mb-1">Đến ngày:</label>
-                <DatePicker
-                  className="full-width text-filter"
-                  selected={toDate}
-                  onChange={(date) => setToDate(date)}
-                  dateFormat="dd/MM/yyyy"
+                <Input
+                  type="date"
+                  value={toDate}
+                  onChange={val => setToDate(val)}
                 />
               </div>
             </div>
             <button 
               className="mt-1 btn btn-sm btn-success btn-filter btn-filter-date"
-              onClick={() => dispatch.filterTableBy(colName, getDateRange())}
+              onClick={() => dispatch.filterTableBy(colName, `${fromDate}--${toDate}`)}
             >
               <i className="fas fa-check"></i>
             </button>
@@ -161,14 +152,25 @@ function FilterButton({col, table, dispatch}) {
         {(col.dtype === 'category' || col.dtype === 'multiCategory') &&
           <div className="full-width dropdown-keep-open">
             <label className="mb-1">Chọn giá trị để tìm:</label>
-            <Select 
-              isMulti={true}
-              options={options} 
-              isClearable={true}
-              onChange={(value) => setSelectedOptions(value)}
-              value={selectedOptions}
-              placeholder=""
-            />
+            
+            {!col.asyncSearch &&
+              <Input type="select"
+                isMulti={true}
+                value={selectedOptions}
+                onChange={val => setSelectedOptions(val)}
+                options={options}
+              />
+            }
+            {col.asyncSearch &&
+              <Input
+                type="async-select"
+                isMulti={true}
+                value={selectedOptions}
+                onChange={val => setSelectedOptions(val)}
+                optionsUrl={appendUrlParams(table.apiUrl, {search_col: colName})}
+              /> 
+            }
+            
             <button 
               className="mt-1 btn btn-sm btn-success btn-filter btn-filter-text"
               onClick={() => dispatch.filterTableBy(colName, getSelectedIds())}
@@ -299,10 +301,7 @@ function TableBody({table, renders, dispatch}) {
 }
 
 async function getColumnsDef(apiUrl) {
-  if (!apiUrl.includes('?')) {
-    apiUrl += '?'
-  }
-  apiUrl += "&__meta__=true";
+  apiUrl = appendUrlParams(apiUrl, {__meta__: 'true'});
   let result = await axios.get(apiUrl);
   return result.data || [];
 } 
@@ -310,27 +309,23 @@ async function getColumnsDef(apiUrl) {
 async function getDataSource({apiUrl, searchParams, orderBy, orderDir, page, pageSize}) {
   page = page || 1;
   searchParams = searchParams || {};
-
-  if (!apiUrl.includes('?')) {
-    apiUrl += '?'
-  }
+  let params = {};
 
   for (let [colName, searchValue] of Object.entries(searchParams)) {
-    if(searchValue) {
-      apiUrl += `&columns[${colName}][search]=${encodeURIComponent(searchValue)}`;
-    }
+    params[`columns[${colName}][search]`] = searchValue;
   }
-
-  let start = (page - 1) * pageSize;
-  apiUrl += `&start=${start}&length=${pageSize}`;
-
+  params.start = (page - 1) * pageSize;
+  params.length = pageSize;
+  
   if(orderBy){
-    apiUrl += `&order_by=${orderBy}`;
+    params.order_by = orderBy;
   }
 
   if(orderDir) {
-    apiUrl += `&order_dir=${orderDir}`;
+    params.order_dir=orderDir;
   }
+
+  apiUrl = appendUrlParams(apiUrl, params);
 
   console.log('apiUrl=', apiUrl);
   let result = await axios.get(apiUrl);
@@ -456,6 +451,7 @@ export default function DataTable({apiUrl, renders}) {
   let [table, updateTable] = useReducer(
     (state, newState) => ({...state, ...newState}),
     {
+      apiUrl: apiUrl,
       loading: true,
       columnsDef: [],
       rows: [],
@@ -545,7 +541,6 @@ export default function DataTable({apiUrl, renders}) {
     },
 
     async filterTableBy(colName, searchValue){
-     
       let searchActive = table.searchActive;
       searchActive[colName] = searchValue !== '';
       

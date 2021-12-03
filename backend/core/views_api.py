@@ -275,7 +275,7 @@ class DataTableView(APIView):
                 display_list = []
                 edit_list = []
                 search_options = col.get('search_options', {})
-                async_search = search_options.get('async', False)
+                async_search = False #search_options.get('async', False)
                 company_field = search_options.get('company_field', 'company').replace('.', '__')
                 status_field = search_options.get('status_field', 'status').replace('.', '__')
                 statuses = search_options.get('statuses', ['ACTIVE'])
@@ -297,19 +297,9 @@ class DataTableView(APIView):
                     if status_field == 'status' and 'status' not in related_model_fields:
                         status_field = None #raise Exception('No status_field in search_options for column:' + col["name"])
 
-                    if not async_search:
-                        items = field.related_model.objects.filter(**{company_field: request.user.employee.company})
-            
-                        if status_field:
-                            items = items.filter(**{status_field + '__in': statuses})
-                            
-                        if extra_filters:
-                            items = items.filter(**extra_filters)
-
-                        display_list = [(item.pk, self.getattr_ex(item, display_field)) 
-                                            for item in items]
-
-                edit_list = col.get('edit_list', display_list)
+                    async_search = True
+                    
+                #edit_list = col.get('edit_list', display_list)
 
                 columns.append({
                     'data': col.get('name'),
@@ -321,7 +311,7 @@ class DataTableView(APIView):
                     'cssClass': col.get('css_class'),
                     'search': col.get('search', True),
                     'displayList': display_list,
-                    'editList': edit_list,
+                    #'editList': edit_list,
                     'editable': col.get('editable', False) and self.user_can_edit(request.user),
                     'editWidget': col.get('edit_widget', 'input'),
                     'isNarrow': col.get('is_narrow'),
@@ -357,10 +347,10 @@ class DataTableView(APIView):
                 items = items.filter(**extra_filters)
 
             items = items[:30]
-            results = [{'id': item.pk, 'display': self.getattr_ex(item, display_field)}
+            results = [{'id': item.pk, 'name': self.getattr_ex(item, display_field)}
                             for item in items]
             
-            return Response({'results': results})
+            return Response(results)
 
         keyword = request.query_params.get('search', '') 
         start = int(request.query_params.get('start', 0))

@@ -70,10 +70,10 @@ export function useSliceStore(namespace) {
   return new SliceStore(namespace, store);
 }
 
-function appendUrlParams(url, params) {
+export function appendUrlParams(url, params) {
   if(!url.includes('?')) url += '?';
   for(let [key,value] of Object.entries(params || {})) {
-    if(value){
+    if(value !== null && value !== undefined){
       url += `&${key}=${encodeURIComponent(value)}`;
     }
   }

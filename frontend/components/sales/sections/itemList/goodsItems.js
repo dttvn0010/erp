@@ -91,7 +91,7 @@ export default function GoodItems({readOnly, withImport, withExport, withDiscoun
   
   return(
     <div style={{overflow: "auto", minHeight: "200px"}}>
-      <table className="table mt-3" style={{width: "120%"}}>
+      <table className="table mt-3" style={{width: "135%"}}>
         <thead>
           <tr>
             {!readOnly &&

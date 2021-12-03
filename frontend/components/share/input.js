@@ -139,16 +139,27 @@ export default function Input(props) {
     )
   }
 
-  if(type === 'select') {
-    value = {
-      ...value,
-      value: (value||{})[valueField??'id'],
-      label: (value||{})[labelField??'name']
+  if(type === 'select' || type === 'async-select') {
+    if(!props.isMulti) {
+      value = {
+        ...value,
+        value: value?.[valueField??'id'],
+        label: value?.[labelField??'name']
+      }
+    }else{
+      value = value?.map(val => ({
+        ...val,
+        value: val?.[valueField??'id'],
+        label: val?.[labelField??'name']
+      }))
     }
+  }
+
+  if(type === 'select') {
     
     return (
       <Select 
-        value={value}
+        value={value??null}
         options={optionsUrl? options : props.options}
         formatOptionLabel={(item, {context}) => {
           if(item.isDisabled) return item.label;
@@ -170,12 +181,6 @@ export default function Input(props) {
   }
 
   if(type === 'async-select') {
-    value = {
-      ...value,
-      value: (value||{})[valueField??'id'],
-      label: (value||{})[labelField??'name']
-    }
-    
     return (
       <AsyncSelect 
         className={className}
@@ -192,7 +197,7 @@ export default function Input(props) {
           })
         }
         formatOptionLabel={(item, {context}) => {
-          if(item.isDisabled) return item.label;
+          if(item.isDisabled) return item[labelField??'name'];
           const label = (optionDisplayFunc)? optionDisplayFunc(item) : item[labelField??'name'];
           if(context === 'value') {
             return (resultDisplayFunc)? resultDisplayFunc(item) : label;

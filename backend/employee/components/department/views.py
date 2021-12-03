@@ -2,10 +2,7 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q 
 
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-
-from core.views_api import DataTableView, AsyncSearchView
+from core.views_api import DataTableView, AsyncSearchView, ChangeItemStatusView
 from core.constants import BaseStatus
 from employee.models import Employee
 from .serializers import *
@@ -74,20 +71,8 @@ class DepartmentTableView(DataTableView):
     def get_queryset(self, user, params):
         return Department.objects.filter(company=user.employee.company)
 
-@api_view(['POST'])
-def change_department_status(request, pk):
-    department = get_object_or_404(Department, 
-        pk=pk,
-        company= request.user.employee.company
-    )
-    
-    if department.status != BaseStatus.ACTIVE.name:
-        department.status = BaseStatus.ACTIVE.name
-    else:
-        department.status = BaseStatus.INACTIVE.name
-
-    department.save()
-    return Response({'success': True})
+class ChangeDepartmentStatusView(ChangeItemStatusView):
+    model = Department
 
 class ParentAsyncSearchView(AsyncSearchView):
     fields = ['name']
