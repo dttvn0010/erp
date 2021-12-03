@@ -65,7 +65,7 @@ class InternalTransferSerializer(ModelSerializer):
                 'note', 'amount', 'items'
             ]
 
-    date = DateTimeField(read_only=True, format='%d/%m/%Y %H:%M:%S')
+    date = DateTimeField(read_only=True, format='%d/%m/%Y %H:%M')
     
     from_bank_account = PrimaryKeyRelatedField(
         source='ledger.from_bank_account', 

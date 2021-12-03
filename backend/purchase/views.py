@@ -35,7 +35,7 @@ class SuppilerAsyncSearchView(AsyncSearchView):
 class EmployeeAsyncSearchView(AsyncSearchView):
     fields = ['name']
 
-    def get_name(self, item):
+    def get_name(self, item, context):
         return item.user.display
 
     def get_queryset(self, term, request):
@@ -76,5 +76,5 @@ class BankAccountAsyncSearchView(AsyncSearchView):
         
         return queryset
 
-    def get_bank(self, obj):
+    def get_bank(self, obj, context):
         return obj.bank.code

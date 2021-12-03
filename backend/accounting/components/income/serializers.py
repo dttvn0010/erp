@@ -59,7 +59,7 @@ class IncomeSerializer(ModelSerializer):
                 'note', 'amount', 'cash', 'items'
         ]
 
-    date = DateTimeField(read_only=True, format='%d/%m/%Y %H:%M:%S')
+    date = DateTimeField(read_only=True, format='%d/%m/%Y %H:%M')
     
     from_bank_account = PrimaryKeyRelatedField(required=False, allow_null=True,
         source='ledger.from_bank_account', 

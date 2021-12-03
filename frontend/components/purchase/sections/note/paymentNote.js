@@ -34,7 +34,7 @@ export default function ExpenseNote({readOnly}) {
         <div className="col-4 form-group">
           <label className="form-label text-bold">Ngày hạch toán:</label>
           <Input
-            type="date"
+            type="datetime"
             readOnly={readOnly}
             value={data.accounting_date}
             onChange={val => updateData({accounting_date: val})}
@@ -44,7 +44,7 @@ export default function ExpenseNote({readOnly}) {
         <div className="col-4 form-group">
           <label className="form-label text-bold">Ngày chứng từ:</label>
           <Input
-            type="date"
+            type="datetime"
             readOnly={readOnly}
             value={data.order_date}
             onChange={val => updateData({order_date: val})}

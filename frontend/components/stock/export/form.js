@@ -146,7 +146,7 @@ export default function ExportForm({id, update, readOnly}){
             <div className="col-4 form-group">
               <label className="form-label text-bold">Ngày xuất:</label>
               <Input
-                type="date"
+                type="datetime"
                 readOnly={readOnly}
                 value={data.date}
                 onChange={val => updateData({date: val})}

@@ -72,9 +72,9 @@ class ExchangeSerializer(ModelSerializer):
             'id', 'exchange_number', 'date', 'note', 'items'
         ]
 
-    date = DateTimeField(format='%d/%m/%Y', input_formats=['%d/%m/%Y'])
+    date = DateTimeField(format='%d/%m/%Y %H:%M', input_formats=['%d/%m/%Y %H:%M'])
 
-    note = CharField()
+    note = CharField(required=False)
     items = ExchangeItemSerializer(many=True, required=False)
 
     def create_item(self, exchange, validated_item_data):

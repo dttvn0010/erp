@@ -163,7 +163,9 @@ class ProductQuantity(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
 
 class Inventory(models.Model):
+    inventory_number = models.CharField(max_length=100)
     location = models.ForeignKey(Location, on_delete=models.PROTECT)
+    note = models.CharField(max_length=200, blank=True)
     date = models.DateTimeField()
 
     create_date = models.DateTimeField(auto_now_add=True)
@@ -172,8 +174,8 @@ class Inventory(models.Model):
                 default=InventoryStatus.DRAFT.name, max_length=50)
 
 class InventoryItem(models.Model):
-    inventory = models.ForeignKey(Inventory, on_delete=models.PROTECT)
+    inventory = models.ForeignKey(Inventory, related_name='items', on_delete=models.PROTECT)
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
     qty = models.IntegerField()
     theoretical_qty = models.IntegerField()
-    inventory_date = models.DateTimeField()
+    note = models.CharField(max_length=200, blank=True)

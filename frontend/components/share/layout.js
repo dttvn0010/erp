@@ -48,7 +48,7 @@ const modules= [
           {path: '/export', title: 'Xuất kho'},
           {path: '/exchange', title: 'Chuyển kho'},
           {path: '/productQuantity', title: 'Tồn kho'},
-          {path: '/audit', title: 'Kiểm kê'},
+          {path: '/inventory', title: 'Kiểm kê'},
         ]
       },
     ]

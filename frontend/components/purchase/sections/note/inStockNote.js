@@ -34,7 +34,7 @@ export default function InStockNote({readOnly}) {
         <div className="col-4 form-group">
           <label className="form-label text-bold">Ngày nhập:</label>
           <Input
-            type="date"
+            type="datetime"
             readOnly={readOnly}
             value={data.import_date}
             onChange={val => updateData({import_date: val})}

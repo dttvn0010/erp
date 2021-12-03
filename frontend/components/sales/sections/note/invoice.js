@@ -44,7 +44,7 @@ export default function Invoice({readOnly, invoiceReadOnly}) {
         <div className="col-4 form-group">
           <label className="form-label text-bold">Ngày hoá đơn:</label>
           <Input
-            type="date"
+            type="datetime"
             readOnly={readOnly || invoiceReadOnly}
             value={data.invoice_date}
             onChange={val => updateData({invoice_date: val})}

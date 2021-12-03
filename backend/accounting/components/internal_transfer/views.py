@@ -58,7 +58,7 @@ class InternalTransferTableView(DataTableView):
         },
         {
             'name': 'date',
-            'format': '%d/%m/%Y %H:%M:%S',
+            'format': '%d/%m/%Y %H:%M',
             'title': 'Ngày chuyển',
             'width': '13%'
         },

@@ -115,5 +115,5 @@ class EmployeeAsyncSearchView(AsyncSearchView):
             user__is_active=True
         )
 
-    def get_name(self, obj):
+    def get_name(self, obj, context):
         return obj.user.display

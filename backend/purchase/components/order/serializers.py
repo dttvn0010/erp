@@ -138,13 +138,13 @@ class OrderSerializer(ModelSerializer):
                   'items', 'expenses']
 
     status = CharField(read_only=True)
-    order_date = DateTimeField(format='%d/%m/%Y', input_formats=['%d/%m/%Y'])
+    order_date = DateTimeField(format='%d/%m/%Y %H:%M', input_formats=['%d/%m/%Y %H:%M'])
     supplier_obj = SerializerMethodField()
 
     # Accounting
     accounting_date = DateTimeField(
-        format='%d/%m/%Y', 
-        input_formats=['%d/%m/%Y'],
+        format='%d/%m/%Y %H:%M', 
+        input_formats=['%d/%m/%Y %H:%M'],
         source='ledger.date'
     )
 
@@ -167,8 +167,8 @@ class OrderSerializer(ModelSerializer):
     
     import_date = DateTimeField(
         required=False,
-        format='%d/%m/%Y', 
-        input_formats=['%d/%m/%Y'],
+        format='%d/%m/%Y %H:%M', 
+        input_formats=['%d/%m/%Y %H:%M'],
         source='_import.date'
     )
 
@@ -179,8 +179,8 @@ class OrderSerializer(ModelSerializer):
     
     export_date = DateTimeField(
         required=False,
-        format='%d/%m/%Y', 
-        input_formats=['%d/%m/%Y'],
+        format='%d/%m/%Y %H:%M', 
+        input_formats=['%d/%m/%Y %H:%M'],
         source='_export.date'
     )
 
@@ -196,8 +196,8 @@ class OrderSerializer(ModelSerializer):
     invoice_note = CharField(required=False, source='invoice.note')
     invoice_date = DateTimeField(
         required=False,
-        format='%d/%m/%Y', 
-        input_formats=['%d/%m/%Y'],
+        format='%d/%m/%Y %H:%M', 
+        input_formats=['%d/%m/%Y %H:%M'],
         source='invoice.invoice_date'
     )
 

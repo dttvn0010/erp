@@ -34,7 +34,7 @@ export default function OutStockNote({readOnly}) {
         <div className="col-4 form-group">
           <label className="form-label text-bold">Ngày xuất:</label>
           <Input
-            type="date"
+            type="datetime"
             readOnly={readOnly}
             value={data.export_date}
             onChange={val => updateData({export_date: val})}

@@ -30,5 +30,5 @@ class BankAccountAsyncSearchView(AsyncSearchView):
 
         return queryset
 
-    def get_bank(self, obj):
+    def get_bank(self, obj, context):
         return obj.bank.code

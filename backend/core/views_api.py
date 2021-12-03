@@ -9,16 +9,19 @@ from .constants import BaseStatus
 class AsyncSearchView(APIView):
     fields = ...
 
+    def get_context(self, request):
+        return {}
+
     def get_queryset(self, term, request):
         ...
     
-    def serialize_item(self, item):
+    def serialize_item(self, item, context):
         data = {}
 
         for field in self.fields:
             if hasattr(self, 'get_' + field):
                 method = getattr(self, 'get_' + field)
-                data[field] = method(item)
+                data[field] = method(item, context)
             else:
                 data[field] = getattr(item, field)
         
@@ -26,9 +29,10 @@ class AsyncSearchView(APIView):
     
     def get(self, request):
         term = request.GET.get('term', '')
+        context = self.get_context(request)
         query_set = self.get_queryset(term, request)
         results = [
-            {'id': item.pk if hasattr(item, 'pk') else None, **self.serialize_item(item)} 
+            {'id': item.pk if hasattr(item, 'pk') else None, **self.serialize_item(item, context)} 
             for item in query_set
         ]
         return Response(results)

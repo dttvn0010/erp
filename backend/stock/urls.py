@@ -13,5 +13,4 @@ urlpatterns = [
     path('export/', include('stock.components.export.urls')),
     path('exchange/', include('stock.components.exchange.urls')),
     path('inventory/', include('stock.components.inventory.urls')),
-    path('audit/', include('stock.components.audit.urls')),
 ]

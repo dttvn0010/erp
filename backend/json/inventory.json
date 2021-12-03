@@ -1,0 +1,13 @@
+{
+    "inventory_number": "1321321",
+    "date": "03/12/2021",
+    "note": "Kiểm kê tháng 12",
+    "location": 1,
+    "items": [
+             {
+                   "product": 1,
+                    "theoretical_qty": 3,
+                     "qty":2
+             }
+     ]
+}

@@ -25,11 +25,11 @@ export default function Index() {
       let items = [
         {
           title: 'Xem thông tin',
-          onClick: () => router.push(`./location/view/${row.pk}`)
+          onClick: () => router.push(`./stock/view/${row.pk}`)
         },
         {
           title: 'Cập nhật',
-          onClick: () => router.push(`./location/update/${row.pk}`)
+          onClick: () => router.push(`./stock/update/${row.pk}`)
         }
       ];
 
@@ -55,7 +55,7 @@ export default function Index() {
         <>
           <div className="mb-2">
             <IconLink
-              href="./location/create"
+              href="./stock/create"
               icon="plus"
               title={`Thêm ${itemName}`}
             />

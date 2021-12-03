@@ -36,7 +36,7 @@ class IncomeTableView(DataTableView):
         },
         {
             'name': 'date',
-            'format': '%d/%m/%Y %H:%M:%S',
+            'format': '%d/%m/%Y %H:%M',
             'title': 'Ngày thu',
             'width': '15%'
         },

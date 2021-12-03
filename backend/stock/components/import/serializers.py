@@ -58,9 +58,9 @@ class ImportSerializer(ModelSerializer):
             'id', 'import_number', 'date', 'note', 'items'
         ]
 
-    date = DateTimeField(format='%d/%m/%Y', input_formats=['%d/%m/%Y'])
+    date = DateTimeField(format='%d/%m/%Y %H:%M', input_formats=['%d/%m/%Y %H:%M'])
 
-    note = CharField()
+    note = CharField(required=False)
     items = ImportItemSerializer(many=True, required=False)
 
     def create_item(self, _import, validated_item_data):
@@ -99,7 +99,6 @@ class ImportSerializer(ModelSerializer):
         )
         
     def create(self, validated_data):
-        print('validated_data=', validated_data)
         company = self.context['user'].employee.company
         items_data = validated_data.pop('items', [])
 

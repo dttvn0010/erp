@@ -96,7 +96,7 @@ class ProductQuantityHistoryTableView(DataTableView):
                     return f'Chuyển sang kho {ref_product_move.location_dest} sang {obj.ref_product_move.qty} đơn vị'
         
         elif obj.ref_inventory_item:
-            return f'Kiểm kê ngày ' + format_date(obj.ref_inventory_item.inventory)
+            return f'Kiểm kê ngày ' + format_date(obj.ref_inventory_item.inventory.date)
 
         return ''
 

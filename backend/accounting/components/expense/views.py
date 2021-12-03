@@ -37,7 +37,7 @@ class ExpenseTableView(DataTableView):
         {
             'name': 'date',
             'source': 'approve_date',
-            'format': '%d/%m/%Y %H:%M:%S',
+            'format': '%d/%m/%Y %H:%M',
             'title': 'Ngày chi',
             'width': '15%'
         },
