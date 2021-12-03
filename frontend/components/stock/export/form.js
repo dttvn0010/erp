@@ -132,16 +132,39 @@ export default function ExportForm({id, update, readOnly}){
       title={title}
       body={
         <form id="fmt" onSubmit={saveExport}>
-          <div className="row">
-            <div className="col form-group">
-              <label className="form-label text-bold">Diễn giải:</label>
-              <Input 
+          <div className="row mt-2">
+            <div className="col-4 form-group">
+              <label className="form-label text-bold">Số phiếu xuất:</label>
+              <Input
                 type="input"
+                readOnly={readOnly}
+                value={data.export_number}
+                onChange={val => updateData({export_number: val})}
+              />
+              <ErrorList errors={errors?.export_number}/>
+            </div>
+            <div className="col-4 form-group">
+              <label className="form-label text-bold">Ngày xuất:</label>
+              <Input
+                type="date"
+                readOnly={readOnly}
+                value={data.date}
+                onChange={val => updateData({date: val})}
+              />
+              <ErrorList errors={errors?.date}/>
+            </div>
+          </div>
+          <div className="row mt-2">
+            <div className="col">
+              <label className="form-label text-bold">Ghi chú:</label>
+              <Input
+                type="textarea"
+                rows="3"
+                readOnly={readOnly}
                 value={data.note}
                 onChange={val => updateData({note: val})}
-                readOnly={readOnly}
               />
-              <ErrorList errors={errors.note}/>
+              <ErrorList errors={errors?.note}/>
             </div>
           </div>
 
@@ -236,7 +259,7 @@ export default function ExportForm({id, update, readOnly}){
                     title="Lưu lại"
                   />
                 }
-                {readOnly && 
+                {readOnly && false &&
                   <IconLink
                     href={editUrl}
                     icon="edit"

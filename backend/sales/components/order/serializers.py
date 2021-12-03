@@ -19,6 +19,7 @@ from stock.models import (
     ExportItem,
     Product, 
     ProductMove,
+    ProductQuantity,
     Location as StockLocation
 )
 
@@ -229,7 +230,7 @@ class OrderSerializer(ModelSerializer):
             return {field: getattr(to_bank_account, field) for field in fields}
 
     def create_item(self, order, validated_item_data):
-        product_move = validated_item_data.pop('product_move', {})
+        product_move_data = validated_item_data.pop('product_move', {})
         product = validated_item_data['product']
         customer = order.customer
         qty = validated_item_data['qty']
@@ -274,14 +275,18 @@ class OrderSerializer(ModelSerializer):
         ledger_item.ref_class = 'sales.OrderItem'
         ledger_item.save()
 
+        product_move = None
+        location = None
+
         if order._import:
             product_move = ProductMove.objects.create(
                 product=product,
                 qty=qty,
                 inward=True,
                 date=order._import.date,
-                **product_move
+                **product_move_data
             )
+            location = product_move.location_dest
 
             ImportItem.objects.create(
                 _import=order._import,
@@ -297,8 +302,9 @@ class OrderSerializer(ModelSerializer):
                 qty=qty,
                 inward=False,
                 date=order._export.date,
-                **product_move
+                **product_move_data
             )
+            location = product_move.location
 
             ExportItem.objects.create(
                 _export=order._export,
@@ -307,6 +313,27 @@ class OrderSerializer(ModelSerializer):
 
             order_item.product_move = product_move
             order_item.save()
+
+        if product_move:
+            cur_product_quantity = ProductQuantity.objects.filter(
+                product=product_move.product,
+                location=location,
+                is_latest=True
+            ).first()
+
+            cur_qty = cur_product_quantity.qty if cur_product_quantity else 0
+
+            ProductQuantity.objects.create(
+                product=product_move.product,
+                location=location,
+                qty=cur_qty + product_move.qty * (1 if product_move.inward else -1),
+                ref_product_move=product_move,
+                is_latest=True
+            )
+
+            if cur_product_quantity is not None:
+                cur_product_quantity.is_latest = False
+                cur_product_quantity.save()
 
         return order_item
 

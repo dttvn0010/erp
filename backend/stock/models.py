@@ -92,7 +92,7 @@ class ProductMove(models.Model):
 class Import(models.Model):
     company = models.ForeignKey(Company, on_delete=models.PROTECT)
     import_number = models.CharField(max_length=100)
-    note = models.CharField(max_length=200)
+    note = models.CharField(max_length=200, blank=True)
     date = models.DateTimeField()
 
     create_date = models.DateTimeField(auto_now_add=True)
@@ -110,7 +110,7 @@ class ImportItem(models.Model):
 class Export(models.Model):
     company = models.ForeignKey(Company, on_delete=models.PROTECT)
     export_number = models.CharField(max_length=100)
-    note = models.CharField(max_length=200)
+    note = models.CharField(max_length=200, blank=True)
     date = models.DateTimeField()
 
     create_date = models.DateTimeField(auto_now_add=True)
@@ -127,7 +127,8 @@ class ExportItem(models.Model):
 
 class Exchange(models.Model):
     company = models.ForeignKey(Company, on_delete=models.PROTECT)
-    note = models.CharField(max_length=200)
+    exchange_number = models.CharField(max_length=100)
+    note = models.CharField(max_length=200, blank=True)
     date = models.DateTimeField()
 
     create_date = models.DateTimeField(auto_now_add=True)
@@ -152,7 +153,14 @@ class ProductQuantity(models.Model):
         on_delete=models.PROTECT
     )
 
-    create_date = models.DateTimeField()
+    ref_inventory_item = models.ForeignKey('InventoryItem',
+        blank=True, null=True,
+        on_delete=models.PROTECT
+    )
+
+    is_latest = models.BooleanField(default=True)
+
+    create_date = models.DateTimeField(auto_now_add=True)
 
 class Inventory(models.Model):
     location = models.ForeignKey(Location, on_delete=models.PROTECT)

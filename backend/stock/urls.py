@@ -8,6 +8,7 @@ urlpatterns = [
     path('location/', include('stock.components.location.urls')),
     path('product-category/', include('stock.components.product_category.urls')),
     path('product/', include('stock.components.product.urls')),
+    path('product-quantity/', include('stock.components.product_quantity.urls')),
     path('import/', include('stock.components.import.urls')),
     path('export/', include('stock.components.export.urls')),
     path('exchange/', include('stock.components.exchange.urls')),

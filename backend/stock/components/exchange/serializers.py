@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from rest_framework.serializers import (
     ModelSerializer,
     CharField, 
@@ -9,7 +7,7 @@ from rest_framework.serializers import (
     SerializerMethodField
 )
 
-from stock.models import Location, Exchange, ExchangeItem, Product, ProductMove
+from stock.models import Location, Exchange, ExchangeItem, Product, ProductMove, ProductQuantity
 from core.constants import BaseStatus
 
 class ExchangeItemSerializer(ModelSerializer):
@@ -71,10 +69,10 @@ class ExchangeSerializer(ModelSerializer):
     class Meta:
         model = Exchange
         fields = [
-            'id', 'date', 'note', 'items'
+            'id', 'exchange_number', 'date', 'note', 'items'
         ]
 
-    date = DateTimeField(read_only=True, format='%d/%m/%Y %H:%M:%S')
+    date = DateTimeField(format='%d/%m/%Y', input_formats=['%d/%m/%Y'])
 
     note = CharField()
     items = ExchangeItemSerializer(many=True, required=False)
@@ -82,13 +80,54 @@ class ExchangeSerializer(ModelSerializer):
     def create_item(self, exchange, validated_item_data):
         product_move_data = validated_item_data.pop('product_move', {})
         
-        date = datetime.now()
-
         product_move = ProductMove.objects.create(
             **product_move_data,
-            inward=True,
-            date=date
+            inward=False,
+            internal=True,
+            date=exchange.date
         )
+
+        # Source
+        src_product_quantity = ProductQuantity.objects.filter(
+            product=product_move.product,
+            location=product_move.location,
+            is_latest=True
+        ).first()
+
+        src_qty = src_product_quantity.qty if src_product_quantity else 0
+
+        ProductQuantity.objects.create(
+            product=product_move.product,
+            location=product_move.location,
+            qty=src_qty - product_move.qty,
+            ref_product_move=product_move,
+            is_latest=True
+        )
+
+        if src_product_quantity is not None:
+            src_product_quantity.is_latest = False
+            src_product_quantity.save()
+
+        # Destination
+        dest_product_quantity = ProductQuantity.objects.filter(
+            product=product_move.product,
+            location=product_move.location_dest,
+            is_latest=True
+        ).first()
+
+        dest_qty = dest_product_quantity.qty if dest_product_quantity else 0
+
+        ProductQuantity.objects.create(
+            product=product_move.product,
+            location=product_move.location_dest,
+            qty=dest_qty + product_move.qty,
+            ref_product_move=product_move,
+            is_latest=True
+        )
+
+        if dest_product_quantity is not None:
+            dest_product_quantity.is_latest = False
+            dest_product_quantity.save()
 
         validated_item_data['exchange'] = exchange
 
@@ -99,15 +138,13 @@ class ExchangeSerializer(ModelSerializer):
         
     def create(self, validated_data):
         company = self.context['user'].employee.company
-        date = datetime.now()
 
         items_data = validated_data.pop('items', [])
 
         exchange = Exchange.objects.create(
             **validated_data,
             company=company,
-            date=date,
-            status=BaseStatus.DRAFT.name
+            status=BaseStatus.ACTIVE.name
         )
 
         for item_data in items_data:
@@ -118,7 +155,9 @@ class ExchangeSerializer(ModelSerializer):
     def update(self, instance, validated_data):
         items_data = validated_data.pop('items', [])
 
-        instance.note = validated_data['note']
+        instance.exchange_number = validated_data['exchange_number']
+        instance.date = validated_data['date']
+        instance.note = validated_data.get('note', '')
         instance.save()
 
         for item in instance.items.all():

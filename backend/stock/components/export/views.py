@@ -12,9 +12,9 @@ class ExportDataTableView(DataTableView):
     order_by = '-update_date'
     columns_def = [
         {
-            'name': 'note',
-            'title': 'Diễn giải',
-            'width': '45%',
+            'name': 'export_number',
+            'title': 'Số phiếu xuất',
+            'width': '30%',
         },
         {
             'name': 'date',
@@ -22,11 +22,9 @@ class ExportDataTableView(DataTableView):
             'width': '20%'
         },
         {
-            'name': 'status',
-            'display_list': BaseStatus.choices(),
-            'title': 'Trạng thái',
-            'orderable': False,
-            'width': '30%'
+            'name': 'note',
+            'title': 'Ghi chú',
+            'width': '45%',
         },
         {
             'title': 'Thao tác',

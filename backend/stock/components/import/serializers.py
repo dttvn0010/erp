@@ -1,4 +1,3 @@
-from datetime import datetime
 
 from rest_framework.serializers import (
     ModelSerializer,
@@ -9,7 +8,7 @@ from rest_framework.serializers import (
     SerializerMethodField
 )
 
-from stock.models import Location, Import, ImportItem, Product, ProductMove
+from stock.models import Location, Import, ImportItem, Product, ProductMove, ProductQuantity
 from core.constants import BaseStatus
 
 class ImportItemSerializer(ModelSerializer):
@@ -56,24 +55,41 @@ class ImportSerializer(ModelSerializer):
     class Meta:
         model = Import
         fields = [
-            'id', 'date', 'note', 'items'
+            'id', 'import_number', 'date', 'note', 'items'
         ]
 
-    date = DateTimeField(read_only=True, format='%d/%m/%Y %H:%M:%S')
+    date = DateTimeField(format='%d/%m/%Y', input_formats=['%d/%m/%Y'])
 
     note = CharField()
     items = ImportItemSerializer(many=True, required=False)
 
     def create_item(self, _import, validated_item_data):
         product_move_data = validated_item_data.pop('product_move', {})
-        
-        date = datetime.now()
-
         product_move = ProductMove.objects.create(
             **product_move_data,
             inward=True,
-            date=date
+            date=_import.date
         )
+
+        cur_product_quantity = ProductQuantity.objects.filter(
+            product=product_move.product,
+            location=product_move.location_dest,
+            is_latest=True
+        ).first()
+
+        cur_qty = cur_product_quantity.qty if cur_product_quantity else 0
+
+        ProductQuantity.objects.create(
+            product=product_move.product,
+            location=product_move.location_dest,
+            qty=cur_qty + product_move.qty,
+            ref_product_move=product_move,
+            is_latest=True
+        )
+
+        if cur_product_quantity is not None:
+            cur_product_quantity.is_latest = False
+            cur_product_quantity.save()
 
         validated_item_data['_import'] = _import
 
@@ -83,16 +99,14 @@ class ImportSerializer(ModelSerializer):
         )
         
     def create(self, validated_data):
+        print('validated_data=', validated_data)
         company = self.context['user'].employee.company
-        date = datetime.now()
-
         items_data = validated_data.pop('items', [])
 
         _import = Import.objects.create(
             **validated_data,
             company=company,
-            date=date,
-            status=BaseStatus.DRAFT.name
+            status=BaseStatus.ACTIVE.name
         )
 
         for item_data in items_data:
@@ -103,7 +117,9 @@ class ImportSerializer(ModelSerializer):
     def update(self, instance, validated_data):
         items_data = validated_data.pop('items', [])
 
-        instance.note = validated_data['note']
+        instance.import_number = validated_data['import_number']
+        instance.date = validated_data['date']
+        instance.note = validated_data.get('note', '')
         instance.save()
 
         for item in instance.items.all():

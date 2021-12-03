@@ -5,7 +5,6 @@ import DataTable from 'components/share/datatable';
 
 import { 
   getDeleteItemHandler, 
-  getStatusSwitcher,
   getDefaultLayOut,
   IconLink
 } from 'utils/helper';
@@ -17,23 +16,20 @@ export default function Index() {
   const deleteItem = getDeleteItemHandler(itemName, `${baseUrl}/crud/[$id$]/`);
   
   let renders = {
-    col2: (data, row, dispatch) => {
-      return getStatusSwitcher(data, row, dispatch, itemName, `${baseUrl}/change-status/[$id$]`)
-    },
-
     col3: (_, row, dispatch) => {
       let items = [
         {
           title: 'Xem thông tin',
           onClick: () => router.push(`./export/view/${row.pk}`)
         },
-        {
-          title: 'Cập nhật',
-          onClick: () => router.push(`./export/update/${row.pk}`)
-        }
       ];
 
       if(row.status_id === 'DRAFT') {
+        items.push({
+          title: 'Cập nhật',
+          onClick: () => router.push(`./export/update/${row.pk}`)
+        });
+
         items.push({
           title: 'Xóa',
           onClick: () => deleteItem(dispatch, row)
