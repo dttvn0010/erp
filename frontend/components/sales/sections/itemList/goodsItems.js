@@ -88,10 +88,11 @@ export default function GoodItems({readOnly, withImport, withExport, withDiscoun
   if(!withTax) ncol -= 2;
   if(!withDiscount) ncol -= 2;
   if(!withTax && !withDiscount) ncol -= 1;
-  
+  const tableWidth = 100 + parseInt(35*(ncol-6)/6);
+
   return(
     <div style={{overflow: "auto", minHeight: "200px"}}>
-      <table className="table mt-3" style={{width: "135%"}}>
+      <table className="table mt-3" style={{width: `${tableWidth}%`}}>
         <thead>
           <tr>
             {!readOnly &&
