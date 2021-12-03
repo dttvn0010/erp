@@ -13,7 +13,7 @@ class ProductAsyncSearchView(DataAsyncSearchView):
     model = Product
     fields = ['name', 'price_unit']
 
-    def get_price_unit(self, item):
+    def get_price_unit(self, item, context):
         return item.list_price
 
 class StockLocationAsyncSearchView(DataAsyncSearchView):
