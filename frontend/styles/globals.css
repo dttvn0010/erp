@@ -20,7 +20,13 @@ a {
 }
 
 .errorlist {
-  color: red
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.errorlist > li {
+  color: red;
+  font-size: 0.95rem;  
 }
 
 .section-title{
