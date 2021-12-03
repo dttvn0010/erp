@@ -84,7 +84,7 @@ export default function InventoryForm({id, update, readOnly}){
   const changeProduct = (index, val) => {
     updateItem(index, {
       product_obj: val,
-      theoretical_qty: val.cur_stock_qty,
+      theoretical_qty: val?.cur_stock_qty,
     })
   }
 
@@ -226,11 +226,12 @@ export default function InventoryForm({id, update, readOnly}){
                   
                   <td>
                     <Input
+                      key={data.location}
                       type="async-select"
                       readOnly={readOnly}
                       value={item.product_obj}
                       onChange={val => changeProduct(index, val)}
-                      getParams={() => ({location_id: data?.location})}
+                      getParams={() => ({location_id: data.location})}
                       optionsUrl="/stock/search-product"
                     />
                     <ErrorList errors={errors?.items?.[index]?.product}/>
