@@ -147,7 +147,7 @@ export default function ReturnForm({id, update, readOnly}){
               <InStockNote readOnly={readOnly}/>
             </Tab>
             <Tab eventKey="invoice" title="Hoá đơn">
-              <Invoice readOnly={readOnly} invoiceReadOnly={true}/>
+              <Invoice readOnly={readOnly} />
             </Tab>
           </Tabs>
 

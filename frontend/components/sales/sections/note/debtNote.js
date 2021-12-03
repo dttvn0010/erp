@@ -42,7 +42,7 @@ export default function DebtNote({readOnly}) {
           <ErrorList errors={errors?.accounting_date}/>
         </div>
         <div className="col-4 form-group">
-          <label className="form-label text-bold">Ngày bán:</label>
+          <label className="form-label text-bold">Ngày thực hiện:</label>
           <Input
             type="datetime"
             readOnly={readOnly}

@@ -143,7 +143,7 @@ export default function DiscountForm({id, update, readOnly}){
               <PaymentNote readOnly={readOnly}/>
             </Tab>
             <Tab eventKey="invoice" title="Hoá đơn">
-              <Invoice readOnly={readOnly} invoiceReadOnly={true}/>
+              <Invoice readOnly={readOnly}/>
             </Tab>
           </Tabs>
 

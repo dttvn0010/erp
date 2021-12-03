@@ -3,7 +3,7 @@ import Input from "components/share/input";
 import { NAME_SPACE } from "redux/reducers/purchase/formReducer";
 import { useSliceStore, useSliceSelector } from "utils/helper";
 
-export default function Invoice({readOnly, invoiceReadOnly}) {
+export default function Invoice({readOnly}) {
   const store = useSliceStore(NAME_SPACE);
   const [data, errors] = useSliceSelector(NAME_SPACE, ['data', 'errors']);
   
@@ -25,7 +25,7 @@ export default function Invoice({readOnly, invoiceReadOnly}) {
           <label className="form-label text-bold">Mẫu hoá đơn:</label>
           <Input
             type="input"
-            readOnly={readOnly || invoiceReadOnly}
+            readOnly={readOnly}
             value={data.invoice_type}
             onChange={val => updateData({invoice_type: val})}
           />
@@ -34,7 +34,7 @@ export default function Invoice({readOnly, invoiceReadOnly}) {
           <label className="form-label text-bold">Số hoá đơn:</label>
           <Input
             type="input"
-            readOnly={readOnly || invoiceReadOnly}
+            readOnly={readOnly}
             value={data.invoice_number}
             onChange={val => updateData({invoice_number: val})}
           />
@@ -44,7 +44,7 @@ export default function Invoice({readOnly, invoiceReadOnly}) {
           <label className="form-label text-bold">Ngày hoá đơn:</label>
           <Input
             type="datetime"
-            readOnly={readOnly || invoiceReadOnly}
+            readOnly={readOnly}
             value={data.invoice_date}
             onChange={val => updateData({invoice_date: val})}
           />
