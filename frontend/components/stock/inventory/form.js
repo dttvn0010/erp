@@ -196,7 +196,7 @@ export default function InventoryForm({id, update, readOnly}){
                     </a>
                   </th>
                 }
-                <th style={{width: "40%"}}>Hàng hoá</th>
+                <th style={{width: "45%"}}>Hàng hoá</th>
                 <th style={{width: "25%"}}>Số lượng lý thuyết</th>
                 <th style={{width: "25%"}}>Số lượng kiểm kê</th>
               </tr>
