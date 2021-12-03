@@ -9,7 +9,7 @@ import {
   getDeleteItemHandler
 } from 'utils/helper';
 
-const itemName = 'chứng từ giảm giá hàng mua';
+const itemName = 'yêu cầu giảm giá hàng mua';
 
 export default function Index() {
   const router = useRouter();

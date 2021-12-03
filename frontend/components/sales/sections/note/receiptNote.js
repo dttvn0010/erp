@@ -40,7 +40,7 @@ export default function ReceiptNote({readOnly}) {
           />
         </div>
         <div className="col-4 form-group">
-          <label className="form-label text-bold">Ngày chứng từ:</label>
+          <label className="form-label text-bold">Ngày thực hiện:</label>
           <Input
             type="datetime"
             readOnly={readOnly}

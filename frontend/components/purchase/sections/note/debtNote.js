@@ -22,7 +22,7 @@ export default function DebtNote({readOnly}) {
     <div className="p-1">
       <div className="row mt-2">
         <div className="col-4 form-group">
-          <label className="form-label text-bold">Số chứng từ:</label>
+          <label className="form-label text-bold">Số đơn hàng:</label>
           <Input
             type="input"
             readOnly={readOnly}
@@ -42,7 +42,7 @@ export default function DebtNote({readOnly}) {
           <ErrorList errors={errors?.accounting_date}/>
         </div>
         <div className="col-4 form-group">
-          <label className="form-label text-bold">Ngày chứng từ:</label>
+          <label className="form-label text-bold">Ngày thực hiện:</label>
           <Input
             type="datetime"
             readOnly={readOnly}

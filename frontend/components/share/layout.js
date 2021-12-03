@@ -11,7 +11,7 @@ const modules= [
       {
         path: '/purchase', title: 'Mua hàng',
         children: [
-          {path: '/voucher', title: 'Chứng từ mua hàng'},
+          {path: '/voucher', title: 'Đơn mua hàng'},
           {path: '/discount', title: 'Giảm giá hàng mua'},
           {path: '/return', title: 'Trả lại hàng mua'}
         ] 
@@ -19,7 +19,7 @@ const modules= [
       {
         path: '/sales', title: 'Bán hàng',
         children: [
-          {path: '/voucher', title: 'Chứng từ bán hàng'},
+          {path: '/voucher', title: 'Đơn bán hàng'},
           {path: '/discount', title: 'Giảm giá hàng bán'},
           {path: '/return', title: 'Trả lại hàng bán'}
         ] 

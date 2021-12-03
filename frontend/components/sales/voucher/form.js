@@ -27,7 +27,7 @@ import {
 import { NAME_SPACE } from 'redux/reducers/sales/formReducer';
 
 
-const itemName = 'chứng từ bán hàng';
+const itemName = 'đơn bán hàng';
 
 export default function VoucherForm({id, update, readOnly}){
   const baseUrl = '/sales/order/crud';
@@ -144,7 +144,7 @@ export default function VoucherForm({id, update, readOnly}){
 
           <div className="row">
             <div className="col p-2">
-              <div className="section-title">Thông tin chứng từ</div>
+              <div className="section-title">Thông tin chung</div>
               <hr className="my-0"/>
             </div>
           </div>

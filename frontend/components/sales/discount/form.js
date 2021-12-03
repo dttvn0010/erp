@@ -24,7 +24,7 @@ import {
 import { NAME_SPACE } from 'redux/reducers/sales/formReducer';
 
 
-const itemName = 'chứng từ giảm giá hàng bán';
+const itemName = 'yêu cầu giảm giá hàng bán';
 
 export default function DiscountForm({id, update, readOnly}){
   const baseUrl = '/sales/order/crud';
@@ -130,7 +130,7 @@ export default function DiscountForm({id, update, readOnly}){
 
           <div className="row">
             <div className="col p-2">
-              <div className="section-title">Thông tin chứng từ</div>
+              <div className="section-title">Thông tin chung</div>
               <hr className="my-0"/>
             </div>
           </div>
