@@ -70,7 +70,7 @@ export default function DiscountForm({id, update, readOnly}){
     const {data} = store.getState();
     data.type = 'DISCOUNT';
 
-    data?.items.forEach(item => {
+    data?.items?.forEach(item => {
       item.amount_tax = item.discount = 0;
     });
 

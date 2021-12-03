@@ -73,7 +73,7 @@ export default function VoucherForm({id, update, readOnly}){
     const {data} = store.getState();
     data.type = 'SALES';
 
-    data?.items.forEach(item => {
+    data?.items?.forEach(item => {
       if(item.price_unit && item.qty){
         const total = item.price_unit * item.qty;
         if(item.amount_tax_pctg) {

@@ -72,7 +72,7 @@ export default function DiscountForm({id, update, readOnly}){
 
     //console.log('data=', data);
 
-    data?.items.forEach(item => {
+    data?.items?.forEach(item => {
       item.amount_tax = item.discount = 0;
     });
   

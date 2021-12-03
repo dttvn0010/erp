@@ -3,3 +3,4 @@ djangorestframework
 django-cors-headers
 djangorestframework_simplejwt
 pillow
+psycopg2-binary
